@@ -30,8 +30,14 @@ public class LocalGame extends GameMode {
 	private final int BOW_DAMAGE = 5;
 	private final int ENEMY_DAMAGE = 12;
 
-	ArrayList<Card> deck = new ArrayList<Card>();
-	Card[] hand = new Card[5];
+	ArrayList<Card> basicDeck = new ArrayList<Card>();
+	ArrayList<Card> spellDeck = new ArrayList<Card>();
+	ArrayList<Card> trapDeck = new ArrayList<Card>();
+	
+	Card[] basicHand = new Card[5];
+	Card[] spellHand = new Card[2];
+	Card[] trapHand = new Card[2];
+	
 	private GameImage background = null, playerImage = null, enemyImage = null;
 	Player player;
 	private boolean showBowRange;
@@ -71,50 +77,68 @@ public class LocalGame extends GameMode {
 		engine.getActors().add(e2);
 		engine.getActors().add(e3);
 
-		deck.add(new Card("walkUp"));
-		deck.add(new Card("walkDown"));
-		deck.add(new Card("walkLeft"));
-		deck.add(new Card("walkRight"));
-		deck.add(new Card("walkUpRight"));
-		deck.add(new Card("walkDownRight"));
-		deck.add(new Card("walkUpLeft"));
-		deck.add(new Card("walkDownLeft"));
-		deck.add(new Card("walkUp"));
-		deck.add(new Card("walkDown"));
-		deck.add(new Card("walkLeft"));
-		deck.add(new Card("walkRight"));
+		basicDeck.add(new Card("walkUp"));
+		basicDeck.add(new Card("walkDown"));
+		basicDeck.add(new Card("walkLeft"));
+		basicDeck.add(new Card("walkRight"));
+		basicDeck.add(new Card("walkUpRight"));
+		basicDeck.add(new Card("walkDownRight"));
+		basicDeck.add(new Card("walkUpLeft"));
+		basicDeck.add(new Card("walkDownLeft"));
+		basicDeck.add(new Card("walkUp"));
+		basicDeck.add(new Card("walkDown"));
+		basicDeck.add(new Card("walkLeft"));
+		basicDeck.add(new Card("walkRight"));
 
-		deck.add(new Card("runUp"));
-		deck.add(new Card("runDown"));
-		deck.add(new Card("runLeft"));
-		deck.add(new Card("runRight"));
-		deck.add(new Card("runUpRight"));
-		deck.add(new Card("runDownRight"));
-		deck.add(new Card("runUpLeft"));
-		deck.add(new Card("runDownLeft"));
-		deck.add(new Card("runUp"));
-		deck.add(new Card("runDown"));
-		deck.add(new Card("runLeft"));
-		deck.add(new Card("runRight"));
+		basicDeck.add(new Card("runUp"));
+		basicDeck.add(new Card("runDown"));
+		basicDeck.add(new Card("runLeft"));
+		basicDeck.add(new Card("runRight"));
+		basicDeck.add(new Card("runUpRight"));
+		basicDeck.add(new Card("runDownRight"));
+		basicDeck.add(new Card("runUpLeft"));
+		basicDeck.add(new Card("runDownLeft"));
+		basicDeck.add(new Card("runUp"));
+		basicDeck.add(new Card("runDown"));
+		basicDeck.add(new Card("runLeft"));
+		basicDeck.add(new Card("runRight"));
 
-		deck.add(new Card("sword"));
-		deck.add(new Card("sword"));
-		deck.add(new Card("sword"));
-		deck.add(new Card("bow"));
-		deck.add(new Card("bow"));
+		basicDeck.add(new Card("sword"));
+		basicDeck.add(new Card("sword"));
+		basicDeck.add(new Card("sword"));
+		basicDeck.add(new Card("bow"));
+		basicDeck.add(new Card("bow"));
 
 		// deck.add(new Card("shop"));
 		// deck.add(new Card("shop"));
 
-		deck.add(new Card("smallPotion"));
-		deck.add(new Card("smallPotion"));
-		deck.add(new Card("largePotion"));
+		basicDeck.add(new Card("smallPotion"));
+		basicDeck.add(new Card("smallPotion"));
+		basicDeck.add(new Card("largePotion"));
+		
+		initiateHand();
+	}
 
-		drawCard();
-		drawCard();
-		drawCard();
-		drawCard();
-		drawCard();
+	/**
+	 * 
+	 */
+	private void initiateHand() {
+		drawCards(5, basicHand, basicDeck);
+		drawCards(2, spellHand, spellDeck);
+		drawCards(2, trapHand, trapDeck);
+		
+	}
+
+	/**
+	 * @param i
+	 * @param basicHand2
+	 * @param basicDeck2
+	 */
+	private void drawCards(int num, Card[] section, ArrayList<Card> deck) {
+		for (int x=0; x < num; x++) {
+			drawCard(section, deck);
+		}
+		
 	}
 
 	@Override
@@ -143,8 +167,14 @@ public class LocalGame extends GameMode {
 		g.fillRect(0, engine.getEnvironmentSize().y - 100,
 				engine.getEnvironmentSize().x, 100);
 
-		for (int x = 0; x < hand.length; x++)
-			hand[x].draw(engine, g, x);
+		for (int x = 0; x < basicHand.length; x++)
+			basicHand[x].draw(engine, g, x);
+		
+		for (int x = 0; x < spellHand.length; x++)
+			spellHand[x].draw(engine, g, x);
+		
+		for (int x = 0; x < trapHand.length; x++)
+			trapHand[x].draw(engine, g, x);
 
 		super.paint(g);
 	}
@@ -161,28 +191,52 @@ public class LocalGame extends GameMode {
 		}
 
 		ArrayList<Card> toRemove = new ArrayList<Card>();
+		checkClick(e, basicHand, toRemove);
+
+		for (Card c : toRemove) {
+			basicDeck.add(c);
+			drawCard(basicHand, basicDeck);
+		}
+		
+		toRemove = new ArrayList<Card>();
+		checkClick(e, spellHand, toRemove);
+
+		for (Card c : toRemove) {
+			spellDeck.add(c);
+			drawCard(spellHand, spellDeck);
+		}
+		
+		toRemove = new ArrayList<Card>();
+		checkClick(e, trapHand, toRemove);
+
+		for (Card c : toRemove) {
+			trapDeck.add(c);
+			drawCard(trapHand, trapDeck);
+		}
+		super.mouseReleased(e);
+	}
+
+	/**
+	 * @param e
+	 * @param basicHand2
+	 */
+	private void checkClick(MouseEvent e, Card[] hand, ArrayList<Card> toRemove) {
 		for (int x = 0; x < hand.length; x++)
 			if (hand[x].checkClick(engine, x, e.getPoint())) {
 				handleCard(hand[x]);
 				toRemove.add(hand[x]);
 				hand[x] = null;
 			}
-
-		for (Card c : toRemove) {
-			deck.add(c);
-			drawCard();
-		}
-		super.mouseReleased(e);
 	}
 
-	private void drawCard() {
+	private void drawCard(Card[] section, ArrayList<Card> deck) {
 		Random gen = new Random();
 
 		int num = gen.nextInt(deck.size());
 
-		for (int x = 0; x < hand.length; x++)
-			if (hand[x] == null) {
-				hand[x] = deck.get(num);
+		for (int x = 0; x < section.length; x++)
+			if (section[x] == null) {
+				section[x] = deck.get(num);
 				break;
 			}
 
