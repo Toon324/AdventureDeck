@@ -64,6 +64,8 @@ public class LocalGame extends GameMode {
 		
 		board = new TileManager(engine.getEnvironmentSize().x / 25, engine.getEnvironmentSize().y / 25);
 
+		//board = new TileManager(20,20);
+		
 		player = new Player(eng, playerImage);
 
 		Enemy e1 = new Enemy(eng, enemyImage);
