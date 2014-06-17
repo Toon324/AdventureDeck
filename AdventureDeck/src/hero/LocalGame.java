@@ -41,6 +41,7 @@ public class LocalGame extends GameMode {
 	private GameImage background = null, playerImage = null, enemyImage = null;
 	Player player;
 	private boolean showBowRange;
+	private TileManager board;
 
 	public LocalGame(GameEngine eng) {
 		super(eng);
@@ -60,6 +61,8 @@ public class LocalGame extends GameMode {
 			e.printStackTrace();
 			GameEngine.log("LocalGame exception: " + e.getMessage());
 		}
+		
+		board = new TileManager(engine.getEnvironmentSize().x / 25, engine.getEnvironmentSize().y / 25);
 
 		player = new Player(eng, playerImage);
 
@@ -161,9 +164,11 @@ public class LocalGame extends GameMode {
 	@Override
 	public void paint(Graphics g) {
 
-		g.drawImage(background.getImage(), 0, 0, engine.getEnvironmentSize().x,
-				engine.getEnvironmentSize().y, 0, 0, background.getWidth(),
-				background.getHeight(), null);
+//		g.drawImage(background.getImage(), 0, 0, engine.getEnvironmentSize().x,
+//				engine.getEnvironmentSize().y, 0, 0, background.getWidth(),
+//				background.getHeight(), null);
+		
+		board.paint(g);
 
 		engine.getActors().drawActors(g);
 
