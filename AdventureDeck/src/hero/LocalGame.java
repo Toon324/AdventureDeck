@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -57,6 +58,7 @@ public class LocalGame extends GameMode {
 
 			background = new GameImage(ImageIO.read(getClass().getResource(
 					"background.png")));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			GameEngine.log("LocalGame exception: " + e.getMessage());

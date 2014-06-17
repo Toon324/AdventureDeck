@@ -3,6 +3,10 @@
  */
 package hero;
 
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import petri.api.GameEngine;
 import petri.api.GameInitializer;
 
@@ -21,6 +25,11 @@ public class CardHero {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		new CardHero();
+	}
+	
+	public CardHero() {
+		
 		gi = new GameInitializer("Card Hero", true);
 
 		GameEngine engine = gi.getEngine();
@@ -28,6 +37,13 @@ public class CardHero {
 		engine.setWindowSize(WIDTH, HEIGHT);
 		gi.getFrame().setResizable(true);
 		gi.getFrame().setSize(WIDTH, HEIGHT);
+		
+		try {
+			gi.getFrame().setIconImage(ImageIO.read(this.getClass().getResourceAsStream("icon.png")));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		MainMenu mainMenu = new MainMenu(engine);
 		LocalGame localGame = new LocalGame(engine);

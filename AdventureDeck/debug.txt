@@ -1,0 +1,3 @@
+Game has been initialized.
+Found 8 processors to use
+Closing writer
