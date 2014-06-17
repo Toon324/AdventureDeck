@@ -18,6 +18,10 @@ import petri.api.GameEngine;
  * 
  */
 public class Card {
+	
+	enum CardType {
+		BASIC, SPELL, TRAP;
+	}
 
 	String name = "";
 	String description = "";
@@ -25,9 +29,11 @@ public class Card {
 	private final int WIDTH = 90;
 	private final int HEIGHT = 80;
 	private final int SPACING = 20;
+	public CardType type;
 
 	public Card(String n) {
 		name = n;
+		type = CardType.BASIC;
 		try {
 			image = ImageIO.read(getClass().getResourceAsStream(n + ".png"));
 		} catch (Exception e) {
@@ -45,17 +51,31 @@ public class Card {
 	public void draw(GameEngine engine, Graphics g, int index) {
 		
 		Color org = g.getColor();
-
+		
+		//Set color based on card type
+		if (type == CardType.BASIC)
+			g.setColor(Color.gray);
+		else if (type == CardType.SPELL)
+			g.setColor(Color.cyan);
+		else if (type == CardType.TRAP)
+			g.setColor(Color.orange);
+		
+		//Determine position
 		int x = 10 + (index * WIDTH) + (index * SPACING);
 		int y = engine.getEnvironmentSize().y - 90;
 
+		//Draw back
 		g.fillRect(x, y, WIDTH, HEIGHT);
 
+		//Draw icon
 		g.drawImage(image, x + 10, y + 10, x + 70, y + 70, 0, 0,
 				image.getWidth(), image.getHeight(), null);
 
+		//Draw text
 		g.setColor(Color.BLACK);
 		
+		
+		//Reset to original color
 		g.setColor(org);
 
 	}
@@ -73,4 +93,15 @@ public class Card {
 		return name;
 	}
 
+	public CardType getType() {
+		return type;
+	}
+
+	/**
+	 * @param basic
+	 */
+	public void setType(CardType t) {
+		type = t;
+		
+	}
 }

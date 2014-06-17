@@ -3,6 +3,8 @@
  */
 package hero;
 
+import hero.Card.CardType;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -129,8 +131,20 @@ public class LocalGame extends GameMode {
 		spellDeck.add(new Card("fireball"));
 		
 		//Trap deck
+		
 		trapDeck.add(new Card("pitfall"));
 		trapDeck.add(new Card("shadow"));
+		
+		
+		//Tell the cards what type they are
+		for (Card c : basicDeck)
+			c.setType(CardType.BASIC);
+		
+		for (Card c : spellDeck)
+			c.setType(CardType.SPELL);
+		
+		for (Card c : trapDeck)
+			c.setType(CardType.TRAP);
 		
 		initiateHand();
 	}
@@ -185,19 +199,14 @@ public class LocalGame extends GameMode {
 		g.fillRect(0, engine.getEnvironmentSize().y - 100,
 				engine.getEnvironmentSize().x, 100);
 
-		g.setColor(Color.gray);
 		
 		for (int x = 0; x < basicHand.length; x++)
 			basicHand[x].draw(engine, g, x);
 		
 		//Next two hands are drawn with offsets.
 		
-		g.setColor(Color.cyan);
-		
 		for (int x = 0; x < spellHand.length; x++)
 			spellHand[x].draw(engine, g, x + basicHand.length);
-		
-		g.setColor(Color.orange);
 		
 		for (int x = 0; x < trapHand.length; x++)
 			trapHand[x].draw(engine, g, x + basicHand.length + spellHand.length);
