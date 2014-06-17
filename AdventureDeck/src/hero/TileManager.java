@@ -33,7 +33,7 @@ public class TileManager {
 	private void generateBoard() {
 		Types lastType = Types.DIRT;
 		for (int x = 0; x < board.length; x += 2) {
-			for (int y = 0; y < board[x].length; y ++) {
+			for (int y = 0; y < board[x].length; y += 2) {
 				Random gen = new Random();
 
 				int choice = gen.nextInt(15);

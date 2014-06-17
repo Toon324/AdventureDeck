@@ -60,7 +60,7 @@ public class Tile {
 	public void detectType(Tile[][] board, int x, int y) {
 		
 		
-
+		//Board corners
 		if (x == 0 && y == 0) {
 			piece = Piece.CORNER;
 			position = Position.TOPLEFT;
@@ -84,28 +84,92 @@ public class Tile {
 			position = Position.TOPRIGHT;
 			setImage();
 			return;
-		} 
+		}
 		
-		//Sides
+		//Board Sides
 		else if (x == 0) {
+			Tile up = board[x][y - 1];
+			Tile down = board[x][y + 1];
+			
+			if (up.type != type) {
+				piece = Piece.CORNER;
+				position = Position.TOPLEFT;
+				setImage();
+				return;
+			}
+			else if (down.type != type) {
+				piece = Piece.CORNER;
+				position = Position.BOTLEFT;
+				setImage();
+				return;
+			}
+			
 			piece = Piece.SIDE;
 			position = Position.LEFT;
 			setImage();
 			return;
 		}
 		else if (y == 0) {
+			Tile left = board[x - 1][y];
+			Tile right = board[x + 1][y];
+			
+			if (left.type != type) {
+				piece = Piece.CORNER;
+				position = Position.TOPLEFT;
+				setImage();
+				return;
+			}
+			else if (right.type != type) {
+				piece = Piece.CORNER;
+				position = Position.TOPRIGHT;
+				setImage();
+				return;
+			}
+			
 			piece = Piece.SIDE;
 			position = Position.TOP;
 			setImage();
 			return;
 		}
 		else if (x == board.length - 1) {
+			Tile up = board[x][y - 1];
+			Tile down = board[x][y + 1];
+			
+			if (up.type != type) {
+				piece = Piece.CORNER;
+				position = Position.TOPRIGHT;
+				setImage();
+				return;
+			}
+			else if (down.type != type) {
+				piece = Piece.CORNER;
+				position = Position.BOTRIGHT;
+				setImage();
+				return;
+			}
+			
 			piece = Piece.SIDE;
 			position = Position.RIGHT;
 			setImage();
 			return;
 		}
 		else if (y == board[x].length - 1) {
+			Tile left = board[x - 1][y];
+			Tile right = board[x + 1][y];
+			
+			if (left.type != type) {
+				piece = Piece.CORNER;
+				position = Position.BOTLEFT;
+				setImage();
+				return;
+			}
+			else if (right.type != type) {
+				piece = Piece.CORNER;
+				position = Position.BOTRIGHT;
+				setImage();
+				return;
+			}
+			
 			piece = Piece.SIDE;
 			position = Position.BOTTOM;
 			setImage();
@@ -170,7 +234,7 @@ public class Tile {
 				rotateSide("dirt");
 			}
 		} else if (type == Types.GRASS) {
-			if (piece == Piece.CENTER) {
+			if (piece == Piece.CENTER  || piece == Piece.SIDE || piece == Piece.CORNER) {
 				image = loadImage("grass4.png");
 			} else if (piece == Piece.CORNER) {
 
