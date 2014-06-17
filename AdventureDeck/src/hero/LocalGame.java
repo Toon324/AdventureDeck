@@ -116,6 +116,15 @@ public class LocalGame extends GameMode {
 		basicDeck.add(new Card("smallPotion"));
 		basicDeck.add(new Card("largePotion"));
 		
+		//Spell deck
+		
+		spellDeck.add(new Card("lightning"));
+		spellDeck.add(new Card("fireball"));
+		
+		//Trap deck
+		trapDeck.add(new Card("pitfall"));
+		trapDeck.add(new Card("shadow"));
+		
 		initiateHand();
 	}
 
@@ -167,14 +176,22 @@ public class LocalGame extends GameMode {
 		g.fillRect(0, engine.getEnvironmentSize().y - 100,
 				engine.getEnvironmentSize().x, 100);
 
+		g.setColor(Color.gray);
+		
 		for (int x = 0; x < basicHand.length; x++)
 			basicHand[x].draw(engine, g, x);
 		
+		//Next two hands are drawn with offsets.
+		
+		g.setColor(Color.cyan);
+		
 		for (int x = 0; x < spellHand.length; x++)
-			spellHand[x].draw(engine, g, x);
+			spellHand[x].draw(engine, g, x + basicHand.length);
+		
+		g.setColor(Color.orange);
 		
 		for (int x = 0; x < trapHand.length; x++)
-			trapHand[x].draw(engine, g, x);
+			trapHand[x].draw(engine, g, x + basicHand.length + spellHand.length);
 
 		super.paint(g);
 	}

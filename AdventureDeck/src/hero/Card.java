@@ -20,6 +20,7 @@ import petri.api.GameEngine;
 public class Card {
 
 	String name = "";
+	String description = "";
 	BufferedImage image;
 	private final int WIDTH = 90;
 	private final int HEIGHT = 80;
@@ -32,11 +33,18 @@ public class Card {
 		} catch (Exception e) {
 			System.out.println("Could not read " + n);
 			e.printStackTrace();
+			try {
+				image = ImageIO.read(getClass().getResource("default.png"));
+			}
+			catch (Exception e1) {
+				System.out.println("Fatal fault: Could not load backup image default.png!");
+			}
 		}
 	}
 
 	public void draw(GameEngine engine, Graphics g, int index) {
-		g.setColor(Color.gray);
+		
+		Color org = g.getColor();
 
 		int x = 10 + (index * WIDTH) + (index * SPACING);
 		int y = engine.getEnvironmentSize().y - 90;
@@ -47,6 +55,8 @@ public class Card {
 				image.getWidth(), image.getHeight(), null);
 
 		g.setColor(Color.BLACK);
+		
+		g.setColor(org);
 
 	}
 
