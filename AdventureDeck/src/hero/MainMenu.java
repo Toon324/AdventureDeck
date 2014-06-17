@@ -17,6 +17,7 @@ import petri.api.GameMode;
  */
 public class MainMenu extends GameMode {
 
+	private static boolean done = false;
 	private final Font terminal = new Font("Monospaced", Font.PLAIN, 50);
 	
 	public MainMenu(GameEngine eng) {
@@ -24,6 +25,8 @@ public class MainMenu extends GameMode {
 		
 		Button start = new Button("Start Game", 0, -50); //Initialize Buttons off screen so we can place them properly later.
         start.setColorScheme(Color.black, Color.LIGHT_GRAY, Color.black);
+        
+        start.setEnabled(false);
        
         buttons.add(start);
 	}
@@ -34,16 +37,23 @@ public class MainMenu extends GameMode {
              buttons.get(0).set((engine.getEnvironmentSize().x/2)-(buttons.get(0).getWidth()/2), (engine.getEnvironmentSize().y/4) *1);
             
              //Check buttons
-             if (buttons.get(0).isClicked())
+             if (done && buttons.get(0).isClicked())
                      engine.setCurrentGameMode("LocalGame"); //Set to game
             
-             /*else if (buttons.get(1).isClicked())
-                     engine.setCurrentGameMode("InternetLobby");
-             else if (buttons.get(2).isClicked())
-                     Pong.stopGame(); //Exit */
+            //If generation is done, enable button
+            if (done)
+            	buttons.get(0).setEnabled(true);
             
              super.run(ms);
      }
+	 
+	 /**
+		 * 
+		 */
+		public static void reportDone() {
+		done = true;
+			
+		}
 	 
 	 @Override
      public void paint(Graphics g) {

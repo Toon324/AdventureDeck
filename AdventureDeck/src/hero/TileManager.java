@@ -19,6 +19,8 @@ public class TileManager {
 
 	private BufferedImage background;
 
+	private boolean done;
+
 	public TileManager() {
 		board = new Tile[size][size];
 		generateBoard();
@@ -82,7 +84,8 @@ public class TileManager {
 		}
 		
 		generateBackgroundImage();
-
+		System.out.println("Board done!");
+		MainMenu.reportDone();
 	}
 
 	/**
@@ -105,5 +108,4 @@ public class TileManager {
 	public void paint(Graphics g) {
 		g.drawImage(background, 0, 0, board.length * 25, board[0].length * 25, null);
 	}
-
 }

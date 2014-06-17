@@ -9,9 +9,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
 
@@ -45,6 +45,7 @@ public class LocalGame extends GameMode {
 	Player player;
 	private boolean showBowRange;
 	private TileManager board;
+	private static boolean done;
 
 	public LocalGame(GameEngine eng) {
 		super(eng);
@@ -65,10 +66,6 @@ public class LocalGame extends GameMode {
 			e.printStackTrace();
 			GameEngine.log("LocalGame exception: " + e.getMessage());
 		}
-		
-		board = new TileManager(engine.getEnvironmentSize().x / 25, engine.getEnvironmentSize().y / 25);
-
-		//board = new TileManager(20,20);
 		
 		player = new Player(eng, playerImage);
 
@@ -147,6 +144,17 @@ public class LocalGame extends GameMode {
 			c.setType(CardType.TRAP);
 		
 		initiateHand();
+		
+		
+		
+		Executors.newCachedThreadPool().execute(new Runnable() {
+
+			@Override
+			public void run() {
+				board = new TileManager(engine.getEnvironmentSize().x / 25, engine.getEnvironmentSize().y / 25);
+			}
+			
+		});
 	}
 
 	/**
