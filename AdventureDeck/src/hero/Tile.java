@@ -310,4 +310,7 @@ public class Tile {
 					+ SIZE, 0, 0, image.getWidth(), image.getHeight(), null);
 	}
 
+	public BufferedImage getImage() {
+		return image;
+	}
 }

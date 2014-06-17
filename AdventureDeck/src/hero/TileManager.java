@@ -4,6 +4,7 @@ import hero.Tile.Types;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 /**
@@ -15,6 +16,8 @@ public class TileManager {
 	Tile[][] board;
 
 	private int size = 10;
+
+	private BufferedImage background;
 
 	public TileManager() {
 		board = new Tile[size][size];
@@ -74,19 +77,33 @@ public class TileManager {
 
 		for (int x = 0; x < board.length; x++) {
 			for (int y = 0; y < board[x].length; y++) {
-
 					board[x][y].detectType(board, x, y);
 			}
 		}
+		
+		generateBackgroundImage();
 
 	}
 
-	public void paint(Graphics g) {
+	/**
+	 * 
+	 */
+	private void generateBackgroundImage() {
+		background = new BufferedImage(board.length * 25, board[0].length * 25, board[0][0].getImage().getType());
+		
+		Graphics g = background.getGraphics();
+		
 		for (int x = 0; x < board.length; x++) {
 			for (int y = 0; y < board[x].length; y++) {
 				board[x][y].paint(x, y, g);
 			}
 		}
+		
+		
+	}
+
+	public void paint(Graphics g) {
+		g.drawImage(background, 0, 0, board.length * 25, board[0].length * 25, null);
 	}
 
 }
