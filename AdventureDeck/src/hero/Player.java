@@ -30,7 +30,7 @@ public class Player extends AnimatedImageActor {
 		super(e, i);
 		System.out.println("Image size: " + i.getImage().getWidth() + ","
 				+ i.getImage().getHeight());
-		maxHealth = 100;
+		maxHealth = 50;
 		health = 50;
 		gold = 0;
 		xTiles = 4;
