@@ -26,12 +26,14 @@ import petri.api.GameMode;
  * 
  */
 public class LocalGame extends GameMode {
+	
 	private final int SMALL_POTION_AMT = 4;
 	private final int LARGE_POTION_AMT = 9;
 	private final int SPACE_SIZE = 25;
 	private final int SWORD_DAMAGE = 8;
 	private final int BOW_DAMAGE = 5;
 	private final int ENEMY_DAMAGE = 12;
+	
 
 	ArrayList<Card> basicDeck = new ArrayList<Card>();
 	ArrayList<Card> spellDeck = new ArrayList<Card>();
@@ -46,10 +48,15 @@ public class LocalGame extends GameMode {
 	private boolean showBowRange;
 	private TileManager board;
 	private static boolean done;
+	
+	static long startTime;
 
 	public LocalGame(GameEngine eng) {
 		super(eng);
 
+		System.out.println("Start: " + System.currentTimeMillis());
+		startTime = System.currentTimeMillis();
+		
 		try {
 			BufferedImage loadPlayer = ImageIO.read(getClass()
 					.getResourceAsStream("player.png"));
@@ -144,7 +151,7 @@ public class LocalGame extends GameMode {
 			c.setType(CardType.TRAP);
 		
 		initiateHand();
-		
+		System.out.println("Begin generation: " + (System.currentTimeMillis() - startTime));
 		
 		
 		Executors.newCachedThreadPool().execute(new Runnable() {

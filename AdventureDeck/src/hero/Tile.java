@@ -30,7 +30,7 @@ public class Tile {
 
 	boolean canTraverse;
 
-	private Types type;
+	Types type;
 	private Piece piece;
 	private Position position;
 	private BufferedImage image;
@@ -58,118 +58,107 @@ public class Tile {
 	}
 
 	public void detectType(Tile[][] board, int x, int y) {
-		
-		
-		//Board corners
+
+		// Board corners
 		if (x == 0 && y == 0) {
 			piece = Piece.CORNER;
 			position = Position.TOPLEFT;
 			setImage();
 			return;
-		}
-		else if (x == board.length - 1 && y == board[x].length - 1) {
+		} else if (x == board.length - 1 && y == board[x].length - 1) {
 			piece = Piece.CORNER;
 			position = Position.BOTRIGHT;
 			setImage();
 			return;
-		}
-		else if (x == 0 && y == board[x].length - 1) {
+		} else if (x == 0 && y == board[x].length - 1) {
 			piece = Piece.CORNER;
 			position = Position.BOTLEFT;
 			setImage();
 			return;
-		}
-		else if (y == 0 && x == board.length - 1) {
+		} else if (y == 0 && x == board.length - 1) {
 			piece = Piece.CORNER;
 			position = Position.TOPRIGHT;
 			setImage();
 			return;
 		}
-		
-		//Board Sides
+
+		// Board Sides
 		else if (x == 0) {
 			Tile up = board[x][y - 1];
 			Tile down = board[x][y + 1];
-			
+
 			if (up.type != type) {
 				piece = Piece.CORNER;
 				position = Position.TOPLEFT;
 				setImage();
 				return;
-			}
-			else if (down.type != type) {
+			} else if (down.type != type) {
 				piece = Piece.CORNER;
 				position = Position.BOTLEFT;
 				setImage();
 				return;
 			}
-			
+
 			piece = Piece.SIDE;
 			position = Position.LEFT;
 			setImage();
 			return;
-		}
-		else if (y == 0) {
+		} else if (y == 0) {
 			Tile left = board[x - 1][y];
 			Tile right = board[x + 1][y];
-			
+
 			if (left.type != type) {
 				piece = Piece.CORNER;
 				position = Position.TOPLEFT;
 				setImage();
 				return;
-			}
-			else if (right.type != type) {
+			} else if (right.type != type) {
 				piece = Piece.CORNER;
 				position = Position.TOPRIGHT;
 				setImage();
 				return;
 			}
-			
+
 			piece = Piece.SIDE;
 			position = Position.TOP;
 			setImage();
 			return;
-		}
-		else if (x == board.length - 1) {
+		} else if (x == board.length - 1) {
 			Tile up = board[x][y - 1];
 			Tile down = board[x][y + 1];
-			
+
 			if (up.type != type) {
 				piece = Piece.CORNER;
 				position = Position.TOPRIGHT;
 				setImage();
 				return;
-			}
-			else if (down.type != type) {
+			} else if (down.type != type) {
 				piece = Piece.CORNER;
 				position = Position.BOTRIGHT;
 				setImage();
 				return;
 			}
-			
+
 			piece = Piece.SIDE;
 			position = Position.RIGHT;
 			setImage();
 			return;
-		}
-		else if (y == board[x].length - 1) {
+		} else if (y == board[x].length - 1) {
 			Tile left = board[x - 1][y];
 			Tile right = board[x + 1][y];
-			
+
 			if (left.type != type) {
 				piece = Piece.CORNER;
 				position = Position.BOTLEFT;
 				setImage();
 				return;
-			}
-			else if (right.type != type) {
+			} else if (right.type != type) {
 				piece = Piece.CORNER;
 				position = Position.BOTRIGHT;
 				setImage();
 				return;
 			}
-			
+
 			piece = Piece.SIDE;
 			position = Position.BOTTOM;
 			setImage();
@@ -223,84 +212,52 @@ public class Tile {
 	private void setImage() {
 		if (type == Types.DIRT) {
 			if (piece == Piece.CENTER) {
-				image = loadImage("dirt4.png");
+				image = TileManager.dirt4;
 			} else if (piece == Piece.CORNER) {
-
-				image = loadImage("dirt0.png");
-				rotateCorner("dirt");
+				if (position == Position.TOPRIGHT)
+					image = TileManager.dirttr;
+				else if (position == Position.BOTRIGHT)
+					image = TileManager.dirtbr;
+				else if (position == Position.BOTLEFT)
+					image = TileManager.dirtbl;
+				else
+					image = TileManager.dirt0;
 
 			} else {
-				image = loadImage("dirt1.png");
-				rotateSide("dirt");
+				if (position == Position.RIGHT)
+					image = TileManager.dirtright;
+				else if (position == Position.BOTTOM)
+					image = TileManager.dirtbottom;
+				else if (position == Position.LEFT)
+					image = TileManager.dirtleft;
+				else
+					image = TileManager.dirt1;
 			}
 		} else if (type == Types.GRASS) {
-			if (piece == Piece.CENTER  || piece == Piece.SIDE || piece == Piece.CORNER) {
-				image = loadImage("grass4.png");
-			} else if (piece == Piece.CORNER) {
-
-				image = loadImage("grass0.png");
-				rotateCorner("grass");
-
-			} else {
-				image = loadImage("grass1.png");
-				rotateSide("grass");
-			}
+			image = TileManager.grass4;
 		} else {
 			if (piece == Piece.CENTER) {
-				image = loadImage("water4.png");
+				image = TileManager.water4;
 			} else if (piece == Piece.CORNER) {
-
-				image = loadImage("water0.png");
-				rotateCorner("water");
+				if (position == Position.TOPRIGHT)
+					image = TileManager.watertr;
+				else if (position == Position.BOTRIGHT)
+					image = TileManager.waterbr;
+				else if (position == Position.BOTLEFT)
+					image = TileManager.waterbl;
+				else
+					image = TileManager.water0;
 
 			} else {
-				image = loadImage("water1.png");
-				rotateSide("water");
+				if (position == Position.RIGHT)
+					image = TileManager.waterright;
+				else if (position == Position.BOTTOM)
+					image = TileManager.waterbottom;
+				else if (position == Position.LEFT)
+					image = TileManager.waterleft;
+				else
+					image = TileManager.water1;
 			}
-		}
-
-	}
-
-	/**
-	 * @param image2
-	 */
-	private void rotateSide(String name) {
-		if (position == Position.RIGHT) {
-			image = loadImage(name + "right.png");
-		} else if (position == Position.BOTTOM) {
-			image = loadImage(name + "bottom.png");
-		} else if (position == Position.LEFT) {
-			image = loadImage(name + "left.png");
-		}
-	}
-
-	/**
-	 * @param image2
-	 */
-	private void rotateCorner(String name) {
-		if (position == Position.TOPRIGHT) {
-			image = loadImage(name + "tr.png");
-		} else if (position == Position.BOTRIGHT) {
-			image = loadImage(name + "br.png");
-		} else if (position == Position.BOTLEFT) {
-			image = loadImage(name + "bl.png");
-		}
-
-	}
-
-	/**
-	 * @param string
-	 * @return
-	 */
-	private BufferedImage loadImage(String name) {
-		try {
-			return ImageIO
-					.read(getClass().getResourceAsStream("Tiles/" + name));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Could not load image " + name);
-			return null;
 		}
 	}
 
