@@ -15,6 +15,8 @@ import javax.imageio.ImageIO;
  * 
  */
 public class TileManager {
+	
+	private final int TILE_SIZE = 25;
 
 	Tile[][] board;
 
@@ -150,7 +152,7 @@ public class TileManager {
 	 * 
 	 */
 	private void generateBackgroundImage() {
-		background = new BufferedImage(board.length * 25, board[0].length * 25,
+		background = new BufferedImage(board.length * TILE_SIZE, board[0].length * TILE_SIZE,
 				board[0][0].getImage().getType());
 
 		Graphics g = background.getGraphics();
@@ -164,7 +166,7 @@ public class TileManager {
 	}
 
 	public void paint(Graphics g) {
-		g.drawImage(background, 0, 0, board.length * 25, board[0].length * 25,
+		g.drawImage(background, 0, 0, board.length * TILE_SIZE, board[0].length * TILE_SIZE,
 				null);
 	}
 }

@@ -27,12 +27,12 @@ import petri.api.GameMode;
  */
 public class LocalGame extends GameMode {
 	
-	private final int SMALL_POTION_AMT = 4;
-	private final int LARGE_POTION_AMT = 9;
-	private final int SPACE_SIZE = 25;
-	private final int SWORD_DAMAGE = 8;
-	private final int BOW_DAMAGE = 5;
-	private final int ENEMY_DAMAGE = 12;
+	final int SMALL_POTION_AMT = 4;
+	final int LARGE_POTION_AMT = 9;
+	final int SPACE_SIZE = 25;
+	final int SWORD_DAMAGE = 8;
+	final int BOW_DAMAGE = 5;
+	final int ENEMY_DAMAGE = 12;
 	
 
 	ArrayList<Card> basicDeck = new ArrayList<Card>();
@@ -44,8 +44,9 @@ public class LocalGame extends GameMode {
 	Card[] trapHand = new Card[2];
 	
 	private GameImage background = null, playerImage = null, enemyImage = null;
+	private CardHandler cardHandler = new CardHandler(this);
 	Player player;
-	private boolean showBowRange;
+	boolean showBowRange;
 	private TileManager board;
 	private static boolean done;
 	
@@ -90,31 +91,8 @@ public class LocalGame extends GameMode {
 		engine.getActors().add(e2);
 		engine.getActors().add(e3);
 
-		basicDeck.add(new Card("walkUp"));
-		basicDeck.add(new Card("walkDown"));
-		basicDeck.add(new Card("walkLeft"));
-		basicDeck.add(new Card("walkRight"));
-		basicDeck.add(new Card("walkUpRight"));
-		basicDeck.add(new Card("walkDownRight"));
-		basicDeck.add(new Card("walkUpLeft"));
-		basicDeck.add(new Card("walkDownLeft"));
-		basicDeck.add(new Card("walkUp"));
-		basicDeck.add(new Card("walkDown"));
-		basicDeck.add(new Card("walkLeft"));
-		basicDeck.add(new Card("walkRight"));
-
-		basicDeck.add(new Card("runUp"));
-		basicDeck.add(new Card("runDown"));
-		basicDeck.add(new Card("runLeft"));
-		basicDeck.add(new Card("runRight"));
-		basicDeck.add(new Card("runUpRight"));
-		basicDeck.add(new Card("runDownRight"));
-		basicDeck.add(new Card("runUpLeft"));
-		basicDeck.add(new Card("runDownLeft"));
-		basicDeck.add(new Card("runUp"));
-		basicDeck.add(new Card("runDown"));
-		basicDeck.add(new Card("runLeft"));
-		basicDeck.add(new Card("runRight"));
+		basicDeck.add(new Card("walk"));
+		basicDeck.add(new Card("run"));
 
 		basicDeck.add(new Card("sword"));
 		basicDeck.add(new Card("sword"));
@@ -273,7 +251,7 @@ public class LocalGame extends GameMode {
 	private void checkClick(MouseEvent e, Card[] hand, ArrayList<Card> toRemove) {
 		for (int x = 0; x < hand.length; x++)
 			if (hand[x].checkClick(engine, x, e.getPoint())) {
-				handleCard(hand[x]);
+				cardHandler.handleCard(hand[x]);
 				toRemove.add(hand[x]);
 				hand[x] = null;
 			}
@@ -294,99 +272,7 @@ public class LocalGame extends GameMode {
 
 	}
 
-	private void handleCard(Card c) {
-		String cmd = c.getName();
-
-		switch (cmd) {
-		case "sword":
-			attack();
-			return;
-		case "block":
-			return;
-		case "bow":
-			showBowRange = true;
-			return;
-		case "smallPotion":
-			player.heal(SMALL_POTION_AMT);
-			return;
-		case "largePotion":
-			player.heal(LARGE_POTION_AMT);
-			return;
-		case "shop":
-			engine.setCurrentGameMode(2);
-			return;
-
-		case "walkUp":
-			player.setDir(0);
-			player.moveSpace(1);
-			return;
-		case "walkUpRight":
-			player.setDir(1);
-			player.moveSpace(1);
-			return;
-		case "walkRight":
-			player.setDir(2);
-			player.moveSpace(1);
-			return;
-		case "walkDownRight":
-			player.setDir(3);
-			player.moveSpace(1);
-			return;
-		case "walkDown":
-			player.setDir(4);
-			player.moveSpace(1);
-			return;
-		case "walkDownLeft":
-			player.setDir(5);
-			player.moveSpace(1);
-			return;
-		case "walkLeft":
-			player.setDir(6);
-			player.moveSpace(1);
-			return;
-		case "walkUpLeft":
-			player.setDir(7);
-			player.moveSpace(1);
-			return;
-
-		case "runUp":
-			player.setDir(0);
-			player.moveSpace(2);
-			return;
-		case "runUpRight":
-			player.setDir(1);
-			player.moveSpace(2);
-			return;
-		case "runRight":
-			player.setDir(2);
-			player.moveSpace(2);
-			return;
-		case "runDownRight":
-			player.setDir(3);
-			player.moveSpace(2);
-			return;
-		case "runDown":
-			player.setDir(4);
-			player.moveSpace(2);
-			return;
-		case "runDownLeft":
-			player.setDir(5);
-			player.moveSpace(2);
-			return;
-		case "runLeft":
-			player.setDir(6);
-			player.moveSpace(2);
-			return;
-		case "runUpLeft":
-			player.setDir(7);
-			player.moveSpace(2);
-			return;
-
-		}
-
-	}
-
-	private void attack() {
+	void attack() {
 		Enemy closest = null;
 		int distance = -1;
 
