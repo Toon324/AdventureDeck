@@ -7,6 +7,7 @@ import hero.Card.CardType;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -26,30 +27,31 @@ import petri.api.GameMode;
  * 
  */
 public class LocalGame extends GameMode {
-	
+
 	final int SMALL_POTION_AMT = 4;
 	final int LARGE_POTION_AMT = 9;
 	final int SPACE_SIZE = 25;
 	final int SWORD_DAMAGE = 8;
 	final int BOW_DAMAGE = 5;
 	final int ENEMY_DAMAGE = 12;
-	
 
 	ArrayList<Card> basicDeck = new ArrayList<Card>();
 	ArrayList<Card> spellDeck = new ArrayList<Card>();
 	ArrayList<Card> trapDeck = new ArrayList<Card>();
-	
+
 	Card[] basicHand = new Card[5];
 	Card[] spellHand = new Card[2];
 	Card[] trapHand = new Card[2];
-	
+
 	private GameImage background = null, playerImage = null, enemyImage = null;
 	private CardHandler cardHandler = new CardHandler(this);
 	Player player;
-	boolean showBowRange;
+	boolean showRange;
 	private TileManager board;
+	private int[][] range;
+	private Card choiceCard;
 	private static boolean done;
-	
+
 	static long startTime;
 
 	public LocalGame(GameEngine eng) {
@@ -57,7 +59,7 @@ public class LocalGame extends GameMode {
 
 		System.out.println("Start: " + System.currentTimeMillis());
 		startTime = System.currentTimeMillis();
-		
+
 		try {
 			BufferedImage loadPlayer = ImageIO.read(getClass()
 					.getResourceAsStream("player.png"));
@@ -69,12 +71,12 @@ public class LocalGame extends GameMode {
 
 			background = new GameImage(ImageIO.read(getClass().getResource(
 					"background.png")));
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			GameEngine.log("LocalGame exception: " + e.getMessage());
 		}
-		
+
 		player = new Player(eng, playerImage);
 
 		Enemy e1 = new Enemy(eng, enemyImage);
@@ -106,39 +108,39 @@ public class LocalGame extends GameMode {
 		basicDeck.add(new Card("smallPotion"));
 		basicDeck.add(new Card("smallPotion"));
 		basicDeck.add(new Card("largePotion"));
-		
-		//Spell deck
-		
+
+		// Spell deck
+
 		spellDeck.add(new Card("lightning"));
 		spellDeck.add(new Card("fireball"));
-		
-		//Trap deck
-		
+
+		// Trap deck
+
 		trapDeck.add(new Card("pitfall"));
 		trapDeck.add(new Card("shadow"));
-		
-		
-		//Tell the cards what type they are
+
+		// Tell the cards what type they are
 		for (Card c : basicDeck)
 			c.setType(CardType.BASIC);
-		
+
 		for (Card c : spellDeck)
 			c.setType(CardType.SPELL);
-		
+
 		for (Card c : trapDeck)
 			c.setType(CardType.TRAP);
-		
+
 		initiateHand();
-		System.out.println("Begin generation: " + (System.currentTimeMillis() - startTime));
-		
-		
+		System.out.println("Begin generation: "
+				+ (System.currentTimeMillis() - startTime));
+
 		Executors.newCachedThreadPool().execute(new Runnable() {
 
 			@Override
 			public void run() {
-				board = new TileManager(engine.getEnvironmentSize().x / 25, engine.getEnvironmentSize().y / 25);
+				board = new TileManager(engine.getEnvironmentSize().x / 25,
+						engine.getEnvironmentSize().y / 25);
 			}
-			
+
 		});
 	}
 
@@ -149,7 +151,7 @@ public class LocalGame extends GameMode {
 		drawCards(5, basicHand, basicDeck);
 		drawCards(2, spellHand, spellDeck);
 		drawCards(2, trapHand, trapDeck);
-		
+
 	}
 
 	/**
@@ -158,10 +160,10 @@ public class LocalGame extends GameMode {
 	 * @param basicDeck2
 	 */
 	private void drawCards(int num, Card[] section, ArrayList<Card> deck) {
-		for (int x=0; x < num; x++) {
+		for (int x = 0; x < num; x++) {
 			drawCard(section, deck);
 		}
-		
+
 	}
 
 	@Override
@@ -175,34 +177,49 @@ public class LocalGame extends GameMode {
 	@Override
 	public void paint(Graphics g) {
 
-//		g.drawImage(background.getImage(), 0, 0, engine.getEnvironmentSize().x,
-//				engine.getEnvironmentSize().y, 0, 0, background.getWidth(),
-//				background.getHeight(), null);
-		
+		// g.drawImage(background.getImage(), 0, 0,
+		// engine.getEnvironmentSize().x,
+		// engine.getEnvironmentSize().y, 0, 0, background.getWidth(),
+		// background.getHeight(), null);
+
 		board.paint(g);
 
-		engine.getActors().drawActors(g);
-
-		if (showBowRange) {
+		if (showRange) {
 			g.setColor(Color.red);
-			player.drawBowRange(g);
+			for (int x = 0; x < range.length; x++) {
+				for (int y = 0; y < range[x].length; y++) {
+					if (range[x][y] == 1) {
+						int tileX = x - range.length / 2;
+						int tileY = y - range[x].length / 2;
+						
+						g.drawRect((int) player.getCenter().x + tileX
+								* TileManager.TILE_SIZE,
+								(int) player.getCenter().y
+										+ TileManager.TILE_SIZE +tileY
+										* TileManager.TILE_SIZE,
+								TileManager.TILE_SIZE, TileManager.TILE_SIZE);
+					}
+				}
+			}
 		}
+
+		engine.getActors().drawActors(g);
 
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(0, engine.getEnvironmentSize().y - 100,
 				engine.getEnvironmentSize().x, 100);
 
-		
 		for (int x = 0; x < basicHand.length; x++)
 			basicHand[x].draw(engine, g, x);
-		
-		//Next two hands are drawn with offsets.
-		
+
+		// Next two hands are drawn with offsets.
+
 		for (int x = 0; x < spellHand.length; x++)
 			spellHand[x].draw(engine, g, x + basicHand.length);
-		
+
 		for (int x = 0; x < trapHand.length; x++)
-			trapHand[x].draw(engine, g, x + basicHand.length + spellHand.length);
+			trapHand[x]
+					.draw(engine, g, x + basicHand.length + spellHand.length);
 
 		super.paint(g);
 	}
@@ -214,8 +231,8 @@ public class LocalGame extends GameMode {
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (showBowRange) {
-			bowAttack(e);
+		if (showRange) {
+			checkChoice(e);
 		}
 
 		ArrayList<Card> toRemove = new ArrayList<Card>();
@@ -225,7 +242,7 @@ public class LocalGame extends GameMode {
 			basicDeck.add(c);
 			drawCard(basicHand, basicDeck);
 		}
-		
+
 		toRemove = new ArrayList<Card>();
 		checkClick(e, spellHand, toRemove);
 
@@ -233,7 +250,7 @@ public class LocalGame extends GameMode {
 			spellDeck.add(c);
 			drawCard(spellHand, spellDeck);
 		}
-		
+
 		toRemove = new ArrayList<Card>();
 		checkClick(e, trapHand, toRemove);
 
@@ -242,6 +259,35 @@ public class LocalGame extends GameMode {
 			drawCard(trapHand, trapDeck);
 		}
 		super.mouseReleased(e);
+	}
+
+	/**
+	 * @param e
+	 */
+	private void checkChoice(MouseEvent e) {
+
+		for (int x=0; x < range.length; x++) {
+			for (int y=0; y < range[x].length; y++) {
+				if (range[x][y] != -3) {
+					
+					float tileX = x - range.length / 2;
+					float tileY = y - range[x].length / 2;
+					
+					Rectangle r = new Rectangle((int) (player.getCenter().x + tileX
+							* TileManager.TILE_SIZE),
+							(int) (player.getCenter().y
+									+ TileManager.TILE_SIZE +tileY
+									* TileManager.TILE_SIZE),
+							TileManager.TILE_SIZE, TileManager.TILE_SIZE);
+					
+					if (r.contains(e.getPoint())) {
+						System.out.println("Handling " + x + " " + y);
+						cardHandler.handleChoice(choiceCard, tileX, tileY);
+						return;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -294,8 +340,9 @@ public class LocalGame extends GameMode {
 
 		for (Actor a : engine.getActors().getArrayList())
 			if (a instanceof Enemy) {
-				System.out.println("Checkclick? " + ((Enemy)a).checkClick(e));
-				System.out.println("Distance: " + a.getCenter().distance(player.getCenter()));
+				System.out.println("Checkclick? " + ((Enemy) a).checkClick(e));
+				System.out.println("Distance: "
+						+ a.getCenter().distance(player.getCenter()));
 				if (((Enemy) a).checkClick(e)
 						&& a.getCenter().distance(player.getCenter()) <= Player.BOWRANGE + 10) {
 					target = a;
@@ -305,8 +352,18 @@ public class LocalGame extends GameMode {
 
 		if (target != null) {
 			target.dealDamage(BOW_DAMAGE);
-			showBowRange = false;
+			showRange = false;
 		}
+	}
+
+	/**
+	 * @param range
+	 */
+	public void giveOption(int[][] r, Card c) {
+		range = r;
+		choiceCard = c;
+		showRange = true;
+
 	}
 
 }

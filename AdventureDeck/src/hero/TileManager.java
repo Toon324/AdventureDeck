@@ -16,7 +16,7 @@ import javax.imageio.ImageIO;
  */
 public class TileManager {
 	
-	private final int TILE_SIZE = 25;
+	final static int TILE_SIZE = 25;
 
 	Tile[][] board;
 
