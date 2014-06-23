@@ -21,7 +21,7 @@ public class CardHandler {
 
 		switch (cmd) {
 		case "sword":
-			game.attack();
+			swordAttack();
 			return;
 		case "block":
 			return;
@@ -58,6 +58,30 @@ public class CardHandler {
 	}
 
 	/**
+	 * 
+	 */
+	private void swordAttack() {
+		Enemy closest = null;
+		int distance = -1;
+
+		for (Actor a : game.engine.getActors().getArrayList())
+			if (a instanceof Enemy)
+				if (closest == null || game.player.distanceTo(a) < distance) {
+					closest = (Enemy) a;
+					distance = game.player.distanceTo(a);
+				}
+
+		if (distance <= game.TILE_SIZE * 2) {
+			closest.dealDamage(game.SWORD_DAMAGE);
+			game.player.dealDamage(game.ENEMY_DAMAGE);
+			
+			if (closest.getHealth() <= 0)
+				game.player.addGold(closest.getGoldValue());
+		}
+		
+	}
+
+	/**
 	 * @param choiceCard
 	 * @param x
 	 * @param y
@@ -67,7 +91,7 @@ public class CardHandler {
 
 		switch (cmd) {
 		case "sword":
-			game.attack();
+			swordAttack();
 			return;
 		case "block":
 			return;
@@ -82,7 +106,16 @@ public class CardHandler {
 
 		case "run":
 			setDirection(x, y);
-			game.player.moveSpace(2);
+			
+			x = Math.abs(x);
+			y = Math.abs(y);
+			
+			//Simple check to see which is moving farther, then moves that number of tiles.
+			if (x > y)
+				game.player.moveSpace((int)x);
+			else
+				game.player.moveSpace((int)y);
+			
 			return;
 
 		}
@@ -101,8 +134,11 @@ public class CardHandler {
 				
 				Point click = new Point((int)(game.player.getCenter().x + x * game.TILE_SIZE),(int) (game.player.getCenter().y + y * game.TILE_SIZE));
 				
-				if (e.checkClick(click))
+				if (e.checkClick(click)) {
 					e.dealDamage(game.BOW_DAMAGE);
+					if (e.getHealth() <= 0)
+						game.player.addGold(e.getGoldValue());
+				}
 			}
 		}
 	}

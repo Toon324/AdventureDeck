@@ -17,6 +17,8 @@ import petri.api.GameImage;
  * 
  */
 public class Enemy extends AnimatedImageActor {
+	
+	private int goldValue;
 
 	public Enemy(GameEngine e, GameImage i) {
 		super(e, i);
@@ -24,6 +26,7 @@ public class Enemy extends AnimatedImageActor {
 		yTiles = 4;
 		xTile = 0;
 		yTile = 0;
+		goldValue = 30;
 		maxHealth = 30;
 		health = 15;
 		size = new Point2D.Float(30, 50);
@@ -60,5 +63,12 @@ public class Enemy extends AnimatedImageActor {
 		//System.out.println("Checking click: " + click + " against " + center);
 		return ((click.x <= center.x + size.x && click.x >= center.x) || (click.y <= center.y
 				+ size.y && click.y >= center.y));
+	}
+
+	/**
+	 * @return
+	 */
+	public int getGoldValue() {
+		return goldValue;
 	}
 }

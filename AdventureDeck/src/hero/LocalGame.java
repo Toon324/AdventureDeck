@@ -6,6 +6,7 @@ package hero;
 import hero.Card.CardType;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
@@ -200,6 +201,11 @@ public class LocalGame extends GameMode {
 				}
 			}
 		}
+		
+		g.setColor(Color.orange);
+		
+		g.setFont(g.getFont().deriveFont(18.0F));
+		g.drawString(player.getGold() + " Gil", 30, 50);
 
 		engine.getActors().drawActors(g);
 
@@ -316,23 +322,6 @@ public class LocalGame extends GameMode {
 
 		deck.remove(deck.get(num));
 
-	}
-
-	void attack() {
-		Enemy closest = null;
-		int distance = -1;
-
-		for (Actor a : engine.getActors().getArrayList())
-			if (a instanceof Enemy)
-				if (closest == null || player.distanceTo(a) < distance) {
-					closest = (Enemy) a;
-					distance = player.distanceTo(a);
-				}
-
-		if (distance <= TILE_SIZE * 2) {
-			closest.dealDamage(SWORD_DAMAGE);
-			player.dealDamage(ENEMY_DAMAGE);
-		}
 	}
 
 	/**
