@@ -185,14 +185,14 @@ public class LocalGame extends GameMode {
 		board.paint(g);
 
 		if (showRange) {
-			g.setColor(Color.red);
+			g.setColor(new Color(214, 28, 74, 200)); //Semi transparent red
 			for (int x = 0; x < range.length; x++) {
 				for (int y = 0; y < range[x].length; y++) {
 					if (range[x][y] == 1) {
 						int tileX = x - range.length / 2;
 						int tileY = y - range[x].length / 2;
 						
-						g.drawRect((int) player.getCenter().x + tileX
+						g.fillRect((int) player.getCenter().x + tileX
 								* TileManager.TILE_SIZE,
 								(int) player.getCenter().y
 										+ TileManager.TILE_SIZE +tileY
@@ -233,6 +233,7 @@ public class LocalGame extends GameMode {
 	public void mouseReleased(MouseEvent e) {
 		if (showRange) {
 			checkChoice(e);
+			return;
 		}
 
 		ArrayList<Card> toRemove = new ArrayList<Card>();
@@ -268,7 +269,7 @@ public class LocalGame extends GameMode {
 
 		for (int x=0; x < range.length; x++) {
 			for (int y=0; y < range[x].length; y++) {
-				if (range[x][y] != -3) {
+				if (range[x][y] == 1) {
 					
 					float tileX = x - range.length / 2;
 					float tileY = y - range[x].length / 2;
@@ -281,8 +282,9 @@ public class LocalGame extends GameMode {
 							TileManager.TILE_SIZE, TileManager.TILE_SIZE);
 					
 					if (r.contains(e.getPoint())) {
-						System.out.println("Handling " + x + " " + y);
+						//System.out.println("Handling " + x + " " + y);
 						cardHandler.handleChoice(choiceCard, tileX, tileY);
+						showRange = false;
 						return;
 					}
 				}
@@ -332,27 +334,6 @@ public class LocalGame extends GameMode {
 		if (distance <= SPACE_SIZE * 2) {
 			closest.dealDamage(SWORD_DAMAGE);
 			player.dealDamage(ENEMY_DAMAGE);
-		}
-	}
-
-	private void bowAttack(MouseEvent e) {
-		Actor target = null;
-
-		for (Actor a : engine.getActors().getArrayList())
-			if (a instanceof Enemy) {
-				System.out.println("Checkclick? " + ((Enemy) a).checkClick(e));
-				System.out.println("Distance: "
-						+ a.getCenter().distance(player.getCenter()));
-				if (((Enemy) a).checkClick(e)
-						&& a.getCenter().distance(player.getCenter()) <= Player.BOWRANGE + 10) {
-					target = a;
-					break;
-				}
-			}
-
-		if (target != null) {
-			target.dealDamage(BOW_DAMAGE);
-			showRange = false;
 		}
 	}
 

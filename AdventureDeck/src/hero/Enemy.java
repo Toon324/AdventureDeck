@@ -6,6 +6,7 @@ package hero;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
@@ -39,8 +40,7 @@ public class Enemy extends AnimatedImageActor {
 	public void draw(Graphics g) {
 
 		g.setColor(Color.BLACK);
-		// g.drawImage((Image)image.getImage(),(int) center.x, (int) center.y,
-		// null);
+		
 		try {
 			g.drawImage(image.getImage(), (int) (center.x), (int) (center.y),
 					(int) (center.x + size.x), (int) (center.y)
@@ -58,9 +58,9 @@ public class Enemy extends AnimatedImageActor {
 		}
 	}
 
-	public boolean checkClick(MouseEvent e) {
-		System.out.println("Checking click: " + e.getPoint() + " against " + center);
-		return ((e.getPoint().x <= center.x + size.x && e.getPoint().x >= center.x) || (e
-				.getPoint().y <= center.y + size.y && e.getPoint().y >= center.y));
+	public boolean checkClick(Point click) {
+		System.out.println("Checking click: " + click + " against " + center);
+		return ((click.x <= center.x + size.x && click.x >= center.x) || (click.y <= center.y
+				+ size.y && click.y >= center.y));
 	}
 }
