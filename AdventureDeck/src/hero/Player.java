@@ -9,7 +9,6 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 import petri.api.Actor;
-import petri.api.AnimatedImage;
 import petri.api.AnimatedImageActor;
 import petri.api.GameEngine;
 import petri.api.GameImage;
@@ -59,22 +58,22 @@ public class Player extends AnimatedImageActor {
 			setCenter(c.x + (spaces * SPACE_SIZE), c.y);
 			return;
 		case 3:
-			setCenter(c.x + (spaces * SPACE_SIZE) / 2, c.y
-					+ (spaces * SPACE_SIZE) / 2);
+			setCenter(c.x + (spaces * SPACE_SIZE), c.y
+					+ (spaces * SPACE_SIZE) );
 			return;
 		case 4:
 			setCenter(c.x, c.y + (spaces * SPACE_SIZE));
 			return;
 		case 5:
-			setCenter(c.x - (spaces * SPACE_SIZE) / 2, c.y
-					+ (spaces * SPACE_SIZE) / 2);
+			setCenter(c.x - (spaces * SPACE_SIZE) , c.y
+					+ (spaces * SPACE_SIZE) );
 			return;
 		case 6:
 			setCenter(c.x - (spaces * SPACE_SIZE), c.y);
 			return;
 		case 7:
-			setCenter(c.x - (spaces * SPACE_SIZE) / 2, c.y
-					- (spaces * SPACE_SIZE) / 2);
+			setCenter(c.x - (spaces * SPACE_SIZE), c.y
+					- (spaces * SPACE_SIZE) );
 			return;
 		}
 	}

@@ -99,7 +99,7 @@ public class CardHandler {
 			if (a instanceof Enemy) {
 				Enemy e = (Enemy) a;
 				
-				Point click = new Point((int)(game.player.getCenter().x + x * game.SPACE_SIZE),(int) (game.player.getCenter().y + y * game.SPACE_SIZE));
+				Point click = new Point((int)(game.player.getCenter().x + x * game.TILE_SIZE),(int) (game.player.getCenter().y + y * game.TILE_SIZE));
 				
 				if (e.checkClick(click))
 					e.dealDamage(game.BOW_DAMAGE);

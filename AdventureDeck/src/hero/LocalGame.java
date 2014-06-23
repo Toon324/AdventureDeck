@@ -30,7 +30,7 @@ public class LocalGame extends GameMode {
 
 	final int SMALL_POTION_AMT = 4;
 	final int LARGE_POTION_AMT = 9;
-	final int SPACE_SIZE = 25;
+	final int TILE_SIZE = 25;
 	final int SWORD_DAMAGE = 8;
 	final int BOW_DAMAGE = 5;
 	final int ENEMY_DAMAGE = 12;
@@ -43,14 +43,15 @@ public class LocalGame extends GameMode {
 	Card[] spellHand = new Card[2];
 	Card[] trapHand = new Card[2];
 
-	private GameImage background = null, playerImage = null, enemyImage = null;
+	private GameImage playerImage = null, enemyImage = null;
 	private CardHandler cardHandler = new CardHandler(this);
-	Player player;
-	boolean showRange;
+	
+	public Player player;
+	public boolean showRange;
+	
 	private TileManager board;
 	private int[][] range;
 	private Card choiceCard;
-	private static boolean done;
 
 	static long startTime;
 
@@ -68,9 +69,6 @@ public class LocalGame extends GameMode {
 			BufferedImage loadEnemy = ImageIO.read(getClass()
 					.getResourceAsStream("enemy.png"));
 			enemyImage = new AnimatedImage(loadEnemy, 4, 4);
-
-			background = new GameImage(ImageIO.read(getClass().getResource(
-					"background.png")));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -331,7 +329,7 @@ public class LocalGame extends GameMode {
 					distance = player.distanceTo(a);
 				}
 
-		if (distance <= SPACE_SIZE * 2) {
+		if (distance <= TILE_SIZE * 2) {
 			closest.dealDamage(SWORD_DAMAGE);
 			player.dealDamage(ENEMY_DAMAGE);
 		}

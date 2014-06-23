@@ -5,9 +5,7 @@ package hero;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
 import petri.api.AnimatedImageActor;
@@ -59,7 +57,7 @@ public class Enemy extends AnimatedImageActor {
 	}
 
 	public boolean checkClick(Point click) {
-		System.out.println("Checking click: " + click + " against " + center);
+		//System.out.println("Checking click: " + click + " against " + center);
 		return ((click.x <= center.x + size.x && click.x >= center.x) || (click.y <= center.y
 				+ size.y && click.y >= center.y));
 	}

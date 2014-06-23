@@ -2,7 +2,6 @@ package hero;
 
 import hero.Tile.Types;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
