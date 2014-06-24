@@ -247,9 +247,9 @@ public class LocalGame extends GameMode {
 			return;
 		}
 		
-		checkClick(e, basicHand);
-		checkClick(e, spellHand);
-		checkClick(e, trapHand);
+		checkClick(e, basicHand, 0);
+		checkClick(e, spellHand, basicHand.length);
+		checkClick(e, trapHand, basicHand.length + spellHand.length);
 		
 		super.mouseReleased(e);
 	}
@@ -306,9 +306,9 @@ public class LocalGame extends GameMode {
 	 * @param e
 	 * @param basicHand2
 	 */
-	private void checkClick(MouseEvent e, Card[] hand) {
+	private void checkClick(MouseEvent e, Card[] hand, int offset) {
 		for (int x = 0; x < hand.length; x++)
-			if (hand[x].checkClick(engine, x, e.getPoint())) {
+			if (hand[x].checkClick(engine, x + offset, e.getPoint())) {
 				
 				Card toRemove = hand[x];
 				hand[x] = null;
