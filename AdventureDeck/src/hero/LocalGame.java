@@ -242,15 +242,15 @@ public class LocalGame extends GameMode {
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (showRange) {
+		if (showRange)
 			checkChoice(e);
-			return;
+		else {
+
+			checkClick(e, basicHand, 0);
+			checkClick(e, spellHand, basicHand.length);
+			checkClick(e, trapHand, basicHand.length + spellHand.length);
 		}
-		
-		checkClick(e, basicHand, 0);
-		checkClick(e, spellHand, basicHand.length);
-		checkClick(e, trapHand, basicHand.length + spellHand.length);
-		
+
 		super.mouseReleased(e);
 	}
 
@@ -309,21 +309,21 @@ public class LocalGame extends GameMode {
 	private void checkClick(MouseEvent e, Card[] hand, int offset) {
 		for (int x = 0; x < hand.length; x++)
 			if (hand[x].checkClick(engine, x + offset, e.getPoint())) {
-				
+
 				Card toRemove = hand[x];
 				hand[x] = null;
-				
+
 				System.out.println("Handling " + toRemove);
-				
+
 				toDraw = toRemove.type;
-				
-				if (toRemove.type == CardType.BASIC) 
+
+				if (toRemove.type == CardType.BASIC)
 					basicDeck.add(toRemove);
 				else if (toRemove.type == CardType.SPELL)
 					spellDeck.add(toRemove);
 				else
 					trapDeck.add(toRemove);
-				
+
 				cardHandler.handleCard(toRemove);
 			}
 	}
