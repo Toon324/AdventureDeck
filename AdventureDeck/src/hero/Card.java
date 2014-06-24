@@ -35,12 +35,12 @@ public class Card {
 		name = n;
 		type = CardType.BASIC;
 		try {
-			image = ImageIO.read(getClass().getResourceAsStream(n + ".png"));
+			image = ImageIO.read(getClass().getResourceAsStream("Cards/" + n + ".png"));
 		} catch (Exception e) {
 			System.out.println("Could not read " + n);
 			e.printStackTrace();
 			try {
-				image = ImageIO.read(getClass().getResource("default.png"));
+				image = ImageIO.read(getClass().getResource("Cards/default.png"));
 			}
 			catch (Exception e1) {
 				System.out.println("Fatal fault: Could not load backup image default.png!");
@@ -103,5 +103,9 @@ public class Card {
 	public void setType(CardType t) {
 		type = t;
 		
+	}
+	
+	public String toString() {
+		return getName() + " : " + getType();
 	}
 }

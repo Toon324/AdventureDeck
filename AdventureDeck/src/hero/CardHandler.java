@@ -22,6 +22,7 @@ public class CardHandler {
 		switch (cmd) {
 		case "sword":
 			swordAttack();
+			game.endTurn();
 			return;
 		case "block":
 			return;
@@ -34,12 +35,15 @@ public class CardHandler {
 			return;
 		case "smallPotion":
 			game.player.heal(game.SMALL_POTION_AMT);
+			game.endTurn();
 			return;
 		case "largePotion":
 			game.player.heal(game.LARGE_POTION_AMT);
+			game.endTurn();
 			return;
 		case "shop":
 			game.engine.setCurrentGameMode(2);
+			game.endTurn();
 			return;
 
 		case "walk":
@@ -92,16 +96,20 @@ public class CardHandler {
 		switch (cmd) {
 		case "sword":
 			swordAttack();
+			game.endTurn();
 			return;
 		case "block":
+			game.endTurn();
 			return;
 		case "bow":
 			bowAttack(x, y);
+			game.endTurn();
 			return;
 
 		case "walk":
 			setDirection(x, y);
 			game.player.moveSpace(1);
+			game.endTurn();
 			return;
 
 		case "run":
@@ -116,6 +124,7 @@ public class CardHandler {
 			else
 				game.player.moveSpace((int)y);
 			
+			game.endTurn();
 			return;
 
 		}

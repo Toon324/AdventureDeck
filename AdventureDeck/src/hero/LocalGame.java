@@ -46,13 +46,14 @@ public class LocalGame extends GameMode {
 
 	private GameImage playerImage = null, enemyImage = null;
 	private CardHandler cardHandler = new CardHandler(this);
-	
+
 	public Player player;
 	public boolean showRange;
-	
+
 	private TileManager board;
 	private int[][] range;
 	private Card choiceCard;
+	private CardType toDraw;
 
 	static long startTime;
 
@@ -184,26 +185,26 @@ public class LocalGame extends GameMode {
 		board.paint(g);
 
 		if (showRange) {
-			g.setColor(new Color(214, 28, 74, 200)); //Semi transparent red
+			g.setColor(new Color(214, 28, 74, 200)); // Semi transparent red
 			for (int x = 0; x < range.length; x++) {
 				for (int y = 0; y < range[x].length; y++) {
 					if (range[x][y] == 1) {
 						int tileX = x - range.length / 2;
 						int tileY = y - range[x].length / 2;
-						
+
 						g.fillRect((int) player.getCenter().x + tileX
 								* TileManager.TILE_SIZE,
 								(int) player.getCenter().y
-										+ TileManager.TILE_SIZE +tileY
+										+ TileManager.TILE_SIZE + tileY
 										* TileManager.TILE_SIZE,
 								TileManager.TILE_SIZE, TileManager.TILE_SIZE);
 					}
 				}
 			}
 		}
-		
+
 		g.setColor(Color.orange);
-		
+
 		g.setFont(g.getFont().deriveFont(18.0F));
 		g.drawString(player.getGold() + " Gil", 30, 50);
 
@@ -213,17 +214,23 @@ public class LocalGame extends GameMode {
 		g.fillRect(0, engine.getEnvironmentSize().y - 100,
 				engine.getEnvironmentSize().x, 100);
 
-		for (int x = 0; x < basicHand.length; x++)
-			basicHand[x].draw(engine, g, x);
+		for (int x = 0; x < basicHand.length; x++) {
+			if (basicHand[x] != null)
+				basicHand[x].draw(engine, g, x);
+		}
 
 		// Next two hands are drawn with offsets.
 
-		for (int x = 0; x < spellHand.length; x++)
-			spellHand[x].draw(engine, g, x + basicHand.length);
+		for (int x = 0; x < spellHand.length; x++) {
+			if (spellHand[x] != null)
+				spellHand[x].draw(engine, g, x + basicHand.length);
+
+		}
 
 		for (int x = 0; x < trapHand.length; x++)
-			trapHand[x]
-					.draw(engine, g, x + basicHand.length + spellHand.length);
+			if (trapHand[x] != null)
+				trapHand[x].draw(engine, g, x + basicHand.length
+						+ spellHand.length);
 
 		super.paint(g);
 	}
@@ -239,31 +246,30 @@ public class LocalGame extends GameMode {
 			checkChoice(e);
 			return;
 		}
-
-		ArrayList<Card> toRemove = new ArrayList<Card>();
-		checkClick(e, basicHand, toRemove);
-
-		for (Card c : toRemove) {
-			basicDeck.add(c);
-			drawCard(basicHand, basicDeck);
-		}
-
-		toRemove = new ArrayList<Card>();
-		checkClick(e, spellHand, toRemove);
-
-		for (Card c : toRemove) {
-			spellDeck.add(c);
-			drawCard(spellHand, spellDeck);
-		}
-
-		toRemove = new ArrayList<Card>();
-		checkClick(e, trapHand, toRemove);
-
-		for (Card c : toRemove) {
-			trapDeck.add(c);
-			drawCard(trapHand, trapDeck);
-		}
+		
+		checkClick(e, basicHand);
+		checkClick(e, spellHand);
+		checkClick(e, trapHand);
+		
 		super.mouseReleased(e);
+	}
+
+	public void endTurn() {
+		System.out.println("ToDraw: " + toDraw);
+		drawCard(toDraw);
+	}
+
+	/**
+	 * @param toDraw2
+	 */
+	private void drawCard(CardType type) {
+		if (type == CardType.BASIC)
+			drawCard(basicHand, basicDeck);
+		else if (type == CardType.SPELL)
+			drawCard(spellHand, spellDeck);
+		else
+			drawCard(trapHand, trapDeck);
+
 	}
 
 	/**
@@ -271,22 +277,22 @@ public class LocalGame extends GameMode {
 	 */
 	private void checkChoice(MouseEvent e) {
 
-		for (int x=0; x < range.length; x++) {
-			for (int y=0; y < range[x].length; y++) {
+		for (int x = 0; x < range.length; x++) {
+			for (int y = 0; y < range[x].length; y++) {
 				if (range[x][y] == 1) {
-					
+
 					float tileX = x - range.length / 2;
 					float tileY = y - range[x].length / 2;
-					
-					Rectangle r = new Rectangle((int) (player.getCenter().x + tileX
-							* TileManager.TILE_SIZE),
-							(int) (player.getCenter().y
-									+ TileManager.TILE_SIZE +tileY
+
+					Rectangle r = new Rectangle(
+							(int) (player.getCenter().x + tileX
+									* TileManager.TILE_SIZE),
+							(int) (player.getCenter().y + TileManager.TILE_SIZE + tileY
 									* TileManager.TILE_SIZE),
 							TileManager.TILE_SIZE, TileManager.TILE_SIZE);
-					
+
 					if (r.contains(e.getPoint())) {
-						//System.out.println("Handling " + x + " " + y);
+						// System.out.println("Handling " + x + " " + y);
 						cardHandler.handleChoice(choiceCard, tileX, tileY);
 						showRange = false;
 						return;
@@ -300,12 +306,25 @@ public class LocalGame extends GameMode {
 	 * @param e
 	 * @param basicHand2
 	 */
-	private void checkClick(MouseEvent e, Card[] hand, ArrayList<Card> toRemove) {
+	private void checkClick(MouseEvent e, Card[] hand) {
 		for (int x = 0; x < hand.length; x++)
 			if (hand[x].checkClick(engine, x, e.getPoint())) {
-				cardHandler.handleCard(hand[x]);
-				toRemove.add(hand[x]);
+				
+				Card toRemove = hand[x];
 				hand[x] = null;
+				
+				System.out.println("Handling " + toRemove);
+				
+				toDraw = toRemove.type;
+				
+				if (toRemove.type == CardType.BASIC) 
+					basicDeck.add(toRemove);
+				else if (toRemove.type == CardType.SPELL)
+					spellDeck.add(toRemove);
+				else
+					trapDeck.add(toRemove);
+				
+				cardHandler.handleCard(toRemove);
 			}
 	}
 

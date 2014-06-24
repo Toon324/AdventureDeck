@@ -1,0 +1,11 @@
+﻿INFO {
+	name	Small Potion
+	cost	1
+	desc	Heals player for 10 points.
+	range	{1}
+	canChain	0
+}
+
+EFFECT {
+	PLAYERHEAL	10
+}
