@@ -54,7 +54,7 @@ public class LocalGame extends GameMode {
 	private int[][] range;
 	private Card choiceCard;
 	private CardType toDraw;
-	public Actor currentTarget;
+	public NPC currentTarget;
 
 	static long startTime;
 
@@ -80,13 +80,13 @@ public class LocalGame extends GameMode {
 
 		player = new Player(eng, playerImage);
 
-		Enemy e1 = new Enemy(eng, enemyImage);
+		NPC e1 = new NPC(eng, enemyImage);
 		e1.setCenter(300, 300);
 
-		Enemy e2 = new Enemy(eng, enemyImage);
+		NPC e2 = new NPC(eng, enemyImage);
 		e2.setCenter(600, 200);
 
-		Enemy e3 = new Enemy(eng, enemyImage);
+		NPC e3 = new NPC(eng, enemyImage);
 		e3.setCenter(200, 400);
 
 		engine.getActors().add(player);
@@ -259,6 +259,9 @@ public class LocalGame extends GameMode {
 	public void endTurn() {
 		// System.out.println("ToDraw: " + toDraw);
 		drawCard(toDraw);
+		
+		for (Actor a : engine.getActors().getArrayList())
+			((NPC)a).handleStatuses();
 	}
 
 	/**
@@ -296,6 +299,7 @@ public class LocalGame extends GameMode {
 					if (r.contains(e.getPoint())) {
 						// System.out.println("Handling " + x + " " + y);
 						currentTarget = getTarget(tileX, tileY);
+
 						cardHandler.handleChoice(choiceCard, tileX, tileY);
 						showRange = false;
 						return;
@@ -310,12 +314,12 @@ public class LocalGame extends GameMode {
 	 * @param tileY
 	 * @return
 	 */
-	private Actor getTarget(float x, float y) {
+	private NPC getTarget(float x, float y) {
 		Point click = new Point((int) (player.getCenter().x + x * TILE_SIZE),
 				(int) (player.getCenter().y + y * TILE_SIZE));
 
-		Rectangle clickBox = new Rectangle(click.x, click.y,
-				TILE_SIZE, TILE_SIZE);
+		Rectangle clickBox = new Rectangle(click.x, click.y, TILE_SIZE,
+				TILE_SIZE);
 
 		for (Actor a : engine.getActors().getArrayList()) {
 			Point actorPoint = new Point((int) a.getCenter().x,
@@ -324,8 +328,8 @@ public class LocalGame extends GameMode {
 					&& actorPoint.x <= clickBox.x + clickBox.getSize().width
 					&& actorPoint.y >= clickBox.y
 					&& actorPoint.y <= clickBox.y + clickBox.getSize().height) {
-				//System.out.println("Target set to " + a);
-				return a;
+				// System.out.println("Target set to " + a);
+				return (NPC) a;
 			}
 		}
 

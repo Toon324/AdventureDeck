@@ -1,0 +1,13 @@
+﻿INFO {
+	name	Fireball
+	type	BASIC
+	cost	2
+	desc	Deals 5 damage and causes burn for 3 turns.
+	range	[0, 0, 1, 0, 0] [0, 0, 1, 0, 0] [1, 1, 0, 1, 1] [0, 0, 1, 0, 0] [0, 0, 1, 0, 0]
+	canChain	0
+}	
+
+EFFECT {
+	TARGETDAMAGE	5
+	TARGETSTATUS	burn	3
+}

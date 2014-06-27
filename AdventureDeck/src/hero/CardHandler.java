@@ -23,7 +23,7 @@ public class CardHandler {
 
 		// Check to see if spell targets self
 		if (range.length == 1) {
-			//System.out.println("Targetting self");
+			// System.out.println("Targetting self");
 			handleChoice(c, 0, 0);
 		} else
 			game.giveOption(c.getRange(), c);
@@ -76,13 +76,13 @@ public class CardHandler {
 	 * 
 	 */
 	private void swordAttack() {
-		Enemy closest = null;
+		NPC closest = null;
 		int distance = -1;
 
 		for (Actor a : game.engine.getActors().getArrayList())
-			if (a instanceof Enemy)
+			if (a instanceof NPC)
 				if (closest == null || game.player.distanceTo(a) < distance) {
-					closest = (Enemy) a;
+					closest = (NPC) a;
 					distance = game.player.distanceTo(a);
 				}
 
@@ -118,14 +118,12 @@ public class CardHandler {
 
 			switch (cmd) {
 			case "PLAYERHEAL": {
-				num++;
 				int amt = Integer.valueOf(arg);
 
 				game.player.heal(amt);
 				break;
 			}
 			case "PLAYERMOVE": {
-				num++;
 				int amt = Integer.valueOf(arg);
 
 				setDirection(x, y);
@@ -144,18 +142,28 @@ public class CardHandler {
 				break;
 			}
 			case "PLAYERDAMAGE": {
-				num++;
 				int amt = Integer.valueOf(arg);
 
 				game.player.dealDamage(amt);
 				break;
 			}
 			case "TARGETDAMAGE": {
-				num++;
 				int amt = Integer.valueOf(arg);
 
-				if (game.currentTarget != null)
+				if (game.currentTarget != null) {
 					game.currentTarget.dealDamage(amt);
+					if (game.currentTarget.getHealth() <= 0)
+						game.player.addGold(game.currentTarget.getGoldValue());
+				}
+				break;
+			}
+			case "TARGETSTATUS": {
+				switch (arg) {
+				case "burn":
+					if (game.currentTarget != null)
+						game.currentTarget.inflictStatus("burn", 3);
+				}
+
 				break;
 			}
 			}
@@ -210,8 +218,8 @@ public class CardHandler {
 	private void bowAttack(float x, float y) {
 		// TODO Auto-generated method stub
 		for (Actor a : game.engine.getActors().getArrayList()) {
-			if (a instanceof Enemy) {
-				Enemy e = (Enemy) a;
+			if (a instanceof NPC) {
+				NPC e = (NPC) a;
 
 				Point click = new Point((int) (game.player.getCenter().x + x
 						* game.TILE_SIZE), (int) (game.player.getCenter().y + y

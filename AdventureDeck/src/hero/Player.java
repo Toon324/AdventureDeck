@@ -17,7 +17,7 @@ import petri.api.GameImage;
  * @author Cody
  * 
  */
-public class Player extends AnimatedImageActor {
+public class Player extends NPC {
 
 	private final int SPACE_SIZE = 25;
 
@@ -31,7 +31,7 @@ public class Player extends AnimatedImageActor {
 				+ i.getImage().getHeight());
 		maxHealth = 50;
 		health = 50;
-		gold = 0;
+		gold = 500;
 		xTiles = 4;
 		yTiles = 4;
 		size = new Point2D.Float(30, 50);
