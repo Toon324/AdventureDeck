@@ -1,0 +1,12 @@
+﻿INFO {
+	name	Cloth Vest
+	type	ITEM
+	cost	3
+	desc	Player gains 20 health.
+	range	[1]
+	canChain	0
+}	
+
+EFFECT {
+	PLAYERMOVE	2
+}

@@ -16,7 +16,7 @@ import petri.api.GameInitializer;
  */
 public class CardHero {
 
-	private static GameInitializer gi;
+	static GameInitializer gi;
 	
 	private static final int WIDTH = 1225;
 	private static final int HEIGHT = 700;
@@ -35,7 +35,7 @@ public class CardHero {
 		GameEngine engine = gi.getEngine();
 
 		engine.setWindowSize(WIDTH, HEIGHT);
-		gi.getFrame().setResizable(true);
+		gi.getFrame().setResizable(false);
 		gi.getFrame().setSize(WIDTH, HEIGHT);
 		
 		try {

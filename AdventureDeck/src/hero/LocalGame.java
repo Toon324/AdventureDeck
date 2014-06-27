@@ -45,6 +45,8 @@ public class LocalGame extends GameMode {
 	Card[] spellHand = new Card[2];
 	Card[] itemHand = new Card[2];
 
+	Card shop = new Card("shop");
+
 	private GameImage playerImage = null, enemyImage = null;
 	private CardHandler cardHandler = new CardHandler(this);
 
@@ -130,6 +132,8 @@ public class LocalGame extends GameMode {
 
 		for (Card c : itemDeck)
 			c.setType(CardType.ITEM);
+
+		shop.setType(CardType.SHOP);
 
 		initiateHand();
 		System.out.println("Begin generation: "
@@ -219,21 +223,31 @@ public class LocalGame extends GameMode {
 
 		for (int x = 0; x < basicHand.length; x++) {
 			if (basicHand[x] != null)
-				basicHand[x].draw(engine, g, x);
+				basicHand[x].draw(new Point(10,
+						engine.getEnvironmentSize().y - 90), engine, g, x);
 		}
 
 		// Next two hands are drawn with offsets.
 
 		for (int x = 0; x < spellHand.length; x++) {
 			if (spellHand[x] != null)
-				spellHand[x].draw(engine, g, x + basicHand.length);
+				spellHand[x].draw(new Point(10,
+						engine.getEnvironmentSize().y - 90), engine, g, x
+						+ basicHand.length);
 
 		}
 
 		for (int x = 0; x < itemHand.length; x++)
 			if (itemHand[x] != null)
-				itemHand[x].draw(engine, g, x + basicHand.length
-						+ spellHand.length);
+				itemHand[x].draw(new Point(10,
+						engine.getEnvironmentSize().y - 90), engine, g, x
+						+ basicHand.length + spellHand.length);
+
+		// Shop is at the end of the cards
+		g.setColor(Color.green);
+
+		shop.draw(new Point(10, engine.getEnvironmentSize().y - 90), engine, g,
+				basicHand.length + spellHand.length + itemHand.length + 1);
 
 		super.paint(g);
 	}
@@ -252,6 +266,10 @@ public class LocalGame extends GameMode {
 			checkClick(e, basicHand, 0);
 			checkClick(e, spellHand, basicHand.length);
 			checkClick(e, itemHand, basicHand.length + spellHand.length);
+
+			if (shop.checkClick(engine, basicHand.length + spellHand.length
+					+ itemHand.length + 1, e.getPoint()))
+				cardHandler.handleCard(shop);
 		}
 
 		super.mouseReleased(e);
@@ -260,9 +278,9 @@ public class LocalGame extends GameMode {
 	public void endTurn() {
 		// System.out.println("ToDraw: " + toDraw);
 		drawCard(toDraw);
-		
+
 		for (Actor a : engine.getActors().getArrayList())
-			((NPC)a).handleStatuses();
+			((NPC) a).handleStatuses();
 	}
 
 	/**
@@ -318,13 +336,13 @@ public class LocalGame extends GameMode {
 	private NPC getTarget(float x, float y) {
 		Point click = new Point((int) (player.getCenter().x + x * TILE_SIZE),
 				(int) (player.getCenter().y + y * TILE_SIZE));
-		
-		//System.out.println("Click: " + click);
+
+		// System.out.println("Click: " + click);
 
 		for (Actor a : engine.getActors().getArrayList()) {
 			Point actorPoint = new Point((int) a.getCenter().x,
 					(int) a.getCenter().y);
-			//System.out.println("Actor: " + actorPoint);
+			// System.out.println("Actor: " + actorPoint);
 
 			if (actorPoint.equals(click)) {
 				// System.out.println("Target set to " + a);
@@ -341,24 +359,25 @@ public class LocalGame extends GameMode {
 	 */
 	private void checkClick(MouseEvent e, Card[] hand, int offset) {
 		for (int x = 0; x < hand.length; x++)
-			if (hand[x].checkClick(engine, x + offset, e.getPoint())) {
+			if (hand[x] != null)
+				if (hand[x].checkClick(engine, x + offset, e.getPoint())) {
 
-				Card toRemove = hand[x];
-				hand[x] = null;
+					Card toRemove = hand[x];
+					hand[x] = null;
 
-				// System.out.println("Handling " + toRemove);
+					// System.out.println("Handling " + toRemove);
 
-				toDraw = toRemove.type;
+					toDraw = toRemove.type;
 
-				if (toRemove.type == CardType.BASIC)
-					basicDeck.add(toRemove);
-				else if (toRemove.type == CardType.SPELL)
-					spellDeck.add(toRemove);
-				else
-					itemDeck.add(toRemove);
+					if (toRemove.type == CardType.BASIC)
+						basicDeck.add(toRemove);
+					else if (toRemove.type == CardType.SPELL)
+						spellDeck.add(toRemove);
+					else
+						itemDeck.add(toRemove);
 
-				cardHandler.handleCard(toRemove);
-			}
+					cardHandler.handleCard(toRemove);
+				}
 	}
 
 	private void drawCard(Card[] section, ArrayList<Card> deck) {

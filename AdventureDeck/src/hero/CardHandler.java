@@ -168,6 +168,9 @@ public class CardHandler {
 
 				break;
 			}
+			case "SHOP": {
+				game.engine.setCurrentGameMode(2);
+			}
 			}
 
 		}

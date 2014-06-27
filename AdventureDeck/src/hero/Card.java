@@ -25,7 +25,7 @@ import petri.api.GameEngine;
 public class Card {
 
 	enum CardType {
-		BASIC, SPELL, ITEM;
+		BASIC, SPELL, ITEM, SHOP;
 	}
 
 	String name = "";
@@ -87,7 +87,7 @@ public class Card {
 			
 			scanned = scanned.trim();
 			
-			System.out.println(section + " : " + scanned);
+		//	System.out.println(section + " : " + scanned);
 
 			if (scanned.contains("INFO {"))
 				section = "INFO";
@@ -169,7 +169,7 @@ public class Card {
 			if (line.equals(""))
 				break;
 
-			System.out.println("Line found: " + line);
+			//System.out.println("Line found: " + line);
 
 			Scanner layer2 = new Scanner(line);
 			layer2.useDelimiter(",");
@@ -183,7 +183,7 @@ public class Card {
 					break;
 
 				xArray.add(el);
-				System.out.println("Element found: " + el);
+				//System.out.println("Element found: " + el);
 			}
 			yArray.add(xArray);
 			layer2.close();
@@ -202,7 +202,7 @@ public class Card {
 		return foundRange;
 	}
 
-	public void draw(GameEngine engine, Graphics g, int index) {
+	public void draw(Point start, GameEngine engine, Graphics g, int index) {
 
 		Color org = g.getColor();
 
@@ -213,10 +213,12 @@ public class Card {
 			g.setColor(Color.cyan);
 		else if (type == CardType.ITEM)
 			g.setColor(Color.orange);
+		else
+			g.setColor(Color.green);
 
 		// Determine position
-		int x = 10 + (index * WIDTH) + (index * SPACING);
-		int y = engine.getEnvironmentSize().y - 90;
+		int x = start.x + (index * WIDTH) + (index * SPACING);
+		int y = start.y;
 
 		// Draw back
 		g.fillRect(x, y, WIDTH, HEIGHT);
