@@ -160,8 +160,10 @@ public class CardHandler {
 			case "TARGETSTATUS": {
 				switch (arg) {
 				case "burn":
+					num++;
+					int amt = Integer.valueOf(effects.get(num));
 					if (game.currentTarget != null)
-						game.currentTarget.inflictStatus("burn", 3);
+						game.currentTarget.inflictStatus("burn", amt);
 				}
 
 				break;

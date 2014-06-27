@@ -29,6 +29,7 @@ import petri.api.GameMode;
  */
 public class LocalGame extends GameMode {
 
+	private static final int CARD_TRAY_SIZE = 100;
 	final int SMALL_POTION_AMT = 4;
 	final int LARGE_POTION_AMT = 9;
 	final int TILE_SIZE = 25;
@@ -128,7 +129,7 @@ public class LocalGame extends GameMode {
 			c.setType(CardType.SPELL);
 
 		for (Card c : itemDeck)
-			c.setType(CardType.TRAP);
+			c.setType(CardType.ITEM);
 
 		initiateHand();
 		System.out.println("Begin generation: "
@@ -139,7 +140,7 @@ public class LocalGame extends GameMode {
 			@Override
 			public void run() {
 				board = new TileManager(engine.getEnvironmentSize().x / 25,
-						engine.getEnvironmentSize().y / 25);
+						(engine.getEnvironmentSize().y - CARD_TRAY_SIZE) / 25);
 			}
 
 		});
@@ -213,8 +214,8 @@ public class LocalGame extends GameMode {
 		engine.getActors().drawActors(g);
 
 		g.setColor(Color.LIGHT_GRAY);
-		g.fillRect(0, engine.getEnvironmentSize().y - 100,
-				engine.getEnvironmentSize().x, 100);
+		g.fillRect(0, engine.getEnvironmentSize().y - CARD_TRAY_SIZE,
+				engine.getEnvironmentSize().x, CARD_TRAY_SIZE);
 
 		for (int x = 0; x < basicHand.length; x++) {
 			if (basicHand[x] != null)
@@ -317,17 +318,15 @@ public class LocalGame extends GameMode {
 	private NPC getTarget(float x, float y) {
 		Point click = new Point((int) (player.getCenter().x + x * TILE_SIZE),
 				(int) (player.getCenter().y + y * TILE_SIZE));
-
-		Rectangle clickBox = new Rectangle(click.x, click.y, TILE_SIZE,
-				TILE_SIZE);
+		
+		//System.out.println("Click: " + click);
 
 		for (Actor a : engine.getActors().getArrayList()) {
 			Point actorPoint = new Point((int) a.getCenter().x,
-					(int) a.getCenter().y + TILE_SIZE);
-			if (actorPoint.x >= clickBox.x
-					&& actorPoint.x <= clickBox.x + clickBox.getSize().width
-					&& actorPoint.y >= clickBox.y
-					&& actorPoint.y <= clickBox.y + clickBox.getSize().height) {
+					(int) a.getCenter().y);
+			//System.out.println("Actor: " + actorPoint);
+
+			if (actorPoint.equals(click)) {
 				// System.out.println("Target set to " + a);
 				return (NPC) a;
 			}

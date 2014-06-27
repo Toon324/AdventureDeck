@@ -25,7 +25,7 @@ import petri.api.GameEngine;
 public class Card {
 
 	enum CardType {
-		BASIC, SPELL, TRAP;
+		BASIC, SPELL, ITEM;
 	}
 
 	String name = "";
@@ -211,7 +211,7 @@ public class Card {
 			g.setColor(Color.gray);
 		else if (type == CardType.SPELL)
 			g.setColor(Color.cyan);
-		else if (type == CardType.TRAP)
+		else if (type == CardType.ITEM)
 			g.setColor(Color.orange);
 
 		// Determine position
@@ -259,7 +259,7 @@ public class Card {
 		else if (s.equals("SPELL"))
 			type = CardType.SPELL;
 		else
-			type = CardType.TRAP;
+			type = CardType.ITEM;
 
 	}
 
