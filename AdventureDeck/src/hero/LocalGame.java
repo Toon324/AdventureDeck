@@ -96,23 +96,19 @@ public class LocalGame extends GameMode {
 
 		basicDeck.add(new Card("walk"));
 		basicDeck.add(new Card("run"));
-		basicDeck.add(new Card("walk"));
-		basicDeck.add(new Card("run"));
-		basicDeck.add(new Card("walk"));
-		basicDeck.add(new Card("run"));
 
-//		basicDeck.add(new Card("sword"));
-//		basicDeck.add(new Card("sword"));
-//		basicDeck.add(new Card("sword"));
-//		basicDeck.add(new Card("bow"));
-//		basicDeck.add(new Card("bow"));
+		basicDeck.add(new Card("sword"));
+		basicDeck.add(new Card("sword"));
+		basicDeck.add(new Card("sword"));
+		basicDeck.add(new Card("bow"));
+		basicDeck.add(new Card("bow"));
 
 		// deck.add(new Card("shop"));
 		// deck.add(new Card("shop"));
 
 		basicDeck.add(new Card("smallPotion"));
 		basicDeck.add(new Card("smallPotion"));
-		//basicDeck.add(new Card("largePotion"));
+		// basicDeck.add(new Card("largePotion"));
 
 		// Spell deck
 
@@ -191,21 +187,12 @@ public class LocalGame extends GameMode {
 
 		if (showRange) {
 			g.setColor(new Color(214, 28, 74, 200)); // Semi transparent red
-			System.out.println("---------------------");
-			for (int x = 0; x < range.length; x++) {
-				for (int y = 0; y < range[x].length; y++) {
-					System.out.print(range[x][y] + " ");
-				}
-				System.out.println();
-			}
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!");
+
 			for (int outterY = 0; outterY < range.length; outterY++) {
 				for (int innerX = 0; innerX < range[outterY].length; innerX++) {
 					if (range[outterY][innerX] == 1) {
 						int yTile = outterY - range.length / 2;
 						int xTile = innerX - range[outterY].length / 2;
-						
-						System.out.println("Tile position of " + outterY + " " + innerX + " : " + yTile + " " + xTile);
 
 						g.fillRect((int) player.getCenter().x + xTile
 								* TileManager.TILE_SIZE,
@@ -270,7 +257,7 @@ public class LocalGame extends GameMode {
 	}
 
 	public void endTurn() {
-		System.out.println("ToDraw: " + toDraw);
+		// System.out.println("ToDraw: " + toDraw);
 		drawCard(toDraw);
 	}
 
@@ -324,18 +311,24 @@ public class LocalGame extends GameMode {
 	 * @return
 	 */
 	private Actor getTarget(float x, float y) {
-		Point click = new Point((int) (player.getCenter().x + x
-				* TILE_SIZE), (int) (player.getCenter().y + y
-				* TILE_SIZE));
-		
-		Rectangle clickBox = new Rectangle(click.x % 25, click.y % 25, TILE_SIZE, TILE_SIZE);
-		
+		Point click = new Point((int) (player.getCenter().x + x * TILE_SIZE),
+				(int) (player.getCenter().y + y * TILE_SIZE));
+
+		Rectangle clickBox = new Rectangle(click.x, click.y,
+				TILE_SIZE, TILE_SIZE);
+
 		for (Actor a : engine.getActors().getArrayList()) {
-			if (clickBox.contains(a.getCenter())) {
+			Point actorPoint = new Point((int) a.getCenter().x,
+					(int) a.getCenter().y + TILE_SIZE);
+			if (actorPoint.x >= clickBox.x
+					&& actorPoint.x <= clickBox.x + clickBox.getSize().width
+					&& actorPoint.y >= clickBox.y
+					&& actorPoint.y <= clickBox.y + clickBox.getSize().height) {
+				System.out.println("Target set to " + a);
 				return a;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -350,7 +343,7 @@ public class LocalGame extends GameMode {
 				Card toRemove = hand[x];
 				hand[x] = null;
 
-				System.out.println("Handling " + toRemove);
+				// System.out.println("Handling " + toRemove);
 
 				toDraw = toRemove.type;
 
