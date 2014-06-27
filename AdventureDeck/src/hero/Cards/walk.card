@@ -1,0 +1,12 @@
+﻿INFO {
+	name	Walk
+	type	BASIC
+	cost	1
+	desc	Player moves 1 tile.
+	range	[1, 1, 1] [1, 0, 1] [1, 1, 1]
+	canChain	0
+}	
+
+EFFECT {
+	PLAYERMOVE	1
+}

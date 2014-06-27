@@ -95,9 +95,9 @@ public class LocalGame extends GameMode {
 		engine.getActors().add(e3);
 
 		basicDeck.add(new Card("walk"));
+		basicDeck.add(new Card("run"));
 		basicDeck.add(new Card("walk"));
-		basicDeck.add(new Card("walk"));
-		basicDeck.add(new Card("walk"));
+		basicDeck.add(new Card("run"));
 		basicDeck.add(new Card("walk"));
 		basicDeck.add(new Card("run"));
 
@@ -191,16 +191,26 @@ public class LocalGame extends GameMode {
 
 		if (showRange) {
 			g.setColor(new Color(214, 28, 74, 200)); // Semi transparent red
+			System.out.println("---------------------");
 			for (int x = 0; x < range.length; x++) {
 				for (int y = 0; y < range[x].length; y++) {
-					if (range[x][y] == 1) {
-						int tileX = x - range.length / 2;
-						int tileY = y - range[x].length / 2;
+					System.out.print(range[x][y] + " ");
+				}
+				System.out.println();
+			}
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!");
+			for (int outterY = 0; outterY < range.length; outterY++) {
+				for (int innerX = 0; innerX < range[outterY].length; innerX++) {
+					if (range[outterY][innerX] == 1) {
+						int yTile = outterY - range.length / 2;
+						int xTile = innerX - range[outterY].length / 2;
+						
+						System.out.println("Tile position of " + outterY + " " + innerX + " : " + yTile + " " + xTile);
 
-						g.fillRect((int) player.getCenter().x + tileX
+						g.fillRect((int) player.getCenter().x + xTile
 								* TileManager.TILE_SIZE,
 								(int) player.getCenter().y
-										+ TileManager.TILE_SIZE + tileY
+										+ TileManager.TILE_SIZE + yTile
 										* TileManager.TILE_SIZE,
 								TileManager.TILE_SIZE, TileManager.TILE_SIZE);
 					}

@@ -23,9 +23,19 @@ public class CardHandler {
 
 		// Check to see if spell targets self
 		if (range.length == 1) {
+			System.out.println("Targetting self");
 			handleChoice(c, 0, 0);
 		} else {
 			game.giveOption(c.getRange(), c);
+
+			System.out.println("Range size: " + c.getRange().length + " by "
+					+ c.getRange()[0].length);
+			for (int x = 0; x < c.getRange().length; x++) {
+				for (int y = 0; y < c.getRange()[x].length; y++)
+					System.out.print(c.getRange()[x][y] + " ");
+				System.out.println();
+			}
+
 		}
 
 		// String cmd = c.getName();
@@ -159,10 +169,9 @@ public class CardHandler {
 				break;
 			}
 			}
-			
+
 		}
 
-		System.out.println("Calling endturn");
 		game.endTurn();
 
 		// switch (cmd) {

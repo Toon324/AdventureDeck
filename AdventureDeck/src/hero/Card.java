@@ -47,7 +47,6 @@ public class Card {
 		effects = new LinkedList<String>();
 
 		File f = new File("src/hero/Cards/" + n + ".card");
-		System.out.println("Card file should be " + f.getName());
 		if (f.exists())
 			try {
 				loadInfo(f);
