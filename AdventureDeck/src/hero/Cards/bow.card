@@ -1,0 +1,12 @@
+﻿INFO {
+	name	Bow
+	type	BASIC
+	cost	1
+	desc	You loose an arrow at your target, dealing 5 damage.
+	range	[1, 1, 1, 1, 1] [1, 1, 1, 1, 1] [1, 1, 0, 1, 1] [1, 1, 1, 1, 1] [1, 1, 1, 1, 1]
+	canChain	0
+}	
+
+EFFECT {
+	TARGETDAMAGE	5
+}

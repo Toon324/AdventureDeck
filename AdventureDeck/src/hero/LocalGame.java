@@ -38,11 +38,11 @@ public class LocalGame extends GameMode {
 
 	ArrayList<Card> basicDeck = new ArrayList<Card>();
 	ArrayList<Card> spellDeck = new ArrayList<Card>();
-	ArrayList<Card> trapDeck = new ArrayList<Card>();
+	ArrayList<Card> itemDeck = new ArrayList<Card>();
 
 	Card[] basicHand = new Card[5];
 	Card[] spellHand = new Card[2];
-	Card[] trapHand = new Card[2];
+	Card[] itemHand = new Card[2];
 
 	private GameImage playerImage = null, enemyImage = null;
 	private CardHandler cardHandler = new CardHandler(this);
@@ -106,9 +106,9 @@ public class LocalGame extends GameMode {
 		// deck.add(new Card("shop"));
 		// deck.add(new Card("shop"));
 
-		basicDeck.add(new Card("smallPotion"));
-		basicDeck.add(new Card("smallPotion"));
-		// basicDeck.add(new Card("largePotion"));
+		itemDeck.add(new Card("smallPotion"));
+		itemDeck.add(new Card("smallPotion"));
+		itemDeck.add(new Card("largePotion"));
 
 		// Spell deck
 
@@ -117,8 +117,8 @@ public class LocalGame extends GameMode {
 
 		// Trap deck
 
-		trapDeck.add(new Card("pitfall"));
-		trapDeck.add(new Card("shadow"));
+		itemDeck.add(new Card("pitfall"));
+		itemDeck.add(new Card("shadow"));
 
 		// Tell the cards what type they are
 		for (Card c : basicDeck)
@@ -127,7 +127,7 @@ public class LocalGame extends GameMode {
 		for (Card c : spellDeck)
 			c.setType(CardType.SPELL);
 
-		for (Card c : trapDeck)
+		for (Card c : itemDeck)
 			c.setType(CardType.TRAP);
 
 		initiateHand();
@@ -151,7 +151,7 @@ public class LocalGame extends GameMode {
 	private void initiateHand() {
 		drawCards(5, basicHand, basicDeck);
 		drawCards(2, spellHand, spellDeck);
-		drawCards(2, trapHand, trapDeck);
+		drawCards(2, itemHand, itemDeck);
 
 	}
 
@@ -229,9 +229,9 @@ public class LocalGame extends GameMode {
 
 		}
 
-		for (int x = 0; x < trapHand.length; x++)
-			if (trapHand[x] != null)
-				trapHand[x].draw(engine, g, x + basicHand.length
+		for (int x = 0; x < itemHand.length; x++)
+			if (itemHand[x] != null)
+				itemHand[x].draw(engine, g, x + basicHand.length
 						+ spellHand.length);
 
 		super.paint(g);
@@ -250,7 +250,7 @@ public class LocalGame extends GameMode {
 
 			checkClick(e, basicHand, 0);
 			checkClick(e, spellHand, basicHand.length);
-			checkClick(e, trapHand, basicHand.length + spellHand.length);
+			checkClick(e, itemHand, basicHand.length + spellHand.length);
 		}
 
 		super.mouseReleased(e);
@@ -270,7 +270,7 @@ public class LocalGame extends GameMode {
 		else if (type == CardType.SPELL)
 			drawCard(spellHand, spellDeck);
 		else
-			drawCard(trapHand, trapDeck);
+			drawCard(itemHand, itemDeck);
 
 	}
 
@@ -324,7 +324,7 @@ public class LocalGame extends GameMode {
 					&& actorPoint.x <= clickBox.x + clickBox.getSize().width
 					&& actorPoint.y >= clickBox.y
 					&& actorPoint.y <= clickBox.y + clickBox.getSize().height) {
-				System.out.println("Target set to " + a);
+				//System.out.println("Target set to " + a);
 				return a;
 			}
 		}
@@ -352,7 +352,7 @@ public class LocalGame extends GameMode {
 				else if (toRemove.type == CardType.SPELL)
 					spellDeck.add(toRemove);
 				else
-					trapDeck.add(toRemove);
+					itemDeck.add(toRemove);
 
 				cardHandler.handleCard(toRemove);
 			}

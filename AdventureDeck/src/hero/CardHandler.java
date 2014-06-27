@@ -118,7 +118,6 @@ public class CardHandler {
 
 			switch (cmd) {
 			case "PLAYERHEAL": {
-				System.out.println("Check");
 				num++;
 				int amt = Integer.valueOf(arg);
 
