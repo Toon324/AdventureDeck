@@ -23,7 +23,7 @@ import petri.api.GameEngine;
  * 
  */
 public class Card {
-	
+
 	enum CardType {
 		BASIC, SPELL, TRAP;
 	}
@@ -38,81 +38,120 @@ public class Card {
 	private int cost;
 	private boolean canChain;
 	private int[][] range;
+	private LinkedList<String> effects;
 
 	public Card(String n) {
 		name = n;
 		type = CardType.BASIC;
-		
-		File f = new File("bin/hero/Cards/" + n + ".card");
+
+		effects = new LinkedList<String>();
+
+		File f = new File("src/hero/Cards/" + n + ".card");
 		System.out.println("Card file should be " + f.getName());
 		if (f.exists())
 			try {
 				loadInfo(f);
 			} catch (FileNotFoundException e2) {
-				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
 		try {
-			image = ImageIO.read(getClass().getResourceAsStream("Cards/" + n + ".png"));
+			image = ImageIO.read(getClass().getResourceAsStream(
+					"Cards/" + n + ".png"));
 		} catch (Exception e) {
 			System.out.println("Could not read " + n);
 			e.printStackTrace();
 			try {
-				image = ImageIO.read(getClass().getResource("Cards/default.png"));
-			}
-			catch (Exception e1) {
-				System.out.println("Fatal fault: Could not load backup image default.png!");
+				image = ImageIO.read(getClass()
+						.getResource("Cards/default.png"));
+			} catch (Exception e1) {
+				System.out
+						.println("Fatal fault: Could not load backup image default.png!");
 			}
 		}
 	}
 
 	/**
 	 * @param f
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
 	private void loadInfo(File f) throws FileNotFoundException {
-		//System.out.println("Loading info of " + f.getName());
+		// System.out.println("Loading info of " + f.getName());
 		Scanner scan = new Scanner(f);
 		scan.useDelimiter("\t");
-		
+
 		String section = "";
-		
+
 		while (scan.hasNext()) {
-			String s = scan.next();
-			System.out.println(section + " : " + s);
+			String scanned = scan.next();
+			if (scanned.contains("}"))
+				scanned = scanned.replace("}", "");
 			
-			if (s.contains("INFO {"))
+			scanned = scanned.trim();
+			
+			System.out.println(section + " : " + scanned);
+
+			if (scanned.contains("INFO {"))
 				section = "INFO";
-			else if (s.contains("EFFECT {"))
+			else if (scanned.contains("EFFECT {"))
 				section = "EFFECT";
-			
-			if (!s.equals("}")) {
-				if (section == "INFO") {
-					if (s.equals("name"))
-						name = scan.next();
-					else if (s.equals("type"))
-						setType(scan.next());
-					else if (s.equals("cost"))
-						cost = Integer.parseInt(scan.next().trim());
-					else if (s.equals("range"))
-						range = readRange(scan.next());
-					else if (s.equals("canChain")) {
-						String chain = scan.next();
-						int i = Integer.valueOf(chain.substring(0, chain.indexOf("}")).trim());
-						if (i == 0)
-							canChain = false;
-						else
-							canChain = true;
+			else {
+
+				if (!scanned.equals("}")) {
+					if (section == "INFO") {
+						if (scanned.equals("name"))
+							name = scan.next();
+						else if (scanned.equals("type"))
+							setType(scan.next());
+						else if (scanned.equals("cost"))
+							cost = Integer.parseInt(scan.next().trim());
+						else if (scanned.equals("range"))
+							range = readRange(scan.next());
+						else if (scanned.equals("canChain")) {
+							String chain = scan.next();
+							int i = Integer.valueOf(chain.substring(0,
+									chain.indexOf("}")).trim());
+							if (i == 0)
+								canChain = false;
+							else
+								canChain = true;
+						}
+					} else {
+						effects.add(scanned);
 					}
 				}
-				else {
-					
-				}
 			}
-				
+
 		}
-		
+
 		scan.close();
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @return the cost
+	 */
+	public int getCost() {
+		return cost;
+	}
+
+	/**
+	 * @return the range
+	 */
+	public int[][] getRange() {
+		return range;
+	}
+
+	/**
+	 * @return the effects
+	 */
+	public LinkedList<String> getEffects() {
+		return effects;
 	}
 
 	/**
@@ -120,51 +159,77 @@ public class Card {
 	 * @return
 	 */
 	private int[][] readRange(String rangeText) {
-		List<String> temp = new LinkedList<String>();
-		
+		List<List<String>> yArray = new LinkedList<List<String>>();
+
 		Scanner layer1 = new Scanner(rangeText);
 		layer1.useDelimiter("]");
-		
+
 		while (layer1.hasNext()) {
-			String line = layer1.next();
+			String line = layer1.next().replace("[", "").trim();
+
+			if (line.equals(""))
+				break;
+
+			System.out.println("Line found: " + line);
+
 			Scanner layer2 = new Scanner(line);
 			layer2.useDelimiter(",");
-			
-			System.out.println("Line found: " + line); 
-			System.out.println("Element found: " + layer2.next());
+
+			List<String> xArray = new LinkedList<String>();
+
+			while (layer2.hasNext()) {
+				String el = layer2.next();
+
+				if (el.equals(""))
+					break;
+
+				xArray.add(el);
+				System.out.println("Element found: " + el);
+			}
+			yArray.add(xArray);
+			layer2.close();
 		}
-		
-		return null;
+
+		layer1.close();
+
+		int[][] foundRange = new int[yArray.size()][yArray.get(0).size()];
+
+		for (int y = 0; y < yArray.size(); y++) {
+			for (int x = 0; x < yArray.get(y).size(); x++) {
+				foundRange[y][x] = Integer.valueOf(yArray.get(y).get(x).trim());
+			}
+		}
+
+		return foundRange;
 	}
 
 	public void draw(GameEngine engine, Graphics g, int index) {
-		
+
 		Color org = g.getColor();
-		
-		//Set color based on card type
+
+		// Set color based on card type
 		if (type == CardType.BASIC)
 			g.setColor(Color.gray);
 		else if (type == CardType.SPELL)
 			g.setColor(Color.cyan);
 		else if (type == CardType.TRAP)
 			g.setColor(Color.orange);
-		
-		//Determine position
+
+		// Determine position
 		int x = 10 + (index * WIDTH) + (index * SPACING);
 		int y = engine.getEnvironmentSize().y - 90;
 
-		//Draw back
+		// Draw back
 		g.fillRect(x, y, WIDTH, HEIGHT);
 
-		//Draw icon
+		// Draw icon
 		g.drawImage(image, x + 10, y + 10, x + 70, y + 70, 0, 0,
 				image.getWidth(), image.getHeight(), null);
 
-		//Draw text
+		// Draw text
 		g.setColor(Color.BLACK);
-		
-		
-		//Reset to original color
+
+		// Reset to original color
 		g.setColor(org);
 
 	}
@@ -196,13 +261,17 @@ public class Card {
 			type = CardType.SPELL;
 		else
 			type = CardType.TRAP;
-		
+
 	}
-	
+
 	public void setType(CardType t) {
 		type = t;
 	}
-	
+
+	public boolean canChain() {
+		return canChain;
+	}
+
 	public String toString() {
 		return getName() + " : " + getType();
 	}

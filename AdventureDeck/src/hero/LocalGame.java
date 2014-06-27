@@ -6,8 +6,8 @@ package hero;
 import hero.Card.CardType;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -54,6 +54,7 @@ public class LocalGame extends GameMode {
 	private int[][] range;
 	private Card choiceCard;
 	private CardType toDraw;
+	public Actor currentTarget;
 
 	static long startTime;
 
@@ -94,20 +95,24 @@ public class LocalGame extends GameMode {
 		engine.getActors().add(e3);
 
 		basicDeck.add(new Card("walk"));
+		basicDeck.add(new Card("walk"));
+		basicDeck.add(new Card("walk"));
+		basicDeck.add(new Card("walk"));
+		basicDeck.add(new Card("walk"));
 		basicDeck.add(new Card("run"));
 
-		basicDeck.add(new Card("sword"));
-		basicDeck.add(new Card("sword"));
-		basicDeck.add(new Card("sword"));
-		basicDeck.add(new Card("bow"));
-		basicDeck.add(new Card("bow"));
+//		basicDeck.add(new Card("sword"));
+//		basicDeck.add(new Card("sword"));
+//		basicDeck.add(new Card("sword"));
+//		basicDeck.add(new Card("bow"));
+//		basicDeck.add(new Card("bow"));
 
 		// deck.add(new Card("shop"));
 		// deck.add(new Card("shop"));
 
 		basicDeck.add(new Card("smallPotion"));
 		basicDeck.add(new Card("smallPotion"));
-		basicDeck.add(new Card("largePotion"));
+		//basicDeck.add(new Card("largePotion"));
 
 		// Spell deck
 
@@ -293,6 +298,7 @@ public class LocalGame extends GameMode {
 
 					if (r.contains(e.getPoint())) {
 						// System.out.println("Handling " + x + " " + y);
+						currentTarget = getTarget(tileX, tileY);
 						cardHandler.handleChoice(choiceCard, tileX, tileY);
 						showRange = false;
 						return;
@@ -300,6 +306,27 @@ public class LocalGame extends GameMode {
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param tileX
+	 * @param tileY
+	 * @return
+	 */
+	private Actor getTarget(float x, float y) {
+		Point click = new Point((int) (player.getCenter().x + x
+				* TILE_SIZE), (int) (player.getCenter().y + y
+				* TILE_SIZE));
+		
+		Rectangle clickBox = new Rectangle(click.x % 25, click.y % 25, TILE_SIZE, TILE_SIZE);
+		
+		for (Actor a : engine.getActors().getArrayList()) {
+			if (clickBox.contains(a.getCenter())) {
+				return a;
+			}
+		}
+		
+		return null;
 	}
 
 	/**

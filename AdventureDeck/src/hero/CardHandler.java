@@ -1,6 +1,7 @@
 package hero;
 
 import java.awt.Point;
+import java.util.LinkedList;
 
 import petri.api.Actor;
 
@@ -17,47 +18,57 @@ public class CardHandler {
 	}
 
 	public void handleCard(Card c) {
-		String cmd = c.getName();
 
-		switch (cmd) {
-		case "sword":
-			swordAttack();
-			game.endTurn();
-			return;
-		case "block":
-			return;
-		case "bow":
-			int[][] bowRange = { { 1, 0, 0, 1, 0, 0, 1 },
-					{ 0, 1, 0, 1, 0, 1, 0 }, { 0, 0, 1, 1, 1, 0, 0 },
-					{ 1, 1, 1, 0, 1, 1, 1 }, { 0, 0, 1, 1, 1, 0, 0 },
-					{ 0, 1, 0, 1, 0, 1, 0 }, { 1, 0, 0, 1, 0, 0, 1 } };
-			game.giveOption(bowRange, c);
-			return;
-		case "smallPotion":
-			game.player.heal(game.SMALL_POTION_AMT);
-			game.endTurn();
-			return;
-		case "largePotion":
-			game.player.heal(game.LARGE_POTION_AMT);
-			game.endTurn();
-			return;
-		case "shop":
-			game.engine.setCurrentGameMode(2);
-			game.endTurn();
-			return;
+		int[][] range = c.getRange();
 
-		case "walk":
-			int[][] walkRange = { { 1, 1, 1 }, { 1, 0, 1 }, { 1, 1, 1 } };
-			game.giveOption(walkRange, c);
-			return;
-
-		case "run":
-			int[][] runRange = { { 1, 0, 1, 0, 1 }, { 0, 1, 1, 1, 0 },
-					{ 1, 1, 0, 1, 1 }, { 0, 1, 1, 1, 0 }, { 1, 0, 1, 0, 1 } };
-			game.giveOption(runRange, c);
-			return;
-
+		// Check to see if spell targets self
+		if (range.length == 1) {
+			handleChoice(c, 0, 0);
+		} else {
+			game.giveOption(c.getRange(), c);
 		}
+
+		// String cmd = c.getName();
+		//
+		// switch (cmd) {
+		// case "sword":
+		// swordAttack();
+		// game.endTurn();
+		// return;
+		// case "block":
+		// return;
+		// case "bow":
+		// int[][] bowRange = { { 1, 0, 0, 1, 0, 0, 1 },
+		// { 0, 1, 0, 1, 0, 1, 0 }, { 0, 0, 1, 1, 1, 0, 0 },
+		// { 1, 1, 1, 0, 1, 1, 1 }, { 0, 0, 1, 1, 1, 0, 0 },
+		// { 0, 1, 0, 1, 0, 1, 0 }, { 1, 0, 0, 1, 0, 0, 1 } };
+		// game.giveOption(bowRange, c);
+		// return;
+		// case "smallPotion":
+		// game.player.heal(game.SMALL_POTION_AMT);
+		// game.endTurn();
+		// return;
+		// case "largePotion":
+		// game.player.heal(game.LARGE_POTION_AMT);
+		// game.endTurn();
+		// return;
+		// case "shop":
+		// game.engine.setCurrentGameMode(2);
+		// game.endTurn();
+		// return;
+		//
+		// case "walk":
+		// int[][] walkRange = { { 1, 1, 1 }, { 1, 0, 1 }, { 1, 1, 1 } };
+		// game.giveOption(walkRange, c);
+		// return;
+		//
+		// case "run":
+		// int[][] runRange = { { 1, 0, 1, 0, 1 }, { 0, 1, 1, 1, 0 },
+		// { 1, 1, 0, 1, 1 }, { 0, 1, 1, 1, 0 }, { 1, 0, 1, 0, 1 } };
+		// game.giveOption(runRange, c);
+		// return;
+		//
+		// }
 
 	}
 
@@ -78,11 +89,11 @@ public class CardHandler {
 		if (distance <= game.TILE_SIZE * 2) {
 			closest.dealDamage(game.SWORD_DAMAGE);
 			game.player.dealDamage(game.ENEMY_DAMAGE);
-			
+
 			if (closest.getHealth() <= 0)
 				game.player.addGold(closest.getGoldValue());
 		}
-		
+
 	}
 
 	/**
@@ -91,43 +102,105 @@ public class CardHandler {
 	 * @param y
 	 */
 	public void handleChoice(Card c, float x, float y) {
-		String cmd = c.getName();
+		LinkedList<String> effects = c.getEffects();
 
-		switch (cmd) {
-		case "sword":
-			swordAttack();
-			game.endTurn();
-			return;
-		case "block":
-			game.endTurn();
-			return;
-		case "bow":
-			bowAttack(x, y);
-			game.endTurn();
-			return;
+		for (int num = 0; num < effects.size(); num++) {
 
-		case "walk":
-			setDirection(x, y);
-			game.player.moveSpace(1);
-			game.endTurn();
-			return;
+			String cmd = effects.get(num);
+			// System.out.println("CMD: " + cmd);
+			num++;
+			String arg = effects.get(num);
 
-		case "run":
-			setDirection(x, y);
+			// System.out.println("ARG: " + arg);
+
+			if (arg.contains("}"))
+				arg = arg.replace("}", "");
+
+			switch (cmd) {
+			case "PLAYERHEAL": {
+				System.out.println("Check");
+				num++;
+				int amt = Integer.valueOf(arg);
+
+				game.player.heal(amt);
+				break;
+			}
+			case "PLAYERMOVE": {
+				num++;
+				int amt = Integer.valueOf(arg);
+
+				setDirection(x, y);
+
+				x = Math.abs(x);
+				y = Math.abs(y);
+
+				// Simple check to see which is moving farther, then moves that
+				// number
+				// of tiles.
+				if (x > y)
+					game.player.moveSpace((int) x);
+				else
+					game.player.moveSpace((int) y);
+
+				break;
+			}
+			case "PLAYERDAMAGE": {
+				num++;
+				int amt = Integer.valueOf(arg);
+
+				game.player.dealDamage(amt);
+				break;
+			}
+			case "ENEMYDAMAGE": {
+				num++;
+				int amt = Integer.valueOf(arg);
+
+				game.currentTarget.dealDamage(amt);
+				break;
+			}
+			}
 			
-			x = Math.abs(x);
-			y = Math.abs(y);
-			
-			//Simple check to see which is moving farther, then moves that number of tiles.
-			if (x > y)
-				game.player.moveSpace((int)x);
-			else
-				game.player.moveSpace((int)y);
-			
-			game.endTurn();
-			return;
-
 		}
+
+		System.out.println("Calling endturn");
+		game.endTurn();
+
+		// switch (cmd) {
+		// case "sword":
+		// swordAttack();
+		// game.endTurn();
+		// return;
+		// case "block":
+		// game.endTurn();
+		// return;
+		// case "bow":
+		// bowAttack(x, y);
+		// game.endTurn();
+		// return;
+		//
+		// case "walk":
+		// setDirection(x, y);
+		// game.player.moveSpace(1);
+		// game.endTurn();
+		// return;
+		//
+		// case "run":
+		// setDirection(x, y);
+		//
+		// x = Math.abs(x);
+		// y = Math.abs(y);
+		//
+		// //Simple check to see which is moving farther, then moves that number
+		// of tiles.
+		// if (x > y)
+		// game.player.moveSpace((int)x);
+		// else
+		// game.player.moveSpace((int)y);
+		//
+		// game.endTurn();
+		// return;
+		//
+		// }
 
 	}
 
@@ -140,9 +213,11 @@ public class CardHandler {
 		for (Actor a : game.engine.getActors().getArrayList()) {
 			if (a instanceof Enemy) {
 				Enemy e = (Enemy) a;
-				
-				Point click = new Point((int)(game.player.getCenter().x + x * game.TILE_SIZE),(int) (game.player.getCenter().y + y * game.TILE_SIZE));
-				
+
+				Point click = new Point((int) (game.player.getCenter().x + x
+						* game.TILE_SIZE), (int) (game.player.getCenter().y + y
+						* game.TILE_SIZE));
+
 				if (e.checkClick(click)) {
 					e.dealDamage(game.BOW_DAMAGE);
 					if (e.getHealth() <= 0)
