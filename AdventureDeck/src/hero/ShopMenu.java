@@ -3,6 +3,8 @@
  */
 package hero;
 
+import hero.Card.CardType;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
@@ -27,30 +29,33 @@ public class ShopMenu extends GameMode {
 	BufferedImage background, exit;
 	Card[] equipment;
 	Card[] items;
-	
+
 	ArrayList<Card> itemDeck = new ArrayList<Card>();
 	ArrayList<Card> equipmentDeck = new ArrayList<Card>();
+	private CardType toDraw;
+	private LocalGame game;
 
-	public ShopMenu(GameEngine eng) {
+	public ShopMenu(GameEngine eng, LocalGame lg) {
 		super(eng);
-		// TODO Auto-generated constructor stub
-		
+
+		game = lg;
+
 		items = new Card[5];
 		equipment = new Card[5];
-		
+
 		itemDeck.add(new Card("smallPotion"));
 		itemDeck.add(new Card("largePotion"));
 		itemDeck.add(new Card("smallPotion"));
 		itemDeck.add(new Card("largePotion"));
 		itemDeck.add(new Card("smallPotion"));
 		itemDeck.add(new Card("largePotion"));
-		
+
 		equipmentDeck.add(new Card("vest"));
 		equipmentDeck.add(new Card("steelSword"));
 		equipmentDeck.add(new Card("legendaryBow"));
 		equipmentDeck.add(new Card("clothPants"));
 		equipmentDeck.add(new Card("vest"));
-		
+
 		populateShop();
 
 		try {
@@ -90,34 +95,33 @@ public class ShopMenu extends GameMode {
 				engine.getEnvironmentSize().y, null);
 		g.drawImage(exit, engine.getEnvironmentSize().x - 400,
 				engine.getEnvironmentSize().y - 120, 75, 100, null);
-		
-		
+
 		g.setColor(new Color(179, 171, 178, 230));
-		
+
 		g.fillRect(80, 75, 600, 300);
-		
+
 		g.setColor(Color.white);
-		
+
 		g.setFont(g.getFont().deriveFont(30.0F));
-		
+
 		g.drawString("Items", 85, 100);
-		
+
 		Point itemStart = new Point(100, 125);
-		for (int x=0; x < items.length; x++) {
+		for (int x = 0; x < items.length; x++) {
 			items[x].draw(itemStart, engine, g, x);
-			g.drawString(items[x].getCost() * 15 + " Gil", x*110 + itemStart.x, itemStart.y + 95);
+			g.drawString(items[x].getCost() * 15 + " Gil", x * 110
+					+ itemStart.x, itemStart.y + 95);
 		}
-		
-		
-		
+
 		g.drawString("Equipment", 85, 250);
-		
+
 		Point equipStart = new Point(100, 275);
-		for (int x=0; x < equipment.length; x++) {
+		for (int x = 0; x < equipment.length; x++) {
 			equipment[x].draw(equipStart, engine, g, x);
-			g.drawString(equipment[x].getCost() * 15 + " Gil", x*110 + equipStart.x, equipStart.y + 95);
+			g.drawString(equipment[x].getCost() * 15 + " Gil", x * 110
+					+ equipStart.x, equipStart.y + 95);
 		}
-		
+
 		super.paint(g);
 	}
 
@@ -128,16 +132,44 @@ public class ShopMenu extends GameMode {
 	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
-	//	System.out.println(e.getPoint());
+		// System.out.println(e.getPoint());
 		if (e.getPoint().x >= engine.getEnvironmentSize().x - 400
 				&& e.getPoint().x <= engine.getEnvironmentSize().x - 325
 				&& e.getPoint().y >= engine.getEnvironmentSize().y - 120
 				&& e.getPoint().y <= engine.getEnvironmentSize().y - 20) {
-			CardHero.gi.getGameApplet().setCursor(new Cursor(Cursor.HAND_CURSOR));
-		}
-		else
-			CardHero.gi.getGameApplet().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			CardHero.gi.getGameApplet().setCursor(
+					new Cursor(Cursor.HAND_CURSOR));
+		} else
+			CardHero.gi.getGameApplet().setCursor(
+					new Cursor(Cursor.DEFAULT_CURSOR));
 		super.mouseMoved(e);
+	}
+
+	/**
+	 * @param e
+	 * @param basicHand2
+	 */
+	private void checkClick(Point start, MouseEvent e, Card[] hand) {
+
+		for (int x = 0; x < hand.length; x++)
+			if (hand[x] != null)
+				if (hand[x].checkClick(start, engine, x, e.getPoint())) {
+
+					Card toRemove = hand[x];
+					hand[x] = null;
+
+					// System.out.println("Handling " + toRemove);
+
+					toDraw = toRemove.type;
+
+					if (toRemove.type == CardType.ITEM) {
+						itemDeck.add(toRemove);
+						game.itemDeck.add(toRemove);
+					} else {
+						equipmentDeck.add(toRemove);
+						game.cardHandler.handleCard(toRemove);
+					}
+				}
 	}
 
 	/*
@@ -153,6 +185,11 @@ public class ShopMenu extends GameMode {
 					&& e.getPoint().y >= engine.getEnvironmentSize().y - 120
 					&& e.getPoint().y <= engine.getEnvironmentSize().y - 20) {
 				engine.setCurrentGameMode(1);
+			} else {
+				Point equipStart = new Point(0, 0);
+				checkClick(equipStart, e, equipment);
+				Point itemStart = new Point(0, 0);
+				checkClick(itemStart, e, items);
 			}
 		}
 		super.mouseReleased(e);
@@ -168,15 +205,15 @@ public class ShopMenu extends GameMode {
 		// TODO Auto-generated method stub
 		super.run(ms);
 	}
-	
+
 	private void populateShop() {
-		for (int x=0; x < items.length; x++)
+		for (int x = 0; x < items.length; x++)
 			drawCard(items, itemDeck);
-		
-		for (int x=0; x < equipment.length; x++)
+
+		for (int x = 0; x < equipment.length; x++)
 			drawCard(equipment, equipmentDeck);
 	}
-	
+
 	private void drawCard(Card[] section, ArrayList<Card> deck) {
 		Random gen = new Random();
 
@@ -188,7 +225,7 @@ public class ShopMenu extends GameMode {
 				break;
 			}
 
-		//deck.remove(deck.get(num));
+		deck.remove(deck.get(num));
 
 	}
 

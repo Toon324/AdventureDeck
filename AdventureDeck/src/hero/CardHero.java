@@ -37,6 +37,7 @@ public class CardHero {
 		engine.setWindowSize(WIDTH, HEIGHT);
 		gi.getFrame().setResizable(false);
 		gi.getFrame().setSize(WIDTH, HEIGHT);
+		gi.getFrame().setLocationRelativeTo(null); //Places frame in center of screen
 		
 		try {
 			gi.getFrame().setIconImage(ImageIO.read(this.getClass().getResourceAsStream("icon.png")));
@@ -47,7 +48,7 @@ public class CardHero {
 
 		MainMenu mainMenu = new MainMenu(engine);
 		LocalGame localGame = new LocalGame(engine);
-		ShopMenu shop = new ShopMenu(engine);
+		ShopMenu shop = new ShopMenu(engine, localGame);
 
 		engine.addGameMode(mainMenu);
 		engine.addGameMode(localGame);

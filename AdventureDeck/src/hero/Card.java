@@ -25,7 +25,7 @@ import petri.api.GameEngine;
 public class Card {
 
 	enum CardType {
-		BASIC, SPELL, ITEM, SHOP;
+		BASIC, SPELL, ITEM, SHOP, EQUIPMENT;
 	}
 
 	String name = "";
@@ -235,9 +235,9 @@ public class Card {
 
 	}
 
-	public boolean checkClick(GameEngine engine, int index, Point point) {
-		Rectangle bounds = new Rectangle(10 + (index * WIDTH)
-				+ (index * SPACING), engine.getEnvironmentSize().y - 90, WIDTH,
+	public boolean checkClick(Point start, GameEngine engine, int index, Point point) {
+		Rectangle bounds = new Rectangle(start.x + (index * WIDTH)
+				+ (index * SPACING), start.y, WIDTH,
 				HEIGHT);
 
 		return bounds.contains(point);

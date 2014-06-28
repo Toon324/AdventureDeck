@@ -87,7 +87,7 @@ public class CardHandler {
 				}
 
 		if (distance <= game.TILE_SIZE * 2) {
-			closest.dealDamage(game.SWORD_DAMAGE);
+			closest.dealDamage(game.bonusSwordDamage);
 			game.player.dealDamage(game.ENEMY_DAMAGE);
 
 			if (closest.getHealth() <= 0)
@@ -171,6 +171,16 @@ public class CardHandler {
 			case "SHOP": {
 				game.engine.setCurrentGameMode(2);
 			}
+			case "BUFFHEALTH": {
+				int amt = Integer.valueOf(arg);
+				game.player.addHealth(amt);
+				break;
+			}
+			case "BUFFSWORDDAMAGE": {
+				int amt = Integer.valueOf(arg);
+				game.bonusSwordDamage += amt;
+				break;
+			}
 			}
 
 		}
@@ -231,7 +241,7 @@ public class CardHandler {
 						* game.TILE_SIZE));
 
 				if (e.checkClick(click)) {
-					e.dealDamage(game.BOW_DAMAGE);
+					e.dealDamage(game.bonusBowDamage);
 					if (e.getHealth() <= 0)
 						game.player.addGold(e.getGoldValue());
 				}

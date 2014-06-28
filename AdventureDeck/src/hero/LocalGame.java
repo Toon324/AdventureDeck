@@ -30,12 +30,12 @@ import petri.api.GameMode;
 public class LocalGame extends GameMode {
 
 	private static final int CARD_TRAY_SIZE = 100;
-	final int SMALL_POTION_AMT = 4;
-	final int LARGE_POTION_AMT = 9;
 	final int TILE_SIZE = 25;
-	final int SWORD_DAMAGE = 8;
-	final int BOW_DAMAGE = 5;
+	
 	final int ENEMY_DAMAGE = 12;
+	
+	int bonusSwordDamage = 0;
+	int bonusBowDamage = 0;
 
 	ArrayList<Card> basicDeck = new ArrayList<Card>();
 	ArrayList<Card> spellDeck = new ArrayList<Card>();
@@ -48,7 +48,7 @@ public class LocalGame extends GameMode {
 	Card shop = new Card("shop");
 
 	private GameImage playerImage = null, enemyImage = null;
-	private CardHandler cardHandler = new CardHandler(this);
+	CardHandler cardHandler = new CardHandler(this);
 
 	public Player player;
 	public boolean showRange;
@@ -262,12 +262,12 @@ public class LocalGame extends GameMode {
 		if (showRange)
 			checkChoice(e);
 		else {
+			Point start = new Point(10, engine.getEnvironmentSize().y - 90);
+			checkClick(start, e, basicHand, 0);
+			checkClick(start, e, spellHand, basicHand.length);
+			checkClick(start, e, itemHand, basicHand.length + spellHand.length);
 
-			checkClick(e, basicHand, 0);
-			checkClick(e, spellHand, basicHand.length);
-			checkClick(e, itemHand, basicHand.length + spellHand.length);
-
-			if (shop.checkClick(engine, basicHand.length + spellHand.length
+			if (shop.checkClick(start, engine, basicHand.length + spellHand.length
 					+ itemHand.length + 1, e.getPoint()))
 				cardHandler.handleCard(shop);
 		}
@@ -357,10 +357,11 @@ public class LocalGame extends GameMode {
 	 * @param e
 	 * @param basicHand2
 	 */
-	private void checkClick(MouseEvent e, Card[] hand, int offset) {
+	private void checkClick(Point start, MouseEvent e, Card[] hand, int offset) {
+		
 		for (int x = 0; x < hand.length; x++)
 			if (hand[x] != null)
-				if (hand[x].checkClick(engine, x + offset, e.getPoint())) {
+				if (hand[x].checkClick(start, engine, x + offset, e.getPoint())) {
 
 					Card toRemove = hand[x];
 					hand[x] = null;

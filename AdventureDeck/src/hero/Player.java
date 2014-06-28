@@ -180,4 +180,13 @@ public class Player extends NPC {
 
 	}
 
+	/**
+	 * @param amt
+	 */
+	public void addHealth(int amt) {
+		health += amt;
+		maxHealth += amt;
+		
+	}
+
 }
