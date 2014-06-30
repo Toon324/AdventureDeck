@@ -28,55 +28,81 @@ public class Card {
 		BASIC, SPELL, ITEM, SHOP, EQUIPMENT;
 	}
 
+	public CardType type;
+
 	String name = "";
 	String description = "";
 	BufferedImage image;
+
+	// Info for drawing the card. Will be replaced with new card design soon
 	private final int WIDTH = 90;
 	private final int HEIGHT = 80;
 	private final int SPACING = 20;
-	public CardType type;
+
 	private int cost;
-	private boolean canChain;
+	private boolean canChain; // Currently unused and likely to be removed
 	private int[][] range;
 	private LinkedList<String> effects;
 
+	/**
+	 * Fetches the image and .card file based on the name passed in. Files are
+	 * located in /Cards/. If an image is not found, a default image is loaded.
+	 * 
+	 * @param n
+	 *            name of card, should be same as file names
+	 */
 	public Card(String n) {
 		name = n;
 		type = CardType.BASIC;
 
 		effects = new LinkedList<String>();
 
-		File f = new File("src/hero/Cards/" + n + ".card");
+		File f = new File("src/hero/Cards/" + n + ".card"); // Not relative,
+															// will probably
+															// cause issues
+															// during export to
+															// .jar
 		if (f.exists())
 			try {
 				loadInfo(f);
 			} catch (FileNotFoundException e2) {
+				GameEngine.log(e2.getMessage());
 				e2.printStackTrace();
 			}
+
 		try {
+			// Fetch the image
 			image = ImageIO.read(getClass().getResourceAsStream(
 					"Cards/" + n + ".png"));
 		} catch (Exception e) {
-			System.out.println("Could not read " + n);
+			GameEngine.log("Could not read " + n);
 			e.printStackTrace();
 			try {
+				// Load default image if image not found
 				image = ImageIO.read(getClass()
 						.getResource("Cards/default.png"));
 			} catch (Exception e1) {
-				System.out
-						.println("Fatal fault: Could not load backup image default.png!");
+				GameEngine
+						.log("Fatal fault: Could not load backup image default.png!");
 			}
 		}
 	}
 
 	/**
+	 * Reads in the data from the .card file. Should ignore unrecognized
+	 * commands.
+	 * 
 	 * @param f
+	 *            File to read from
 	 * @throws FileNotFoundException
+	 *             if the File is not found (should never be thrown in the
+	 *             context of use)
 	 */
 	private void loadInfo(File f) throws FileNotFoundException {
-		// System.out.println("Loading info of " + f.getName());
+		// GameEngine.log("Loading info of " + f.getName());
+
 		Scanner scan = new Scanner(f);
-		scan.useDelimiter("\t");
+		scan.useDelimiter("\t"); // Tab delimination
 
 		String section = "";
 
@@ -84,23 +110,24 @@ public class Card {
 			String scanned = scan.next();
 			if (scanned.contains("}"))
 				scanned = scanned.replace("}", "");
-			
+
 			scanned = scanned.trim();
-			
-		//	System.out.println(section + " : " + scanned);
+
+			// GameEngine.log(section + " : " + scanned);
 
 			if (scanned.contains("INFO {"))
 				section = "INFO";
 			else if (scanned.contains("EFFECT {"))
 				section = "EFFECT";
-			else {
 
+			else {
+				// Feed basic info into object
 				if (!scanned.equals("}")) {
 					if (section == "INFO") {
 						if (scanned.equals("name"))
 							name = scan.next();
 						else if (scanned.equals("type"))
-							setType(scan.next());
+							setCardType(scan.next());
 						else if (scanned.equals("cost"))
 							cost = Integer.parseInt(scan.next().trim());
 						else if (scanned.equals("range"))
@@ -114,9 +141,11 @@ public class Card {
 							else
 								canChain = true;
 						}
-					} else {
-						effects.add(scanned);
-					}
+					} else
+						effects.add(scanned); // Effects can be as long as they
+												// want (up to max size) thus
+												// the need for a List
+
 				}
 			}
 
@@ -140,6 +169,10 @@ public class Card {
 	}
 
 	/**
+	 * Range is represented as an array of int arrays, in the order of range [y]
+	 * [x]. Range is left to right (row) and top to bottom (array of rows). This
+	 * is done to give an easy in-text visualization of the range output.
+	 * 
 	 * @return the range
 	 */
 	public int[][] getRange() {
@@ -154,54 +187,71 @@ public class Card {
 	}
 
 	/**
+	 * Converts the .card format of range (ex: [0, 0, 1, 0, 0] [1, 1, 0, 1, 1])
+	 * into an array of array of ints.
+	 * 
 	 * @param next
 	 * @return
 	 */
 	private int[][] readRange(String rangeText) {
-		List<List<String>> yArray = new LinkedList<List<String>>();
+		List<List<String>> rowsArray = new LinkedList<List<String>>();
 
-		Scanner layer1 = new Scanner(rangeText);
-		layer1.useDelimiter("]");
+		// Read in the range row by row (ex: row 1 would be [0, 0, 1, 0, 0])
+		Scanner row = new Scanner(rangeText);
+		row.useDelimiter("]");
 
-		while (layer1.hasNext()) {
-			String line = layer1.next().replace("[", "").trim();
+		while (row.hasNext()) {
+			String line = row.next().replace("[", "").trim(); // Remove any
+																// unnecessary
+																// characters
 
 			if (line.equals(""))
 				break;
 
-			//System.out.println("Line found: " + line);
+			// GameEngine.log("Line found: " + line);
 
-			Scanner layer2 = new Scanner(line);
-			layer2.useDelimiter(",");
+			// Read in the range elements (ex: first element would be 0, second
+			// 0, third 1. . . and last 0)
+			Scanner element = new Scanner(line);
+			element.useDelimiter(",");
 
-			List<String> xArray = new LinkedList<String>();
+			List<String> singleRowArray = new LinkedList<String>();
 
-			while (layer2.hasNext()) {
-				String el = layer2.next();
+			while (element.hasNext()) {
+				String el = element.next();
 
+				// An empty element means we are done with the row
 				if (el.equals(""))
 					break;
 
-				xArray.add(el);
-				//System.out.println("Element found: " + el);
+				singleRowArray.add(el);
+				// GameEngine.log("Element found: " + el);
 			}
-			yArray.add(xArray);
-			layer2.close();
+			rowsArray.add(singleRowArray);
+			element.close();
 		}
 
-		layer1.close();
+		row.close();
 
-		int[][] foundRange = new int[yArray.size()][yArray.get(0).size()];
+		// Make sure the range array is exactly the size it needs to be, and
+		// then copy the elements into it
+		int[][] foundRange = new int[rowsArray.size()][rowsArray.get(0).size()];
 
-		for (int y = 0; y < yArray.size(); y++) {
-			for (int x = 0; x < yArray.get(y).size(); x++) {
-				foundRange[y][x] = Integer.valueOf(yArray.get(y).get(x).trim());
+		for (int y = 0; y < rowsArray.size(); y++) {
+			for (int x = 0; x < rowsArray.get(y).size(); x++) {
+				foundRange[y][x] = Integer.valueOf(rowsArray.get(y).get(x)
+						.trim());
 			}
 		}
 
 		return foundRange;
 	}
 
+	/*
+	 * Draws the card, based on a start point for the row of cards, and the
+	 * index of where the card is in that row. In the future, the index could be
+	 * removed with an updated start Point in the outer array.
+	 */
 	public void draw(Point start, GameEngine engine, Graphics g, int index) {
 
 		Color org = g.getColor();
@@ -235,10 +285,20 @@ public class Card {
 
 	}
 
-	public boolean checkClick(Point start, GameEngine engine, int index, Point point) {
+	/**
+	 * Checks to see if the card has been clicked. Uses same Point and index
+	 * mechanic as draw().
+	 * 
+	 * @param start
+	 * @param engine
+	 * @param index
+	 * @param point
+	 * @return
+	 */
+	public boolean checkClick(Point start, GameEngine engine, int index,
+			Point point) {
 		Rectangle bounds = new Rectangle(start.x + (index * WIDTH)
-				+ (index * SPACING), start.y, WIDTH,
-				HEIGHT);
+				+ (index * SPACING), start.y, WIDTH, HEIGHT);
 
 		return bounds.contains(point);
 
@@ -248,24 +308,29 @@ public class Card {
 		return name;
 	}
 
-	public CardType getType() {
+	public CardType getCardType() {
 		return type;
 	}
 
 	/**
+	 * This may be able to be simplified with some Enum values
+	 * 
 	 * @param basic
 	 */
-	public void setType(String s) {
-		if (s.equals("BASIC"))
-			type = CardType.BASIC;
+	public void setCardType(String s) {
+		if (s.equals("ITEM"))
+			type = CardType.ITEM;
 		else if (s.equals("SPELL"))
 			type = CardType.SPELL;
+		else if (s.equals("EQUIPMENT"))
+			type = CardType.EQUIPMENT;
+		else if (s.equals("SHOP"))
+			type = CardType.SHOP;
 		else
-			type = CardType.ITEM;
-
+			type = CardType.BASIC;
 	}
 
-	public void setType(CardType t) {
+	public void setCardType(CardType t) {
 		type = t;
 	}
 
@@ -274,6 +339,6 @@ public class Card {
 	}
 
 	public String toString() {
-		return getName() + " : " + getType();
+		return getName() + " : " + getCardType();
 	}
 }

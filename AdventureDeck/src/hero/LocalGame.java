@@ -126,15 +126,15 @@ public class LocalGame extends GameMode {
 
 		// Tell the cards what type they are
 		for (Card c : basicDeck)
-			c.setType(CardType.BASIC);
+			c.setCardType(CardType.BASIC);
 
 		for (Card c : spellDeck)
-			c.setType(CardType.SPELL);
+			c.setCardType(CardType.SPELL);
 
 		for (Card c : itemDeck)
-			c.setType(CardType.ITEM);
+			c.setCardType(CardType.ITEM);
 
-		shop.setType(CardType.SHOP);
+		shop.setCardType(CardType.SHOP);
 
 		initiateHand();
 		System.out.println("Begin generation: "

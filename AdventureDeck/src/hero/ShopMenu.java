@@ -51,7 +51,7 @@ public class ShopMenu extends GameMode {
 		itemDeck.add(new Card("largePotion"));
 
 		for (Card c : itemDeck)
-			c.setType(CardType.ITEM);
+			c.setCardType(CardType.ITEM);
 
 		equipmentDeck.add(new Card("vest"));
 		equipmentDeck.add(new Card("steelSword"));
@@ -60,7 +60,7 @@ public class ShopMenu extends GameMode {
 		equipmentDeck.add(new Card("vest"));
 
 		for (Card c : equipmentDeck)
-			c.setType(CardType.EQUIPMENT);
+			c.setCardType(CardType.EQUIPMENT);
 
 		populateShop();
 
