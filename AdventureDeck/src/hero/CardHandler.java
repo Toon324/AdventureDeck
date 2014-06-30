@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.LinkedList;
 
 import petri.api.Actor;
+import petri.api.GameEngine;
 
 /**
  * @author Cody
@@ -21,6 +22,11 @@ public class CardHandler {
 
 		int[][] range = c.getRange();
 
+		if (range == null) {
+			GameEngine.log(c + " doesn't have a range!");
+			return;
+		}
+		
 		// Check to see if spell targets self
 		if (range.length == 1) {
 			// System.out.println("Targetting self");
@@ -73,36 +79,21 @@ public class CardHandler {
 	}
 
 	/**
-	 * 
-	 */
-	private void swordAttack() {
-		NPC closest = null;
-		int distance = -1;
-
-		for (Actor a : game.engine.getActors().getArrayList())
-			if (a instanceof NPC)
-				if (closest == null || game.player.distanceTo(a) < distance) {
-					closest = (NPC) a;
-					distance = game.player.distanceTo(a);
-				}
-
-		if (distance <= game.TILE_SIZE * 2) {
-			closest.dealDamage(game.bonusSwordDamage);
-			game.player.dealDamage(game.ENEMY_DAMAGE);
-
-			if (closest.getHealth() <= 0)
-				game.player.addGold(closest.getGoldValue());
-		}
-
-	}
-
-	/**
 	 * @param choiceCard
 	 * @param x
 	 * @param y
 	 */
 	public void handleChoice(Card c, float x, float y) {
 		LinkedList<String> effects = c.getEffects();
+		
+		if (effects == null) {
+			GameEngine.log(c + " does not have any effects.");
+			return;
+		}
+		else if (effects.size() == 1) {
+			GameEngine.log(c + " does not have any arguments.");
+			return;
+		}
 
 		for (int num = 0; num < effects.size(); num++) {
 
@@ -124,7 +115,6 @@ public class CardHandler {
 				break;
 			}
 			case "PLAYERMOVE": {
-				int amt = Integer.valueOf(arg);
 
 				setDirection(x, y);
 
@@ -170,6 +160,7 @@ public class CardHandler {
 			}
 			case "SHOP": {
 				game.engine.setCurrentGameMode(2);
+				((ShopMenu)game.engine.getCurrentGameMode()).stockOptions();
 			}
 			case "BUFFHEALTH": {
 				int amt = Integer.valueOf(arg);
@@ -187,67 +178,8 @@ public class CardHandler {
 
 		game.endTurn();
 
-		// switch (cmd) {
-		// case "sword":
-		// swordAttack();
-		// game.endTurn();
-		// return;
-		// case "block":
-		// game.endTurn();
-		// return;
-		// case "bow":
-		// bowAttack(x, y);
-		// game.endTurn();
-		// return;
-		//
-		// case "walk":
-		// setDirection(x, y);
-		// game.player.moveSpace(1);
-		// game.endTurn();
-		// return;
-		//
-		// case "run":
-		// setDirection(x, y);
-		//
-		// x = Math.abs(x);
-		// y = Math.abs(y);
-		//
-		// //Simple check to see which is moving farther, then moves that number
-		// of tiles.
-		// if (x > y)
-		// game.player.moveSpace((int)x);
-		// else
-		// game.player.moveSpace((int)y);
-		//
-		// game.endTurn();
-		// return;
-		//
-		// }
-
 	}
 
-	/**
-	 * @param x
-	 * @param y
-	 */
-	private void bowAttack(float x, float y) {
-		// TODO Auto-generated method stub
-		for (Actor a : game.engine.getActors().getArrayList()) {
-			if (a instanceof NPC) {
-				NPC e = (NPC) a;
-
-				Point click = new Point((int) (game.player.getCenter().x + x
-						* game.TILE_SIZE), (int) (game.player.getCenter().y + y
-						* game.TILE_SIZE));
-
-				if (e.checkClick(click)) {
-					e.dealDamage(game.bonusBowDamage);
-					if (e.getHealth() <= 0)
-						game.player.addGold(e.getGoldValue());
-				}
-			}
-		}
-	}
 
 	/**
 	 * @param x

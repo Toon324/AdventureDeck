@@ -58,6 +58,7 @@ public class LocalGame extends GameMode {
 	private Card choiceCard;
 	private CardType toDraw;
 	public NPC currentTarget;
+	int turnCnt;
 
 	static long startTime;
 
@@ -214,6 +215,7 @@ public class LocalGame extends GameMode {
 
 		g.setFont(g.getFont().deriveFont(18.0F));
 		g.drawString(player.getGold() + " Gil", 30, 50);
+		g.drawString("Turn: " + turnCnt, 30, 90);
 
 		engine.getActors().drawActors(g);
 
@@ -276,6 +278,8 @@ public class LocalGame extends GameMode {
 	}
 
 	public void endTurn() {
+		turnCnt++;
+		
 		// System.out.println("ToDraw: " + toDraw);
 		drawCard(toDraw);
 
@@ -383,6 +387,11 @@ public class LocalGame extends GameMode {
 
 	private void drawCard(Card[] section, ArrayList<Card> deck) {
 		Random gen = new Random();
+		
+		if (deck.size() == 0) {
+			System.out.println(section[0] + " deck is size zero");
+			return;
+		}
 
 		int num = gen.nextInt(deck.size());
 

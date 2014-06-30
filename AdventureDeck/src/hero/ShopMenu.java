@@ -50,11 +50,17 @@ public class ShopMenu extends GameMode {
 		itemDeck.add(new Card("smallPotion"));
 		itemDeck.add(new Card("largePotion"));
 
+		for (Card c : itemDeck)
+			c.setType(CardType.ITEM);
+
 		equipmentDeck.add(new Card("vest"));
 		equipmentDeck.add(new Card("steelSword"));
 		equipmentDeck.add(new Card("legendaryBow"));
 		equipmentDeck.add(new Card("clothPants"));
 		equipmentDeck.add(new Card("vest"));
+
+		for (Card c : equipmentDeck)
+			c.setType(CardType.EQUIPMENT);
 
 		populateShop();
 
@@ -108,19 +114,29 @@ public class ShopMenu extends GameMode {
 
 		Point itemStart = new Point(100, 125);
 		for (int x = 0; x < items.length; x++) {
-			items[x].draw(itemStart, engine, g, x);
-			g.drawString(items[x].getCost() * 15 + " Gil", x * 110
-					+ itemStart.x, itemStart.y + 95);
+			if (items[x] != null) {
+				items[x].draw(itemStart, engine, g, x);
+				g.drawString(items[x].getCost() * 15 + " Gil", x * 110
+						+ itemStart.x, itemStart.y + 95);
+			}
 		}
 
 		g.drawString("Equipment", 85, 250);
 
 		Point equipStart = new Point(100, 275);
 		for (int x = 0; x < equipment.length; x++) {
-			equipment[x].draw(equipStart, engine, g, x);
-			g.drawString(equipment[x].getCost() * 15 + " Gil", x * 110
-					+ equipStart.x, equipStart.y + 95);
+			if (equipment[x] != null) {
+				equipment[x].draw(equipStart, engine, g, x);
+				g.drawString(equipment[x].getCost() * 15 + " Gil", x * 110
+						+ equipStart.x, equipStart.y + 95);
+			}
 		}
+
+		g.setColor(Color.orange);
+
+		g.setFont(g.getFont().deriveFont(18.0F));
+		g.drawString(game.player.getGold() + " Gil", 30, 50);
+		g.drawString("Turn: " + game.turnCnt, 30, 70);
 
 		super.paint(g);
 	}
@@ -155,6 +171,13 @@ public class ShopMenu extends GameMode {
 			if (hand[x] != null)
 				if (hand[x].checkClick(start, engine, x, e.getPoint())) {
 
+					int cost = hand[x].getCost() * 15;
+
+					if (game.player.getGold() < cost)
+						return;
+					else
+						game.player.subtractGold(cost);
+
 					Card toRemove = hand[x];
 					hand[x] = null;
 
@@ -164,7 +187,17 @@ public class ShopMenu extends GameMode {
 
 					if (toRemove.type == CardType.ITEM) {
 						itemDeck.add(toRemove);
-						game.itemDeck.add(toRemove);
+						boolean placed = false;
+
+						// Puts new item in hand if there is space
+						for (int z = 0; z < game.itemHand.length; z++)
+							if (game.itemHand[z] == null) {
+								placed = true;
+								game.itemHand[z] = toRemove;
+							}
+
+						if (!placed)
+							game.itemDeck.add(toRemove);
 					} else {
 						equipmentDeck.add(toRemove);
 						game.cardHandler.handleCard(toRemove);
@@ -179,18 +212,16 @@ public class ShopMenu extends GameMode {
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (e.getClickCount() == 2) {
-			if (e.getPoint().x >= engine.getEnvironmentSize().x - 400
-					&& e.getPoint().x <= engine.getEnvironmentSize().x - 325
-					&& e.getPoint().y >= engine.getEnvironmentSize().y - 120
-					&& e.getPoint().y <= engine.getEnvironmentSize().y - 20) {
-				engine.setCurrentGameMode(1);
-			} else {
-				Point equipStart = new Point(0, 0);
-				checkClick(equipStart, e, equipment);
-				Point itemStart = new Point(0, 0);
-				checkClick(itemStart, e, items);
-			}
+		if (e.getPoint().x >= engine.getEnvironmentSize().x - 400
+				&& e.getPoint().x <= engine.getEnvironmentSize().x - 325
+				&& e.getPoint().y >= engine.getEnvironmentSize().y - 120
+				&& e.getPoint().y <= engine.getEnvironmentSize().y - 20) {
+			engine.setCurrentGameMode(1);
+		} else {
+			Point equipStart = new Point(100, 275);
+			checkClick(equipStart, e, equipment);
+			Point itemStart = new Point(100, 125);
+			checkClick(itemStart, e, items);
 		}
 		super.mouseReleased(e);
 	}
@@ -215,6 +246,10 @@ public class ShopMenu extends GameMode {
 	}
 
 	private void drawCard(Card[] section, ArrayList<Card> deck) {
+		
+		if (deck.size() == 0)
+			return;
+		
 		Random gen = new Random();
 
 		int num = gen.nextInt(deck.size());
@@ -227,6 +262,14 @@ public class ShopMenu extends GameMode {
 
 		deck.remove(deck.get(num));
 
+	}
+
+	/**
+	 * Add 1 more item in each category
+	 */
+	public void stockOptions() {
+		drawCard(items, itemDeck);
+		drawCard(equipment, equipmentDeck);
 	}
 
 }
