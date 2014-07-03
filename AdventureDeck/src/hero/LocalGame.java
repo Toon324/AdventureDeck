@@ -12,10 +12,12 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 
 import petri.api.Actor;
 import petri.api.AnimatedImage;
@@ -31,9 +33,9 @@ public class LocalGame extends GameMode {
 
 	private static final int CARD_TRAY_SIZE = 100;
 	final int TILE_SIZE = 25;
-	
+
 	final int ENEMY_DAMAGE = 12;
-	
+
 	int bonusSwordDamage = 0;
 	int bonusBowDamage = 0;
 
@@ -59,11 +61,27 @@ public class LocalGame extends GameMode {
 	private CardType toDraw;
 	public NPC currentTarget;
 	int turnCnt;
+	GraphPanel drawTimes;
+	LinkedList<Double> drawPoints;
+
+	long drawStart;
 
 	static long startTime;
 
 	public LocalGame(GameEngine eng) {
 		super(eng);
+
+		drawPoints = new LinkedList<Double>();
+		drawPoints.add(0.0);
+		drawTimes = new GraphPanel(drawPoints);
+		drawStart = System.currentTimeMillis();
+
+		JFrame graph = new JFrame();
+		graph.setSize(400, 400);
+
+		graph.add(drawTimes);
+
+		graph.setVisible(true);
 
 		System.out.println("Start: " + System.currentTimeMillis());
 		startTime = System.currentTimeMillis();
@@ -252,6 +270,17 @@ public class LocalGame extends GameMode {
 				basicHand.length + spellHand.length + itemHand.length + 1);
 
 		super.paint(g);
+		// drawPoints.add((double) (System.currentTimeMillis() - drawStart));
+
+		if (System.currentTimeMillis() - drawStart > 1000) {
+			drawStart = System.currentTimeMillis();
+
+			if (drawPoints.size() > 100)
+				drawPoints.clear();
+
+			drawPoints.add(engine.getFPS());
+			drawTimes.setScores(drawPoints);
+		}
 	}
 
 	/*
@@ -269,8 +298,8 @@ public class LocalGame extends GameMode {
 			checkClick(start, e, spellHand, basicHand.length);
 			checkClick(start, e, itemHand, basicHand.length + spellHand.length);
 
-			if (shop.checkClick(start, engine, basicHand.length + spellHand.length
-					+ itemHand.length + 1, e.getPoint()))
+			if (shop.checkClick(start, engine, basicHand.length
+					+ spellHand.length + itemHand.length + 1, e.getPoint()))
 				cardHandler.handleCard(shop);
 		}
 
@@ -279,7 +308,7 @@ public class LocalGame extends GameMode {
 
 	public void endTurn() {
 		turnCnt++;
-		
+
 		// System.out.println("ToDraw: " + toDraw);
 		drawCard(toDraw);
 
@@ -362,7 +391,7 @@ public class LocalGame extends GameMode {
 	 * @param basicHand2
 	 */
 	private void checkClick(Point start, MouseEvent e, Card[] hand, int offset) {
-		
+
 		for (int x = 0; x < hand.length; x++)
 			if (hand[x] != null)
 				if (hand[x].checkClick(start, engine, x + offset, e.getPoint())) {
@@ -387,7 +416,7 @@ public class LocalGame extends GameMode {
 
 	private void drawCard(Card[] section, ArrayList<Card> deck) {
 		Random gen = new Random();
-		
+
 		if (deck.size() == 0) {
 			System.out.println(section[0] + " deck is size zero");
 			return;
