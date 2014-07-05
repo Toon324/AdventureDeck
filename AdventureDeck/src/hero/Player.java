@@ -85,6 +85,7 @@ public class Player extends NPC {
 		actionPoints = apPool;
 		
 		heal(1);
+		addGold(5);
 	}
 
 	public int getDir() {

@@ -161,6 +161,11 @@ public class CardHandler {
 			case "SHOP": {
 				game.engine.setCurrentGameMode(2);
 				((ShopMenu)game.engine.getCurrentGameMode()).stockOptions();
+				break;
+			}
+			case "ENDTURN": {
+				game.endTurn();
+				break;
 			}
 			case "BUFFHEALTH": {
 				int amt = Integer.valueOf(arg);
@@ -176,7 +181,7 @@ public class CardHandler {
 
 		}
 
-		game.endTurn();
+		//game.endTurn();
 
 	}
 

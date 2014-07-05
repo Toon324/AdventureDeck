@@ -46,8 +46,7 @@ public class LocalGame extends GameMode {
 	Card[] basicHand = new Card[5];
 	Card[] spellHand = new Card[2];
 	Card[] itemHand = new Card[2];
-
-	Card shop = new Card("shop");
+	Card[] ui = new Card[2];
 
 	private GameImage playerImage = null, enemyImage = null;
 	CardHandler cardHandler = new CardHandler(this);
@@ -76,12 +75,12 @@ public class LocalGame extends GameMode {
 		drawTimes = new GraphPanel(drawPoints);
 		drawStart = System.currentTimeMillis();
 
-//		JFrame graph = new JFrame();
-//		graph.setSize(400, 400);
-//
-//		graph.add(drawTimes);
-//
-//		graph.setVisible(true);
+		// JFrame graph = new JFrame();
+		// graph.setSize(400, 400);
+		//
+		// graph.add(drawTimes);
+		//
+		// graph.setVisible(true);
 
 		System.out.println("Start: " + System.currentTimeMillis());
 		startTime = System.currentTimeMillis();
@@ -116,6 +115,8 @@ public class LocalGame extends GameMode {
 		engine.getActors().add(e2);
 		engine.getActors().add(e3);
 
+		// Basic deck
+
 		basicDeck.add(new Card("walk"));
 		basicDeck.add(new Card("run"));
 
@@ -125,22 +126,22 @@ public class LocalGame extends GameMode {
 		basicDeck.add(new Card("bow"));
 		basicDeck.add(new Card("bow"));
 
-		// deck.add(new Card("shop"));
-		// deck.add(new Card("shop"));
-
-		itemDeck.add(new Card("smallPotion"));
-		itemDeck.add(new Card("smallPotion"));
-		itemDeck.add(new Card("largePotion"));
-
 		// Spell deck
 
 		spellDeck.add(new Card("lightning"));
 		spellDeck.add(new Card("fireball"));
 
-		// Trap deck
+		// Item deck
 
 		itemDeck.add(new Card("pitfall"));
 		itemDeck.add(new Card("shadow"));
+		itemDeck.add(new Card("smallPotion"));
+		itemDeck.add(new Card("smallPotion"));
+		itemDeck.add(new Card("largePotion"));
+
+		// UI
+		ui[0] = new Card("endTurn");
+		ui[1] = new Card("shop");
 
 		// Tell the cards what type they are
 		for (Card c : basicDeck)
@@ -152,7 +153,8 @@ public class LocalGame extends GameMode {
 		for (Card c : itemDeck)
 			c.setCardType(CardType.ITEM);
 
-		shop.setCardType(CardType.SHOP);
+		ui[0].setCardType(CardType.UI);
+		ui[1].setCardType(CardType.UI);
 
 		initiateHand();
 		System.out.println("Begin generation: "
@@ -266,8 +268,11 @@ public class LocalGame extends GameMode {
 		// Shop is at the end of the cards
 		g.setColor(Color.green);
 
-		shop.draw(new Point(10, engine.getEnvironmentSize().y - 90), engine, g,
-				basicHand.length + spellHand.length + itemHand.length + 1);
+		for (int x = 0; x < ui.length; x++)
+			if (ui[x] != null)
+				ui[x].draw(new Point(10, engine.getEnvironmentSize().y - 90),
+						engine, g, basicHand.length + spellHand.length
+								+ itemHand.length + x);
 
 		super.paint(g);
 		// drawPoints.add((double) (System.currentTimeMillis() - drawStart));
@@ -297,10 +302,8 @@ public class LocalGame extends GameMode {
 			checkClick(start, e, basicHand, 0);
 			checkClick(start, e, spellHand, basicHand.length);
 			checkClick(start, e, itemHand, basicHand.length + spellHand.length);
-
-			if (shop.checkClick(start, engine, basicHand.length
-					+ spellHand.length + itemHand.length + 1, e.getPoint()))
-				cardHandler.handleCard(shop);
+			checkClick(start, e, ui, basicHand.length + spellHand.length
+					+ itemHand.length);
 		}
 
 		super.mouseReleased(e);
@@ -309,9 +312,13 @@ public class LocalGame extends GameMode {
 	public void endTurn() {
 		turnCnt++;
 
+		player.endTurn(); // Player gains max AP, resets to full AP, and heals
+							// slightly
+
 		// System.out.println("ToDraw: " + toDraw);
 		drawCard(toDraw);
 
+		// Handle any statuses they may have (burn, poison, etc)
 		for (Actor a : engine.getActors().getArrayList())
 			((NPC) a).handleStatuses();
 	}
@@ -397,7 +404,9 @@ public class LocalGame extends GameMode {
 				if (hand[x].checkClick(start, engine, x + offset, e.getPoint())) {
 
 					Card toRemove = hand[x];
-					hand[x] = null;
+
+					if (hand[x].getCardType() != CardType.UI)
+						hand[x] = null;
 
 					// System.out.println("Handling " + toRemove);
 

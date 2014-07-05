@@ -25,7 +25,7 @@ import petri.api.GameEngine;
 public class Card {
 
 	enum CardType {
-		BASIC, SPELL, ITEM, SHOP, EQUIPMENT;
+		BASIC, SPELL, ITEM, UI, EQUIPMENT;
 	}
 
 	public CardType type;
@@ -325,7 +325,7 @@ public class Card {
 		else if (s.equals("EQUIPMENT"))
 			type = CardType.EQUIPMENT;
 		else if (s.equals("SHOP"))
-			type = CardType.SHOP;
+			type = CardType.UI;
 		else
 			type = CardType.BASIC;
 	}
