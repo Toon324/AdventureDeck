@@ -1,5 +1,5 @@
 ﻿INFO {
-	name	Sword Slash
+	name	Slash
 	type	BASIC
 	cost	1
 	desc	A powerful sword slash. Does 5 damage.

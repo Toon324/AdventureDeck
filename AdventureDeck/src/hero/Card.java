@@ -278,7 +278,9 @@ public class Card {
 				image.getWidth(), image.getHeight(), null);
 
 		// Draw text
+		g.setFont(g.getFont().deriveFont(14.0f));
 		g.setColor(Color.BLACK);
+		g.drawString(name + " \t" + cost, x, y + 5);
 
 		// Reset to original color
 		g.setColor(org);
