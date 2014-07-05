@@ -76,12 +76,12 @@ public class LocalGame extends GameMode {
 		drawTimes = new GraphPanel(drawPoints);
 		drawStart = System.currentTimeMillis();
 
-		JFrame graph = new JFrame();
-		graph.setSize(400, 400);
-
-		graph.add(drawTimes);
-
-		graph.setVisible(true);
+//		JFrame graph = new JFrame();
+//		graph.setSize(400, 400);
+//
+//		graph.add(drawTimes);
+//
+//		graph.setVisible(true);
 
 		System.out.println("Start: " + System.currentTimeMillis());
 		startTime = System.currentTimeMillis();

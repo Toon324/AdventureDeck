@@ -2,7 +2,7 @@
 	name	Steel Sword
 	type	ITEM
 	cost	6
-	desc	Sword attacks do 7 more damage.
+	desc	Sword attacks do 3 more damage.
 	range	[1]
 	canChain	0
 }	

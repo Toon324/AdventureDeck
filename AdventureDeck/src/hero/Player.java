@@ -19,16 +19,16 @@ import petri.api.GameImage;
  */
 public class Player extends NPC {
 
-	private final int SPACE_SIZE = 25;
+	private final int SPACE_SIZE = 25, MAX_AP = 10;
 
-	private int gold;
+	private int gold, actionPoints, apPool;
 
 	public final static int BOWRANGE = 75;
 
 	Player(GameEngine e, GameImage i) {
 		super(e, i);
-		System.out.println("Image size: " + i.getImage().getWidth() + ","
-				+ i.getImage().getHeight());
+		actionPoints = 1;
+		apPool = 1;
 		maxHealth = 50;
 		health = 50;
 		gold = 500;
@@ -76,6 +76,15 @@ public class Player extends NPC {
 					- (spaces * SPACE_SIZE) );
 			return;
 		}
+	}
+	
+	public void endTurn() {
+		if (apPool < MAX_AP)
+			apPool++;
+		
+		actionPoints = apPool;
+		
+		heal(1);
 	}
 
 	public int getDir() {
