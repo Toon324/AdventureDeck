@@ -3,4 +3,5 @@ Found 8 processors to use
 Could not read pitfall
 Could not read shadow
 Could not read endTurn
+Not enough AP.
 Closing writer

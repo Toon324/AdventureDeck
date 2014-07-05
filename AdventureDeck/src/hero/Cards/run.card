@@ -1,7 +1,7 @@
 ﻿INFO {
 	name	Run
 	type	BASIC
-	cost	1
+	cost	2
 	desc	Player moves up to 2 tiles.
 	range	[1, 0, 1, 0, 1] [0, 1, 1, 1, 0] [1, 1, 0, 1, 1] [0, 1, 1, 1, 0] [1, 0, 1, 0, 1]
 	canChain	0
