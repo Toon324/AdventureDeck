@@ -57,7 +57,6 @@ public class LocalGame extends GameMode {
 	private TileManager board;
 	private int[][] range;
 	private Card choiceCard;
-	private CardType toDraw;
 	public NPC currentTarget;
 	int turnCnt;
 	GraphPanel drawTimes;
@@ -315,8 +314,11 @@ public class LocalGame extends GameMode {
 		player.endTurn(); // Player gains max AP, resets to full AP, and heals
 							// slightly
 
-		// System.out.println("ToDraw: " + toDraw);
-		drawCard(toDraw);
+		//Try to draw up to one card per hand
+		drawCard(CardType.BASIC);
+		drawCard(CardType.SPELL);
+		drawCard(CardType.ITEM);
+		
 
 		// Handle any statuses they may have (burn, poison, etc)
 		for (Actor a : engine.getActors().getArrayList())
@@ -409,8 +411,6 @@ public class LocalGame extends GameMode {
 						hand[x] = null;
 
 					// System.out.println("Handling " + toRemove);
-
-					toDraw = toRemove.type;
 
 					if (toRemove.type == CardType.BASIC)
 						basicDeck.add(toRemove);
