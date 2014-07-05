@@ -235,6 +235,7 @@ public class LocalGame extends GameMode {
 		g.setFont(g.getFont().deriveFont(18.0F));
 		g.drawString(player.getGold() + " Gil", 30, 50);
 		g.drawString("Turn: " + turnCnt, 30, 90);
+		g.drawString("Action Points: " + player.getAP() + " / " + player.getAPpool(), 30, 130);
 
 		engine.getActors().drawActors(g);
 
@@ -276,15 +277,7 @@ public class LocalGame extends GameMode {
 		super.paint(g);
 		// drawPoints.add((double) (System.currentTimeMillis() - drawStart));
 
-		if (System.currentTimeMillis() - drawStart > 1000) {
-			drawStart = System.currentTimeMillis();
-
-			if (drawPoints.size() > 100)
-				drawPoints.clear();
-
-			drawPoints.add(engine.getFPS());
-			drawTimes.setScores(drawPoints);
-		}
+		
 	}
 
 	/*
@@ -404,9 +397,16 @@ public class LocalGame extends GameMode {
 		for (int x = 0; x < hand.length; x++)
 			if (hand[x] != null)
 				if (hand[x].checkClick(start, engine, x + offset, e.getPoint())) {
-
+					
 					Card toRemove = hand[x];
 
+					if (player.getAP() < toRemove.getCost()) {
+						GameEngine.log("Not enough AP.");
+						return;
+					}
+					else
+						player.useAP(toRemove.getCost());
+					
 					if (hand[x].getCardType() != CardType.UI)
 						hand[x] = null;
 

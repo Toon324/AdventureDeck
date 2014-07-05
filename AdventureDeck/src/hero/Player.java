@@ -199,4 +199,17 @@ public class Player extends NPC {
 		
 	}
 
+	public int getAPpool() {
+		return apPool;
+	}
+
+	public int getAP() {
+		return actionPoints;
+	}
+
+	public void useAP(int cost) {
+		actionPoints -= cost;
+		
+	}
+
 }
