@@ -48,7 +48,7 @@ public class LocalGame extends GameMode {
 	Card[] itemHand = new Card[2];
 	Card[] ui = new Card[2];
 
-	private GameImage playerImage = null, enemyImage = null;
+	private GameImage playerImage = null, enemyImage = null, aiImage = null;
 	CardHandler cardHandler = new CardHandler(this);
 
 	public Player player;
@@ -92,6 +92,9 @@ public class LocalGame extends GameMode {
 			BufferedImage loadEnemy = ImageIO.read(getClass()
 					.getResourceAsStream("enemy.png"));
 			enemyImage = new AnimatedImage(loadEnemy, 4, 4);
+			
+			BufferedImage loadAI = ImageIO.read(getClass().getResourceAsStream("enemy.png"));
+			aiImage = new AnimatedImage(loadAI, 4, 4);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,11 +111,15 @@ public class LocalGame extends GameMode {
 
 		NPC e3 = new NPC(eng, enemyImage);
 		e3.setCenter(200, 400);
+		
+		AI ai = new AI(eng, aiImage);
+		ai.setCenter(500, 150);
 
 		engine.getActors().add(player);
 		engine.getActors().add(e1);
 		engine.getActors().add(e2);
 		engine.getActors().add(e3);
+		engine.getActors().add(ai);
 
 		// Basic deck
 

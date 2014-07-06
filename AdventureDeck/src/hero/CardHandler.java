@@ -132,12 +132,14 @@ public class CardHandler {
 				break;
 			}
 			case "PLAYERDAMAGE": {
+				
 				int amt = Integer.valueOf(arg);
 
 				game.player.dealDamage(amt);
 				break;
 			}
 			case "TARGETDAMAGE": {
+				
 				int amt = Integer.valueOf(arg);
 
 				if (game.currentTarget != null) {

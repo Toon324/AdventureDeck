@@ -4,4 +4,6 @@ Could not read pitfall
 Could not read shadow
 Could not read endTurn
 Not enough AP.
+Not enough AP.
+Not enough AP.
 Closing writer
