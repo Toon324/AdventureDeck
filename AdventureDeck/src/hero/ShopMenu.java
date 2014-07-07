@@ -190,14 +190,14 @@ public class ShopMenu extends GameMode {
 						boolean placed = false;
 
 						// Puts new item in hand if there is space
-						for (int z = 0; z < game.itemHand.length; z++)
-							if (game.itemHand[z] == null) {
+						for (int z = 0; z < game.player.itemHand.length; z++)
+							if (game.player.itemHand[z] == null) {
 								placed = true;
-								game.itemHand[z] = toRemove;
+								game.player.itemHand[z] = toRemove;
 							}
 
 						if (!placed)
-							game.itemDeck.add(toRemove);
+							game.player.itemDeck.add(toRemove);
 					} else {
 						equipmentDeck.add(toRemove);
 						game.cardHandler.handleCard(toRemove);

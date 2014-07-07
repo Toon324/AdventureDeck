@@ -1,9 +1,7 @@
 package hero;
 
-import java.awt.Point;
 import java.util.LinkedList;
 
-import petri.api.Actor;
 import petri.api.GameEngine;
 
 /**
@@ -13,9 +11,17 @@ import petri.api.GameEngine;
 public class CardHandler {
 
 	LocalGame game;
+	Player player;
 
 	public CardHandler(LocalGame lg) {
 		game = lg;
+	}
+
+	/**
+	 * @param player
+	 */
+	public CardHandler(Player p) {
+		player = p;
 	}
 
 	public void handleCard(Card c) {
@@ -26,7 +32,7 @@ public class CardHandler {
 			GameEngine.log(c + " doesn't have a range!");
 			return;
 		}
-		
+
 		// Check to see if spell targets self
 		if (range.length == 1) {
 			// System.out.println("Targetting self");
@@ -85,12 +91,11 @@ public class CardHandler {
 	 */
 	public void handleChoice(Card c, float x, float y) {
 		LinkedList<String> effects = c.getEffects();
-		
+
 		if (effects == null) {
 			GameEngine.log(c + " does not have any effects.");
 			return;
-		}
-		else if (effects.size() == 1) {
+		} else if (effects.size() == 1) {
 			GameEngine.log(c + " does not have any arguments.");
 			return;
 		}
@@ -132,14 +137,14 @@ public class CardHandler {
 				break;
 			}
 			case "PLAYERDAMAGE": {
-				
+
 				int amt = Integer.valueOf(arg);
 
 				game.player.dealDamage(amt);
 				break;
 			}
 			case "TARGETDAMAGE": {
-				
+
 				int amt = Integer.valueOf(arg);
 
 				if (game.currentTarget != null) {
@@ -162,7 +167,7 @@ public class CardHandler {
 			}
 			case "SHOP": {
 				game.engine.setCurrentGameMode(2);
-				((ShopMenu)game.engine.getCurrentGameMode()).stockOptions();
+				((ShopMenu) game.engine.getCurrentGameMode()).stockOptions();
 				break;
 			}
 			case "ENDTURN": {
@@ -183,10 +188,9 @@ public class CardHandler {
 
 		}
 
-		//game.endTurn();
+		// game.endTurn();
 
 	}
-
 
 	/**
 	 * @param x

@@ -17,7 +17,6 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 
 import petri.api.Actor;
 import petri.api.AnimatedImage;
@@ -38,15 +37,6 @@ public class LocalGame extends GameMode {
 
 	int bonusSwordDamage = 0;
 	int bonusBowDamage = 0;
-
-	ArrayList<Card> basicDeck = new ArrayList<Card>();
-	ArrayList<Card> spellDeck = new ArrayList<Card>();
-	ArrayList<Card> itemDeck = new ArrayList<Card>();
-
-	Card[] basicHand = new Card[5];
-	Card[] spellHand = new Card[2];
-	Card[] itemHand = new Card[2];
-	Card[] ui = new Card[2];
 
 	private GameImage playerImage = null, enemyImage = null, aiImage = null;
 	CardHandler cardHandler = new CardHandler(this);
@@ -92,8 +82,9 @@ public class LocalGame extends GameMode {
 			BufferedImage loadEnemy = ImageIO.read(getClass()
 					.getResourceAsStream("enemy.png"));
 			enemyImage = new AnimatedImage(loadEnemy, 4, 4);
-			
-			BufferedImage loadAI = ImageIO.read(getClass().getResourceAsStream("enemy.png"));
+
+			BufferedImage loadAI = ImageIO.read(getClass().getResourceAsStream(
+					"enemy.png"));
 			aiImage = new AnimatedImage(loadAI, 4, 4);
 
 		} catch (Exception e) {
@@ -101,7 +92,7 @@ public class LocalGame extends GameMode {
 			GameEngine.log("LocalGame exception: " + e.getMessage());
 		}
 
-		player = new Player(eng, playerImage);
+		player = new Player(cardHandler, eng, playerImage);
 
 		NPC e1 = new NPC(eng, enemyImage);
 		e1.setCenter(300, 300);
@@ -111,8 +102,8 @@ public class LocalGame extends GameMode {
 
 		NPC e3 = new NPC(eng, enemyImage);
 		e3.setCenter(200, 400);
-		
-		AI ai = new AI(eng, aiImage);
+
+		AI ai = new AI(cardHandler, eng, aiImage);
 		ai.setCenter(500, 150);
 
 		engine.getActors().add(player);
@@ -121,48 +112,6 @@ public class LocalGame extends GameMode {
 		engine.getActors().add(e3);
 		engine.getActors().add(ai);
 
-		// Basic deck
-
-		basicDeck.add(new Card("walk"));
-		basicDeck.add(new Card("run"));
-
-		basicDeck.add(new Card("sword"));
-		basicDeck.add(new Card("sword"));
-		basicDeck.add(new Card("sword"));
-		basicDeck.add(new Card("bow"));
-		basicDeck.add(new Card("bow"));
-
-		// Spell deck
-
-		spellDeck.add(new Card("lightning"));
-		spellDeck.add(new Card("fireball"));
-
-		// Item deck
-
-		itemDeck.add(new Card("pitfall"));
-		itemDeck.add(new Card("shadow"));
-		itemDeck.add(new Card("smallPotion"));
-		itemDeck.add(new Card("smallPotion"));
-		itemDeck.add(new Card("largePotion"));
-
-		// UI
-		ui[0] = new Card("endTurn");
-		ui[1] = new Card("shop");
-
-		// Tell the cards what type they are
-		for (Card c : basicDeck)
-			c.setCardType(CardType.BASIC);
-
-		for (Card c : spellDeck)
-			c.setCardType(CardType.SPELL);
-
-		for (Card c : itemDeck)
-			c.setCardType(CardType.ITEM);
-
-		ui[0].setCardType(CardType.UI);
-		ui[1].setCardType(CardType.UI);
-
-		initiateHand();
 		System.out.println("Begin generation: "
 				+ (System.currentTimeMillis() - startTime));
 
@@ -175,28 +124,6 @@ public class LocalGame extends GameMode {
 			}
 
 		});
-	}
-
-	/**
-	 * 
-	 */
-	private void initiateHand() {
-		drawCards(5, basicHand, basicDeck);
-		drawCards(2, spellHand, spellDeck);
-		drawCards(2, itemHand, itemDeck);
-
-	}
-
-	/**
-	 * @param i
-	 * @param basicHand2
-	 * @param basicDeck2
-	 */
-	private void drawCards(int num, Card[] section, ArrayList<Card> deck) {
-		for (int x = 0; x < num; x++) {
-			drawCard(section, deck);
-		}
-
 	}
 
 	@Override
@@ -242,49 +169,21 @@ public class LocalGame extends GameMode {
 		g.setFont(g.getFont().deriveFont(18.0F));
 		g.drawString(player.getGold() + " Gil", 30, 50);
 		g.drawString("Turn: " + turnCnt, 30, 90);
-		g.drawString("Action Points: " + player.getAP() + " / " + player.getAPpool(), 30, 130);
+		g.drawString(
+				"Action Points: " + player.getAP() + " / " + player.getAPpool(),
+				30, 130);
 
 		engine.getActors().drawActors(g);
 
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(0, engine.getEnvironmentSize().y - CARD_TRAY_SIZE,
 				engine.getEnvironmentSize().x, CARD_TRAY_SIZE);
-
-		for (int x = 0; x < basicHand.length; x++) {
-			if (basicHand[x] != null)
-				basicHand[x].draw(new Point(10,
-						engine.getEnvironmentSize().y - 90), engine, g, x);
-		}
-
-		// Next two hands are drawn with offsets.
-
-		for (int x = 0; x < spellHand.length; x++) {
-			if (spellHand[x] != null)
-				spellHand[x].draw(new Point(10,
-						engine.getEnvironmentSize().y - 90), engine, g, x
-						+ basicHand.length);
-
-		}
-
-		for (int x = 0; x < itemHand.length; x++)
-			if (itemHand[x] != null)
-				itemHand[x].draw(new Point(10,
-						engine.getEnvironmentSize().y - 90), engine, g, x
-						+ basicHand.length + spellHand.length);
-
-		// Shop is at the end of the cards
-		g.setColor(Color.green);
-
-		for (int x = 0; x < ui.length; x++)
-			if (ui[x] != null)
-				ui[x].draw(new Point(10, engine.getEnvironmentSize().y - 90),
-						engine, g, basicHand.length + spellHand.length
-								+ itemHand.length + x);
+		
+		player.drawHands(g);
 
 		super.paint(g);
 		// drawPoints.add((double) (System.currentTimeMillis() - drawStart));
 
-		
 	}
 
 	/*
@@ -298,11 +197,7 @@ public class LocalGame extends GameMode {
 			checkChoice(e);
 		else {
 			Point start = new Point(10, engine.getEnvironmentSize().y - 90);
-			checkClick(start, e, basicHand, 0);
-			checkClick(start, e, spellHand, basicHand.length);
-			checkClick(start, e, itemHand, basicHand.length + spellHand.length);
-			checkClick(start, e, ui, basicHand.length + spellHand.length
-					+ itemHand.length);
+			player.checkHandsForClick(start, e);
 		}
 
 		super.mouseReleased(e);
@@ -314,28 +209,9 @@ public class LocalGame extends GameMode {
 		player.endTurn(); // Player gains max AP, resets to full AP, and heals
 							// slightly
 
-		//Try to draw up to one card per hand
-		drawCard(CardType.BASIC);
-		drawCard(CardType.SPELL);
-		drawCard(CardType.ITEM);
-		
-
 		// Handle any statuses they may have (burn, poison, etc)
 		for (Actor a : engine.getActors().getArrayList())
 			((NPC) a).handleStatuses();
-	}
-
-	/**
-	 * @param toDraw2
-	 */
-	private void drawCard(CardType type) {
-		if (type == CardType.BASIC)
-			drawCard(basicHand, basicDeck);
-		else if (type == CardType.SPELL)
-			drawCard(spellHand, spellDeck);
-		else
-			drawCard(itemHand, itemDeck);
-
 	}
 
 	/**
@@ -393,61 +269,6 @@ public class LocalGame extends GameMode {
 		}
 
 		return null;
-	}
-
-	/**
-	 * @param e
-	 * @param basicHand2
-	 */
-	private void checkClick(Point start, MouseEvent e, Card[] hand, int offset) {
-
-		for (int x = 0; x < hand.length; x++)
-			if (hand[x] != null)
-				if (hand[x].checkClick(start, engine, x + offset, e.getPoint())) {
-					
-					Card toRemove = hand[x];
-
-					if (player.getAP() < toRemove.getCost()) {
-						GameEngine.log("Not enough AP.");
-						return;
-					}
-					else
-						player.useAP(toRemove.getCost());
-					
-					if (hand[x].getCardType() != CardType.UI)
-						hand[x] = null;
-
-					// System.out.println("Handling " + toRemove);
-
-					if (toRemove.type == CardType.BASIC)
-						basicDeck.add(toRemove);
-					else if (toRemove.type == CardType.SPELL)
-						spellDeck.add(toRemove);
-					else
-						itemDeck.add(toRemove);
-
-					cardHandler.handleCard(toRemove);
-				}
-	}
-
-	private void drawCard(Card[] section, ArrayList<Card> deck) {
-		Random gen = new Random();
-
-		if (deck.size() == 0) {
-			System.out.println(section[0] + " deck is size zero");
-			return;
-		}
-
-		int num = gen.nextInt(deck.size());
-
-		for (int x = 0; x < section.length; x++)
-			if (section[x] == null) {
-				section[x] = deck.get(num);
-				break;
-			}
-
-		deck.remove(deck.get(num));
-
 	}
 
 	/**
