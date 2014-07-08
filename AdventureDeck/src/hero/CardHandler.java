@@ -100,10 +100,13 @@ public class CardHandler {
 				break;
 			}
 			case "TARGETDAMAGE": {
-
+				if (currentTarget == null)
+					return;
+				
 				int amt = Integer.valueOf(arg);
-
-				if (currentTarget != null) {
+				int tilesBetween = (int) (currentTarget.getCenter().distance(player.getCenter()) / game.TILE_SIZE);
+				System.out.println("tiles between: " + tilesBetween);
+				if (tilesBetween <= c.getRange().length / 2) {
 					currentTarget.dealDamage(amt);
 					if (currentTarget.getHealth() <= 0)
 						player.addGold(currentTarget.getGoldValue());
