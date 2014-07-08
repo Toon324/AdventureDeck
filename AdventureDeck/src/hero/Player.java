@@ -86,10 +86,10 @@ public class Player extends NPC {
 
 		// Item deck
 
-		itemDeck.add(new Card("pitfall"));
-		itemDeck.add(new Card("shadow"));
+		//itemDeck.add(new Card("pitfall"));
+		//itemDeck.add(new Card("shadow"));
 		itemDeck.add(new Card("smallPotion"));
-		itemDeck.add(new Card("smallPotion"));
+		//itemDeck.add(new Card("smallPotion"));
 		itemDeck.add(new Card("largePotion"));
 
 		// UI

@@ -93,7 +93,7 @@ public class LocalGame extends GameMode {
 		}
 
 		player = new Player(eng, playerImage);
-		
+
 		player.getCardHandler().giveLocalGame(this);
 
 		NPC e1 = new NPC(eng, enemyImage);
@@ -107,7 +107,7 @@ public class LocalGame extends GameMode {
 
 		ai = new AI(eng, aiImage);
 		ai.getCardHandler().giveLocalGame(this);
-		
+
 		ai.setCenter(500, 150);
 
 		engine.getActors().add(player);
@@ -182,7 +182,7 @@ public class LocalGame extends GameMode {
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(0, engine.getEnvironmentSize().y - CARD_TRAY_SIZE,
 				engine.getEnvironmentSize().x, CARD_TRAY_SIZE);
-		
+
 		player.drawHands(g);
 
 		super.paint(g);
@@ -212,7 +212,7 @@ public class LocalGame extends GameMode {
 
 		player.endTurn(); // Player gains max AP, resets to full AP, and heals
 							// slightly
-		
+
 		ai.endTurn();
 
 		// Handle any statuses they may have (burn, poison, etc)
@@ -241,9 +241,11 @@ public class LocalGame extends GameMode {
 
 					if (r.contains(e.getPoint())) {
 						// System.out.println("Handling " + x + " " + y);
-						currentTarget = getTarget(tileX, tileY);
+						player.cardHandler.setCurrentTarget(getTarget(tileX,
+								tileY));
 
-						player.getCardHandler().handleChoice(choiceCard, tileX, tileY);
+						player.getCardHandler().handleChoice(choiceCard, tileX,
+								tileY);
 						showRange = false;
 						return;
 					}

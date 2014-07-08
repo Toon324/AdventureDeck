@@ -2,8 +2,12 @@ package hero;
 
 import hero.Card.CardType;
 
+import java.awt.Point;
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Float;
 import java.util.ArrayList;
 
+import petri.api.Actor;
 import petri.api.GameEngine;
 import petri.api.GameImage;
 
@@ -17,11 +21,6 @@ public class AI extends Player {
 	public void endTurn() {
 
 		ArrayList<Card> usableCards = findUsableCards();
-
-		System.out.println("Usable cards:");
-		for (Card c : usableCards) {
-			System.out.println(c);
-		}
 
 		while (usableCards.size() > 0) {
 			findBestCard(usableCards);
@@ -103,7 +102,69 @@ public class AI extends Player {
 	 * @param c
 	 */
 	private void handleCard(Card c) {
-		cardHandler.handleChoice(c, 1, 1);
+		
+		if (c.getRange() == null) {
+			GameEngine.log(c + " doesn't have a range!");
+			return;
+		}
+
+		if (c.getRange().length == 1) // self
+			cardHandler.handleChoice(c, 0, 0);
+		else {
+			if (c.getName().equalsIgnoreCase("walk") || c.getName().equalsIgnoreCase("run")) {
+				// Movement
+				
+				NPC closest = getClosestTarget();
+				//System.out.println("Closest target: " + closest);
+				
+				//Based on centers, decides which direction to use to get to the closest target
+				Point2D.Float p = closest.getCenter();
+				int x = 0;
+				int y = 0;
+				
+				if (p.getX() > getCenter().getX())
+					x = 1;
+				else
+					x = -1;
+				
+				if (p.getY() > getCenter().getY())
+					y = 1;
+				else
+					y = -1;
+				
+				//Go twice as far with run
+				if (c.getName().equalsIgnoreCase("run")) {
+					x *= 2;
+					y *= 2;
+				}
+				
+				cardHandler.handleChoice(c, x, y);
+
+			} else {
+				// Combat
+				
+				NPC closest = getClosestTarget();
+				cardHandler.setCurrentTarget(closest);
+				//System.out.println("Closest target: " + closest);
+				
+				//Based on centers, decides which direction to aim attack
+				Point2D.Float p = closest.getCenter();
+				int x = 0;
+				int y = 0;
+				
+				if (p.getX() > getCenter().getX())
+					x = 1;
+				else
+					x = -1;
+				
+				if (p.getY() > getCenter().getY())
+					y = 1;
+				else
+					y = -1;
+				
+				cardHandler.handleChoice(c, x, y);
+			}
+		}
 
 	}
 
@@ -156,6 +217,25 @@ public class AI extends Player {
 				usableCards.add(c);
 		}
 		return usableCards;
+	}
+
+	private NPC getClosestTarget() {
+		NPC closest = null;
+		double smallestDistance = -1;
+
+		for (Actor a : engine.getActors().getArrayList()) {
+			if (!a.equals(this)) {
+				NPC n = (NPC) a;
+				double distance = n.getCenter().distance(getCenter());
+				
+				if (smallestDistance == -1 || distance < smallestDistance) {
+					smallestDistance = distance;
+					closest = n;
+				}
+			}
+		}
+
+		return closest;
 	}
 
 }

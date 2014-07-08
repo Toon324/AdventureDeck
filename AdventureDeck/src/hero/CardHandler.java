@@ -12,6 +12,7 @@ public class CardHandler {
 
 	LocalGame game;
 	Player player;
+	NPC currentTarget;
 	
 	public CardHandler(Player p) {
 		player = p;
@@ -102,10 +103,10 @@ public class CardHandler {
 
 				int amt = Integer.valueOf(arg);
 
-				if (game.currentTarget != null) {
-					game.currentTarget.dealDamage(amt);
-					if (game.currentTarget.getHealth() <= 0)
-						player.addGold(game.currentTarget.getGoldValue());
+				if (currentTarget != null) {
+					currentTarget.dealDamage(amt);
+					if (currentTarget.getHealth() <= 0)
+						player.addGold(currentTarget.getGoldValue());
 				}
 				break;
 			}
@@ -114,8 +115,8 @@ public class CardHandler {
 				case "burn":
 					num++;
 					int amt = Integer.valueOf(effects.get(num));
-					if (game.currentTarget != null)
-						game.currentTarget.inflictStatus("burn", amt);
+					if (currentTarget != null)
+						currentTarget.inflictStatus("burn", amt);
 				}
 
 				break;
@@ -170,5 +171,9 @@ public class CardHandler {
 			player.setDir(6);
 		else
 			player.setDir(7);
+	}
+	
+	public void setCurrentTarget(NPC n) {
+		currentTarget = n;
 	}
 }
