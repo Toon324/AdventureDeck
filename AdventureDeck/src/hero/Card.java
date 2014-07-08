@@ -307,7 +307,7 @@ public class Card {
 	}
 
 	public String getName() {
-		return name;
+		return name.trim();
 	}
 
 	public CardType getCardType() {

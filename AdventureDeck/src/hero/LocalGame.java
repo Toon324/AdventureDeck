@@ -39,9 +39,9 @@ public class LocalGame extends GameMode {
 	int bonusBowDamage = 0;
 
 	private GameImage playerImage = null, enemyImage = null, aiImage = null;
-	CardHandler cardHandler = new CardHandler(this);
 
 	public Player player;
+	private AI ai;
 	public boolean showRange;
 
 	private TileManager board;
@@ -92,7 +92,9 @@ public class LocalGame extends GameMode {
 			GameEngine.log("LocalGame exception: " + e.getMessage());
 		}
 
-		player = new Player(cardHandler, eng, playerImage);
+		player = new Player(eng, playerImage);
+		
+		player.getCardHandler().giveLocalGame(this);
 
 		NPC e1 = new NPC(eng, enemyImage);
 		e1.setCenter(300, 300);
@@ -103,7 +105,9 @@ public class LocalGame extends GameMode {
 		NPC e3 = new NPC(eng, enemyImage);
 		e3.setCenter(200, 400);
 
-		AI ai = new AI(cardHandler, eng, aiImage);
+		ai = new AI(eng, aiImage);
+		ai.getCardHandler().giveLocalGame(this);
+		
 		ai.setCenter(500, 150);
 
 		engine.getActors().add(player);
@@ -208,6 +212,8 @@ public class LocalGame extends GameMode {
 
 		player.endTurn(); // Player gains max AP, resets to full AP, and heals
 							// slightly
+		
+		ai.endTurn();
 
 		// Handle any statuses they may have (burn, poison, etc)
 		for (Actor a : engine.getActors().getArrayList())
@@ -237,7 +243,7 @@ public class LocalGame extends GameMode {
 						// System.out.println("Handling " + x + " " + y);
 						currentTarget = getTarget(tileX, tileY);
 
-						cardHandler.handleChoice(choiceCard, tileX, tileY);
+						player.getCardHandler().handleChoice(choiceCard, tileX, tileY);
 						showRange = false;
 						return;
 					}

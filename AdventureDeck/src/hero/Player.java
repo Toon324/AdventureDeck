@@ -40,9 +40,9 @@ public class Player extends NPC {
 	Card[] itemHand = new Card[2];
 	Card[] ui = new Card[2];
 
-	private CardHandler cardHandler;
+	protected CardHandler cardHandler;
 
-	Player(CardHandler c, GameEngine e, GameImage i) {
+	Player(GameEngine e, GameImage i) {
 		super(e, i);
 		actionPoints = 1;
 		apPool = 1;
@@ -55,10 +55,13 @@ public class Player extends NPC {
 		center = new Point2D.Float(400, 400);
 		setDir(2);
 		
-		//cardHandler = new CardHandler(this);
-		cardHandler = c;
+		cardHandler = new CardHandler(this);
 
 		createCards();
+	}
+	
+	public CardHandler getCardHandler() {
+		return cardHandler;
 	}
 
 	/**

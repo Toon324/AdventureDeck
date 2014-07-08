@@ -200,7 +200,7 @@ public class ShopMenu extends GameMode {
 							game.player.itemDeck.add(toRemove);
 					} else {
 						equipmentDeck.add(toRemove);
-						game.cardHandler.handleCard(toRemove);
+						game.player.getCardHandler().handleCard(toRemove);
 					}
 				}
 	}

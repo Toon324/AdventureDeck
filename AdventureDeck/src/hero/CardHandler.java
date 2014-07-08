@@ -12,16 +12,13 @@ public class CardHandler {
 
 	LocalGame game;
 	Player player;
-
-	public CardHandler(LocalGame lg) {
-		game = lg;
-	}
-
-	/**
-	 * @param player
-	 */
+	
 	public CardHandler(Player p) {
 		player = p;
+	}
+	
+	public void giveLocalGame(LocalGame lg) {
+		game = lg;
 	}
 
 	public void handleCard(Card c) {
@@ -39,48 +36,6 @@ public class CardHandler {
 			handleChoice(c, 0, 0);
 		} else
 			game.giveOption(c.getRange(), c);
-
-		// String cmd = c.getName();
-		//
-		// switch (cmd) {
-		// case "sword":
-		// swordAttack();
-		// game.endTurn();
-		// return;
-		// case "block":
-		// return;
-		// case "bow":
-		// int[][] bowRange = { { 1, 0, 0, 1, 0, 0, 1 },
-		// { 0, 1, 0, 1, 0, 1, 0 }, { 0, 0, 1, 1, 1, 0, 0 },
-		// { 1, 1, 1, 0, 1, 1, 1 }, { 0, 0, 1, 1, 1, 0, 0 },
-		// { 0, 1, 0, 1, 0, 1, 0 }, { 1, 0, 0, 1, 0, 0, 1 } };
-		// game.giveOption(bowRange, c);
-		// return;
-		// case "smallPotion":
-		// game.player.heal(game.SMALL_POTION_AMT);
-		// game.endTurn();
-		// return;
-		// case "largePotion":
-		// game.player.heal(game.LARGE_POTION_AMT);
-		// game.endTurn();
-		// return;
-		// case "shop":
-		// game.engine.setCurrentGameMode(2);
-		// game.endTurn();
-		// return;
-		//
-		// case "walk":
-		// int[][] walkRange = { { 1, 1, 1 }, { 1, 0, 1 }, { 1, 1, 1 } };
-		// game.giveOption(walkRange, c);
-		// return;
-		//
-		// case "run":
-		// int[][] runRange = { { 1, 0, 1, 0, 1 }, { 0, 1, 1, 1, 0 },
-		// { 1, 1, 0, 1, 1 }, { 0, 1, 1, 1, 0 }, { 1, 0, 1, 0, 1 } };
-		// game.giveOption(runRange, c);
-		// return;
-		//
-		// }
 
 	}
 
@@ -116,7 +71,7 @@ public class CardHandler {
 			case "PLAYERHEAL": {
 				int amt = Integer.valueOf(arg);
 
-				game.player.heal(amt);
+				player.heal(amt);
 				break;
 			}
 			case "PLAYERMOVE": {
@@ -130,9 +85,9 @@ public class CardHandler {
 				// number
 				// of tiles.
 				if (x > y)
-					game.player.moveSpace((int) x);
+					player.moveSpace((int) x);
 				else
-					game.player.moveSpace((int) y);
+					player.moveSpace((int) y);
 
 				break;
 			}
@@ -140,7 +95,7 @@ public class CardHandler {
 
 				int amt = Integer.valueOf(arg);
 
-				game.player.dealDamage(amt);
+				player.dealDamage(amt);
 				break;
 			}
 			case "TARGETDAMAGE": {
@@ -150,7 +105,7 @@ public class CardHandler {
 				if (game.currentTarget != null) {
 					game.currentTarget.dealDamage(amt);
 					if (game.currentTarget.getHealth() <= 0)
-						game.player.addGold(game.currentTarget.getGoldValue());
+						player.addGold(game.currentTarget.getGoldValue());
 				}
 				break;
 			}
@@ -176,7 +131,7 @@ public class CardHandler {
 			}
 			case "BUFFHEALTH": {
 				int amt = Integer.valueOf(arg);
-				game.player.addHealth(amt);
+				player.addHealth(amt);
 				break;
 			}
 			case "BUFFSWORDDAMAGE": {
@@ -200,20 +155,20 @@ public class CardHandler {
 		double angle = Math.toDegrees(Math.atan(y / x));
 
 		if (angle == -90.0)
-			game.player.setDir(0);
+			player.setDir(0);
 		else if (x > 0 && y < 0)
-			game.player.setDir(1);
+			player.setDir(1);
 		else if (x > 0 && y == 0)
-			game.player.setDir(2);
+			player.setDir(2);
 		else if (x > 0 && y > 0)
-			game.player.setDir(3);
+			player.setDir(3);
 		else if (angle == 90.0)
-			game.player.setDir(4);
+			player.setDir(4);
 		else if (x < 0 && y > 0)
-			game.player.setDir(5);
+			player.setDir(5);
 		else if (x < 0 && y == 0)
-			game.player.setDir(6);
+			player.setDir(6);
 		else
-			game.player.setDir(7);
+			player.setDir(7);
 	}
 }
