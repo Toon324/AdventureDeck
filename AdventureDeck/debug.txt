@@ -5,8 +5,4 @@ Could not read endTurn
 lightning : SPELL doesn't have a range!
 lightning : SPELL doesn't have a range!
 lightning : SPELL doesn't have a range!
-lightning : SPELL doesn't have a range!
-lightning : SPELL doesn't have a range!
-lightning : SPELL doesn't have a range!
-lightning : SPELL doesn't have a range!
 Closing writer

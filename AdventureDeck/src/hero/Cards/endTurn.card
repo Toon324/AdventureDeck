@@ -2,7 +2,7 @@
 	name	End Turn
 	type	UI
 	cost	0
-	desc	Ends the turn
+	desc	Ends the turn.
 	range	[1]
 	canChain	0
 }	
