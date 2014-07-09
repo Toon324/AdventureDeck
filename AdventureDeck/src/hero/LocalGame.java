@@ -30,13 +30,10 @@ import petri.api.GameMode;
  */
 public class LocalGame extends GameMode {
 
-	private static final int CARD_TRAY_SIZE = 100, MAX_SWORD_DAMAGE = 15, MAX_BOW_DAMAGE = 10;
+	private static final int CARD_TRAY_SIZE = 100;
 	final static int TILE_SIZE = 25;
 
 	final int ENEMY_DAMAGE = 12;
-
-	int bonusSwordDamage = 0;
-	int bonusBowDamage = 0;
 
 	private GameImage playerImage = null, enemyImage = null, aiImage = null;
 
@@ -80,8 +77,8 @@ public class LocalGame extends GameMode {
 			playerImage = new AnimatedImage(loadPlayer, 4, 4);
 
 			BufferedImage loadEnemy = ImageIO.read(getClass()
-					.getResourceAsStream("enemy.png"));
-			enemyImage = new AnimatedImage(loadEnemy, 4, 4);
+					.getResourceAsStream("slime.png"));
+			enemyImage = new GameImage(loadEnemy);
 
 			BufferedImage loadAI = ImageIO.read(getClass().getResourceAsStream(
 					"enemy.png"));
@@ -287,20 +284,6 @@ public class LocalGame extends GameMode {
 		choiceCard = c;
 		showRange = true;
 
-	}
-
-	public void buffSword(int amt) {
-		bonusSwordDamage += amt;
-		
-		if (bonusSwordDamage > MAX_SWORD_DAMAGE)
-			bonusSwordDamage = MAX_SWORD_DAMAGE;
-	}
-	
-	public void buffBow(int amt) {
-		bonusBowDamage += amt;
-		
-		if (bonusBowDamage > MAX_BOW_DAMAGE)
-			bonusBowDamage = MAX_BOW_DAMAGE;
 	}
 
 }

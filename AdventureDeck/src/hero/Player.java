@@ -25,7 +25,10 @@ import petri.api.GameImage;
  */
 public class Player extends NPC {
 
-	private final int MAX_AP = 10;
+	private final int MAX_AP = 10, MAX_SWORD_DAMAGE = 15, MAX_BOW_DAMAGE = 10;
+	
+	int bonusSwordDamage = 0;
+	int bonusBowDamage = 0;
 
 	private int gold, actionPoints, apPool;
 
@@ -425,5 +428,19 @@ public class Player extends NPC {
 						engine, g, basicHand.length + spellHand.length
 								+ itemHand.length + x);
 		
+	}
+	
+	public void buffSword(int amt) {
+		bonusSwordDamage += amt;
+		
+		if (bonusSwordDamage > MAX_SWORD_DAMAGE)
+			bonusSwordDamage = MAX_SWORD_DAMAGE;
+	}
+	
+	public void buffBow(int amt) {
+		bonusBowDamage += amt;
+		
+		if (bonusBowDamage > MAX_BOW_DAMAGE)
+			bonusBowDamage = MAX_BOW_DAMAGE;
 	}
 }

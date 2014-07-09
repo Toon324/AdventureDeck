@@ -105,9 +105,9 @@ public class CardHandler {
 				
 				int amt = Integer.valueOf(arg);
 				if (c.getRange()[0].length == 3)
-					amt += game.bonusSwordDamage;
+					amt += player.bonusSwordDamage;
 				else
-					amt += game.bonusBowDamage;
+					amt += player.bonusBowDamage;
 				
 				System.out.println("Damage done: " + amt);
 				
@@ -147,12 +147,12 @@ public class CardHandler {
 			}
 			case "BUFFSWORDDAMAGE": {
 				int amt = Integer.valueOf(arg);
-				game.buffSword(amt);
+				player.buffSword(amt);
 				break;
 			}
 			case "BUFFBOWDAMAGE": {
 				int amt = Integer.valueOf(arg);
-				game.buffBow(amt);
+				player.buffBow(amt);
 				break;
 			}
 			}
