@@ -25,7 +25,7 @@ import petri.api.GameImage;
  */
 public class Player extends NPC {
 
-	private final int SPACE_SIZE = 25, MAX_AP = 10;
+	private final int MAX_AP = 10;
 
 	private int gold, actionPoints, apPool;
 
@@ -123,47 +123,31 @@ public class Player extends NPC {
 
 		switch (dir) {
 		case 0:
-			setCenter(c.x, c.y - (spaces * SPACE_SIZE));
-			ensureOnTile();
+			setCenter(c.x, c.y - (spaces * LocalGame.TILE_SIZE));
 			return;
 		case 1:
-			setCenter(c.x + (spaces * SPACE_SIZE) / 2, c.y
-					- (spaces * SPACE_SIZE) / 2);
-			ensureOnTile();
+			setCenter(c.x + (spaces * LocalGame.TILE_SIZE), c.y
+					- (spaces * LocalGame.TILE_SIZE));
 			return;
 		case 2:
-			setCenter(c.x + (spaces * SPACE_SIZE), c.y);
-			ensureOnTile();
+			setCenter(c.x + (spaces * LocalGame.TILE_SIZE), c.y);
 			return;
 		case 3:
-			setCenter(c.x + (spaces * SPACE_SIZE), c.y + (spaces * SPACE_SIZE));
-			ensureOnTile();
+			setCenter(c.x + (spaces * LocalGame.TILE_SIZE), c.y + (spaces * LocalGame.TILE_SIZE));
 			return;
 		case 4:
-			setCenter(c.x, c.y + (spaces * SPACE_SIZE));
-			ensureOnTile();
+			setCenter(c.x, c.y + (spaces * LocalGame.TILE_SIZE));
 			return;
 		case 5:
-			setCenter(c.x - (spaces * SPACE_SIZE), c.y + (spaces * SPACE_SIZE));
-			ensureOnTile();
+			setCenter(c.x - (spaces * LocalGame.TILE_SIZE), c.y + (spaces * LocalGame.TILE_SIZE));
 			return;
 		case 6:
-			setCenter(c.x - (spaces * SPACE_SIZE), c.y);
-			ensureOnTile();
+			setCenter(c.x - (spaces * LocalGame.TILE_SIZE), c.y);
 			return;
 		case 7:
-			setCenter(c.x - (spaces * SPACE_SIZE), c.y - (spaces * SPACE_SIZE));
-			ensureOnTile();
+			setCenter(c.x - (spaces * LocalGame.TILE_SIZE), c.y - (spaces * LocalGame.TILE_SIZE));
 			return;
 		}
-	}
-
-	/**
-	 * 
-	 */
-	private void ensureOnTile() {
-		setCenter(getCenter().x - (getCenter().x % 25), getCenter().y - (getCenter().y % 25));
-		
 	}
 
 	public void endTurn() {

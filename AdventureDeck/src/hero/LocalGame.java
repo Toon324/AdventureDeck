@@ -31,7 +31,7 @@ import petri.api.GameMode;
 public class LocalGame extends GameMode {
 
 	private static final int CARD_TRAY_SIZE = 100;
-	final int TILE_SIZE = 25;
+	final static int TILE_SIZE = 25;
 
 	final int ENEMY_DAMAGE = 12;
 
