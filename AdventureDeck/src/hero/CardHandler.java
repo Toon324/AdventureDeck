@@ -104,6 +104,13 @@ public class CardHandler {
 					return;
 				
 				int amt = Integer.valueOf(arg);
+				if (c.getRange()[0].length == 3)
+					amt += game.bonusSwordDamage;
+				else
+					amt += game.bonusBowDamage;
+				
+				System.out.println("Damage done: " + amt);
+				
 				int tilesBetween = (int) (currentTarget.getCenter().distance(player.getCenter()) / game.TILE_SIZE);
 				System.out.println("tiles between: " + tilesBetween);
 				if (tilesBetween <= (c.getRange().length -1) / 2) {
@@ -140,7 +147,12 @@ public class CardHandler {
 			}
 			case "BUFFSWORDDAMAGE": {
 				int amt = Integer.valueOf(arg);
-				game.bonusSwordDamage += amt;
+				game.buffSword(amt);
+				break;
+			}
+			case "BUFFBOWDAMAGE": {
+				int amt = Integer.valueOf(arg);
+				game.buffBow(amt);
 				break;
 			}
 			}

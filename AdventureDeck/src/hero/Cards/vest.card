@@ -8,5 +8,5 @@
 }	
 
 EFFECT {
-	PLAYERMOVE	2
+	BUFFHEALTH 20
 }

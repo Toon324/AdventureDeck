@@ -30,7 +30,7 @@ import petri.api.GameMode;
  */
 public class LocalGame extends GameMode {
 
-	private static final int CARD_TRAY_SIZE = 100;
+	private static final int CARD_TRAY_SIZE = 100, MAX_SWORD_DAMAGE = 15, MAX_BOW_DAMAGE = 10;
 	final static int TILE_SIZE = 25;
 
 	final int ENEMY_DAMAGE = 12;
@@ -287,6 +287,20 @@ public class LocalGame extends GameMode {
 		choiceCard = c;
 		showRange = true;
 
+	}
+
+	public void buffSword(int amt) {
+		bonusSwordDamage += amt;
+		
+		if (bonusSwordDamage > MAX_SWORD_DAMAGE)
+			bonusSwordDamage = MAX_SWORD_DAMAGE;
+	}
+	
+	public void buffBow(int amt) {
+		bonusBowDamage += amt;
+		
+		if (bonusBowDamage > MAX_BOW_DAMAGE)
+			bonusBowDamage = MAX_BOW_DAMAGE;
 	}
 
 }
