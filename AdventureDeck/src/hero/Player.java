@@ -114,6 +114,8 @@ public class Player extends NPC {
 
 	public void moveSpace(int spaces) {
 		Point2D.Float c = getCenter();
+		
+		System.out.println("Center: " + getCenter());
 
 		xTile++;
 		if (xTile >= xTiles)
@@ -122,30 +124,46 @@ public class Player extends NPC {
 		switch (dir) {
 		case 0:
 			setCenter(c.x, c.y - (spaces * SPACE_SIZE));
+			ensureOnTile();
 			return;
 		case 1:
 			setCenter(c.x + (spaces * SPACE_SIZE) / 2, c.y
 					- (spaces * SPACE_SIZE) / 2);
+			ensureOnTile();
 			return;
 		case 2:
 			setCenter(c.x + (spaces * SPACE_SIZE), c.y);
+			ensureOnTile();
 			return;
 		case 3:
 			setCenter(c.x + (spaces * SPACE_SIZE), c.y + (spaces * SPACE_SIZE));
+			ensureOnTile();
 			return;
 		case 4:
 			setCenter(c.x, c.y + (spaces * SPACE_SIZE));
+			ensureOnTile();
 			return;
 		case 5:
 			setCenter(c.x - (spaces * SPACE_SIZE), c.y + (spaces * SPACE_SIZE));
+			ensureOnTile();
 			return;
 		case 6:
 			setCenter(c.x - (spaces * SPACE_SIZE), c.y);
+			ensureOnTile();
 			return;
 		case 7:
 			setCenter(c.x - (spaces * SPACE_SIZE), c.y - (spaces * SPACE_SIZE));
+			ensureOnTile();
 			return;
 		}
+	}
+
+	/**
+	 * 
+	 */
+	private void ensureOnTile() {
+		setCenter(getCenter().x - (getCenter().x % 25), getCenter().y - (getCenter().y % 25));
+		
 	}
 
 	public void endTurn() {

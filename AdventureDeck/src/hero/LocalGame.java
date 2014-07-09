@@ -268,7 +268,7 @@ public class LocalGame extends GameMode {
 		for (Actor a : engine.getActors().getArrayList()) {
 			Point actorPoint = new Point((int) a.getCenter().x,
 					(int) a.getCenter().y);
-			// System.out.println("Actor: " + actorPoint);
+			 //System.out.println("Actor: " + a + " " +  actorPoint);
 
 			if (actorPoint.equals(click)) {
 				// System.out.println("Target set to " + a);

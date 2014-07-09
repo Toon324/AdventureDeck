@@ -19,6 +19,9 @@ public class AI extends Player {
 	}
 
 	public void endTurn() {
+		
+		if (death)
+			return;
 
 		ArrayList<Card> usableCards = findUsableCards();
 
@@ -26,7 +29,7 @@ public class AI extends Player {
 			findBestCard(usableCards);
 			usableCards = findUsableCards(usableCards);
 		}
-
+//
 		System.out.println("AP left: " + getAP() + " / " + getAPpool());
 
 		super.endTurn();
@@ -62,7 +65,7 @@ public class AI extends Player {
 	 * @param c
 	 */
 	private void useCard(Card c, ArrayList<Card> usable) {
-		System.out.println("Used " + c);
+		//System.out.println("Used " + c);
 		usable.remove(c);
 		useAP(c.getCost());
 
@@ -90,7 +93,6 @@ public class AI extends Player {
 			for (int x = 0; x < itemHand.length; x++) {
 				if (itemHand[x] == c) {
 					itemHand[x] = null;
-					itemDeck.add(c);
 					return;
 				}
 
@@ -116,6 +118,9 @@ public class AI extends Player {
 				
 				NPC closest = getClosestTarget();
 				//System.out.println("Closest target: " + closest);
+				//System.out.println("Distance: " + closest.getCenter().distance(getCenter()));
+				if (closest.getCenter().distance(getCenter()) <= 50)
+					return; //Don't get closer than 1 tile
 				
 				//Based on centers, decides which direction to use to get to the closest target
 				Point2D.Float p = closest.getCenter();
