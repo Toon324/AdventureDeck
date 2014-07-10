@@ -211,6 +211,10 @@ public class LocalGame extends GameMode {
 							// slightly
 
 		ai.endTurn();
+		
+		//Add more items to the shop if it's not already full
+		
+		((ShopMenu) engine.getGameMode("ShopMenu")).stockOptions();
 
 		// Handle any statuses they may have (burn, poison, etc)
 		for (Actor a : engine.getActors().getArrayList())

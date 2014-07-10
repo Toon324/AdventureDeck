@@ -51,7 +51,7 @@ public class Player extends NPC {
 		apPool = 1;
 		maxHealth = 50;
 		health = 50;
-		gold = 500;
+		gold = 0;
 		xTiles = 4;
 		yTiles = 4;
 		size = new Point2D.Float(30, 50);
@@ -372,8 +372,6 @@ public class Player extends NPC {
 						basicDeck.add(toRemove);
 					else if (toRemove.type == CardType.SPELL)
 						spellDeck.add(toRemove);
-					else
-						itemDeck.add(toRemove);
 
 					cardHandler.handleCard(toRemove);
 				}

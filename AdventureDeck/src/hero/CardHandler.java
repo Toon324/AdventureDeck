@@ -133,7 +133,6 @@ public class CardHandler {
 			}
 			case "SHOP": {
 				game.engine.setCurrentGameMode(2);
-				((ShopMenu) game.engine.getCurrentGameMode()).stockOptions();
 				break;
 			}
 			case "ENDTURN": {

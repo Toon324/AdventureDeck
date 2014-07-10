@@ -194,6 +194,7 @@ public class ShopMenu extends GameMode {
 							if (game.player.itemHand[z] == null) {
 								placed = true;
 								game.player.itemHand[z] = toRemove;
+								break;
 							}
 
 						if (!placed)

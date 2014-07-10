@@ -10,6 +10,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -56,19 +58,16 @@ public class Card {
 		type = CardType.BASIC;
 
 		effects = new LinkedList<String>();
-
-		File f = new File("src/hero/Cards/" + n + ".card"); // Not relative,
-															// will probably
-															// cause issues
-															// during export to
-															// .jar
-		if (f.exists())
-			try {
-				loadInfo(f);
-			} catch (FileNotFoundException e2) {
-				GameEngine.log(e2.getMessage());
-				e2.printStackTrace();
-			}
+		
+		InputStream is = getClass().getResourceAsStream("Cards/" + n + ".card");
+		
+		try {
+			loadInfo(is);
+		} catch (FileNotFoundException e3) {
+			// TODO Auto-generated catch block
+			e3.printStackTrace();
+		}
+	
 
 		try {
 			// Fetch the image
@@ -92,16 +91,19 @@ public class Card {
 	 * Reads in the data from the .card file. Should ignore unrecognized
 	 * commands.
 	 * 
-	 * @param f
+	 * @param is
 	 *            File to read from
 	 * @throws FileNotFoundException
 	 *             if the File is not found (should never be thrown in the
 	 *             context of use)
 	 */
-	private void loadInfo(File f) throws FileNotFoundException {
-		// GameEngine.log("Loading info of " + f.getName());
+	private void loadInfo(InputStream is) throws FileNotFoundException {
+		//GameEngine.log("Loading info of " + is.getName());
+		
+		if (is == null)
+			return;
 
-		Scanner scan = new Scanner(f);
+		Scanner scan = new Scanner(is);
 		scan.useDelimiter("\t"); // Tab delimination
 
 		String section = "";
@@ -113,7 +115,7 @@ public class Card {
 
 			scanned = scanned.trim();
 
-			// GameEngine.log(section + " : " + scanned);
+			//GameEngine.log(section + " : " + scanned);
 
 			if (scanned.contains("INFO {"))
 				section = "INFO";
