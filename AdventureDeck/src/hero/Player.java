@@ -14,8 +14,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
+
 import petri.api.Actor;
-import petri.api.AnimatedImageActor;
 import petri.api.GameEngine;
 import petri.api.GameImage;
 
@@ -25,14 +26,17 @@ import petri.api.GameImage;
  */
 public class Player extends NPC {
 
-	private final int MAX_AP = 10, MAX_SWORD_DAMAGE = 15, MAX_BOW_DAMAGE = 10;
-	
+	private final int MAX_AP = 8, MAX_SWORD_DAMAGE = 15, MAX_BOW_DAMAGE = 10;
+
 	int bonusSwordDamage = 0;
 	int bonusBowDamage = 0;
 
 	private int gold, actionPoints, apPool;
 
 	public final static int BOWRANGE = 75;
+
+	BufferedImage[] apGuage = new BufferedImage[9];
+	BufferedImage coin;
 
 	ArrayList<Card> basicDeck = new ArrayList<Card>();
 	ArrayList<Card> spellDeck = new ArrayList<Card>();
@@ -57,12 +61,41 @@ public class Player extends NPC {
 		size = new Point2D.Float(30, 50);
 		center = new Point2D.Float(400, 400);
 		setDir(2);
-		
+
 		cardHandler = new CardHandler(this);
 
 		createCards();
+
+		loadApImages();
 	}
-	
+
+	private void loadApImages() {
+		try {
+			apGuage[0] = ImageIO
+					.read(getClass().getResourceAsStream("0ap.png"));
+			apGuage[1] = ImageIO
+					.read(getClass().getResourceAsStream("1ap.png"));
+			apGuage[2] = ImageIO
+					.read(getClass().getResourceAsStream("2ap.png"));
+			apGuage[3] = ImageIO
+					.read(getClass().getResourceAsStream("3ap.png"));
+			apGuage[4] = ImageIO
+					.read(getClass().getResourceAsStream("4ap.png"));
+			apGuage[5] = ImageIO
+					.read(getClass().getResourceAsStream("5ap.png"));
+			apGuage[6] = ImageIO
+					.read(getClass().getResourceAsStream("6ap.png"));
+			apGuage[7] = ImageIO
+					.read(getClass().getResourceAsStream("7ap.png"));
+			apGuage[8] = ImageIO
+					.read(getClass().getResourceAsStream("8ap.png"));
+			
+			coin = ImageIO.read(getClass().getResourceAsStream("coin.png"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public CardHandler getCardHandler() {
 		return cardHandler;
 	}
@@ -89,10 +122,10 @@ public class Player extends NPC {
 
 		// Item deck
 
-		//itemDeck.add(new Card("pitfall"));
-		//itemDeck.add(new Card("shadow"));
+		// itemDeck.add(new Card("pitfall"));
+		// itemDeck.add(new Card("shadow"));
 		itemDeck.add(new Card("smallPotion"));
-		//itemDeck.add(new Card("smallPotion"));
+		// itemDeck.add(new Card("smallPotion"));
 		itemDeck.add(new Card("largePotion"));
 
 		// UI
@@ -117,7 +150,7 @@ public class Player extends NPC {
 
 	public void moveSpace(int spaces) {
 		Point2D.Float c = getCenter();
-		
+
 		System.out.println("Center: " + getCenter());
 
 		xTile++;
@@ -136,19 +169,22 @@ public class Player extends NPC {
 			setCenter(c.x + (spaces * LocalGame.TILE_SIZE), c.y);
 			return;
 		case 3:
-			setCenter(c.x + (spaces * LocalGame.TILE_SIZE), c.y + (spaces * LocalGame.TILE_SIZE));
+			setCenter(c.x + (spaces * LocalGame.TILE_SIZE), c.y
+					+ (spaces * LocalGame.TILE_SIZE));
 			return;
 		case 4:
 			setCenter(c.x, c.y + (spaces * LocalGame.TILE_SIZE));
 			return;
 		case 5:
-			setCenter(c.x - (spaces * LocalGame.TILE_SIZE), c.y + (spaces * LocalGame.TILE_SIZE));
+			setCenter(c.x - (spaces * LocalGame.TILE_SIZE), c.y
+					+ (spaces * LocalGame.TILE_SIZE));
 			return;
 		case 6:
 			setCenter(c.x - (spaces * LocalGame.TILE_SIZE), c.y);
 			return;
 		case 7:
-			setCenter(c.x - (spaces * LocalGame.TILE_SIZE), c.y - (spaces * LocalGame.TILE_SIZE));
+			setCenter(c.x - (spaces * LocalGame.TILE_SIZE), c.y
+					- (spaces * LocalGame.TILE_SIZE));
 			return;
 		}
 	}
@@ -215,6 +251,19 @@ public class Player extends NPC {
 			g.setColor(Color.red);
 			g.fillRect((int) center.x - 5, (int) center.y - 10,
 					(int) (health * 1.2), 3);
+
+			
+			if (! (this instanceof AI)) {
+			g.drawImage(apGuage[getAP()], 1000, 450, 1100, 550, 0, 0,
+					apGuage[getAP()].getWidth(), apGuage[getAP()].getHeight(),
+					null);
+			
+			g.drawString("AP", 1040, 505);
+			
+			g.drawImage(coin, 1125, 500, 1175, 550, 0, 0, coin.getWidth(), coin.getHeight(), null);
+			
+			g.drawString(getGold() + "", 1140, 490);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Could not draw animatedImage " + toString()
@@ -425,19 +474,19 @@ public class Player extends NPC {
 				ui[x].draw(new Point(10, engine.getEnvironmentSize().y - 90),
 						engine, g, basicHand.length + spellHand.length
 								+ itemHand.length + x);
-		
+
 	}
-	
+
 	public void buffSword(int amt) {
 		bonusSwordDamage += amt;
-		
+
 		if (bonusSwordDamage > MAX_SWORD_DAMAGE)
 			bonusSwordDamage = MAX_SWORD_DAMAGE;
 	}
-	
+
 	public void buffBow(int amt) {
 		bonusBowDamage += amt;
-		
+
 		if (bonusBowDamage > MAX_BOW_DAMAGE)
 			bonusBowDamage = MAX_BOW_DAMAGE;
 	}

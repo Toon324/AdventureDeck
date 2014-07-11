@@ -170,9 +170,6 @@ public class LocalGame extends GameMode {
 		g.setFont(g.getFont().deriveFont(18.0F));
 		g.drawString(player.getGold() + " Gil", 30, 50);
 		g.drawString("Turn: " + turnCnt, 30, 90);
-		g.drawString(
-				"Action Points: " + player.getAP() + " / " + player.getAPpool(),
-				30, 130);
 
 		engine.getActors().drawActors(g);
 
