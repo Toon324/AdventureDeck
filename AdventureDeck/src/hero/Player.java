@@ -52,7 +52,7 @@ public class Player extends NPC {
 	Player(GameEngine e, GameImage i) {
 		super(e, i);
 		actionPoints = 1;
-		apPool = 1;
+		apPool = 8;
 		maxHealth = 50;
 		health = 50;
 		gold = 500;
@@ -193,7 +193,10 @@ public class Player extends NPC {
 		if (apPool < MAX_AP)
 			apPool++;
 
-		actionPoints = apPool;
+		actionPoints += 3;
+		
+		if (actionPoints > apPool)
+			actionPoints = apPool;
 
 		heal(1);
 		addGold(5);

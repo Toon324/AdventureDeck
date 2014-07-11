@@ -3,14 +3,4 @@ Found 8 processors to use
 Could not read endTurn
 Could not read endTurn
 lightning : SPELL doesn't have a range!
-lightning : SPELL doesn't have a range!
-Not enough AP.
-lightning : SPELL doesn't have a range!
-lightning : SPELL doesn't have a range!
-lightning : SPELL doesn't have a range!
-Not enough AP.
-lightning : SPELL doesn't have a range!
-lightning : SPELL doesn't have a range!
-lightning : SPELL doesn't have a range!
-lightning : SPELL doesn't have a range!
 Closing writer
