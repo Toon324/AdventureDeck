@@ -227,7 +227,7 @@ public class LocalGame extends GameMode {
 
 		for (int x = 0; x < range.length; x++) {
 			for (int y = 0; y < range[x].length; y++) {
-				if (range[x][y] == 1) {
+				if (range[y][x] == 1) {
 
 					float tileX = x - range.length / 2;
 					float tileY = y - range[x].length / 2;
