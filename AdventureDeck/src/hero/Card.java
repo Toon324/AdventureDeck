@@ -4,6 +4,7 @@
 package hero;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -280,9 +281,11 @@ public class Card {
 				image.getWidth(), image.getHeight(), null);
 
 		// Draw text
-		g.setFont(g.getFont().deriveFont(14.0f));
+		g.setFont(new Font("default", Font.BOLD, 12));
 		g.setColor(Color.BLACK);
-		g.drawString(name + " \t" + cost, x, y + 5);
+		g.drawString(name, x + 2, y + 10);
+		g.setFont(g.getFont().deriveFont(20.0f));
+		g.drawString("" + getCost(), x+ WIDTH - 15, y + 8);
 
 		// Reset to original color
 		g.setColor(org);
