@@ -50,8 +50,10 @@ public class NPC extends AnimatedImageActor {
 				effectDraws.remove(entry.getKey());
 		}
 
-		if (effectDraws.size() == 0 && shouldDie)
-			death = true;
+		if (effectDraws.size() == 0 && shouldDie) {
+			setDeath(true);
+			shouldDie = false;
+		}
 	}
 
 	@Override
@@ -122,16 +124,6 @@ public class NPC extends AnimatedImageActor {
 		health -= damage;
 		if (health <= 0)
 			shouldDie = true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see petri.api.Actor#setDeath(boolean)
-	 */
-	@Override
-	public void setDeath(boolean d) {
-		shouldDie = true;
 	}
 
 	public void handleStatuses() {

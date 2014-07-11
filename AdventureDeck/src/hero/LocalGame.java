@@ -26,7 +26,7 @@ import petri.api.GameMode;
  */
 public class LocalGame extends GameMode {
 
-	private static final int CARD_TRAY_SIZE = 100;
+	static final int CARD_TRAY_SIZE = 100;
 	final static int TILE_SIZE = 25;
 
 	final int ENEMY_DAMAGE = 12;
@@ -89,14 +89,14 @@ public class LocalGame extends GameMode {
 
 		player.getCardHandler().giveLocalGame(this);
 
-		NPC e1 = new NPC(eng, enemyImage);
-		e1.setCenter(300, 300);
+		Enemy e1 = new Enemy(eng, enemyImage);
+		//e1.setCenter(300, 300);
 
-		NPC e2 = new NPC(eng, enemyImage);
-		e2.setCenter(600, 200);
+		Enemy e2 = new Enemy(eng, enemyImage);
+		//e2.setCenter(600, 200);
 
-		NPC e3 = new NPC(eng, enemyImage);
-		e3.setCenter(200, 400);
+		Enemy e3 = new Enemy(eng, enemyImage);
+		//e3.setCenter(200, 400);
 
 		ai = new AI(eng, aiImage);
 		ai.getCardHandler().giveLocalGame(this);
