@@ -3,17 +3,13 @@
  */
 package hero;
 
-import hero.Card.CardType;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Random;
 import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
@@ -120,7 +116,8 @@ public class LocalGame extends GameMode {
 
 			@Override
 			public void run() {
-				board = new TileManager(engine.getEnvironmentSize().x / 25,
+				board = new TileManager(
+						(engine.getEnvironmentSize().x - CARD_TRAY_SIZE) / 25,
 						(engine.getEnvironmentSize().y - CARD_TRAY_SIZE) / 25);
 			}
 
@@ -143,7 +140,8 @@ public class LocalGame extends GameMode {
 		// engine.getEnvironmentSize().y, 0, 0, background.getWidth(),
 		// background.getHeight(), null);
 
-		board.paint(g);
+		g.drawImage(board.getMapImage(), CARD_TRAY_SIZE, 0, board.getWidth(),
+				board.getHeight(), null);
 
 		if (showRange) {
 			g.setColor(new Color(214, 28, 74, 200)); // Semi transparent red
@@ -168,14 +166,18 @@ public class LocalGame extends GameMode {
 		g.setColor(Color.orange);
 
 		g.setFont(g.getFont().deriveFont(18.0F));
-		g.drawString(player.getGold() + " Gil", 30, 50);
 		g.drawString("Turn: " + turnCnt, 30, 90);
 
-		engine.getActors().drawActors(g);
-
 		g.setColor(Color.LIGHT_GRAY);
+
+		// Card tray
 		g.fillRect(0, engine.getEnvironmentSize().y - CARD_TRAY_SIZE,
 				engine.getEnvironmentSize().x, CARD_TRAY_SIZE);
+
+		// Info tray
+		g.fillRect(0, 0, CARD_TRAY_SIZE, engine.getEnvironmentSize().y);
+
+		engine.getActors().drawActors(g);
 
 		player.drawHands(g);
 
@@ -208,9 +210,9 @@ public class LocalGame extends GameMode {
 							// slightly
 
 		ai.endTurn();
-		
-		//Add more items to the shop if it's not already full
-		
+
+		// Add more items to the shop if it's not already full
+
 		((ShopMenu) engine.getGameMode("ShopMenu")).stockOptions();
 
 		// Handle any statuses they may have (burn, poison, etc)
@@ -266,7 +268,7 @@ public class LocalGame extends GameMode {
 		for (Actor a : engine.getActors().getArrayList()) {
 			Point actorPoint = new Point((int) a.getCenter().x,
 					(int) a.getCenter().y);
-			 //System.out.println("Actor: " + a + " " +  actorPoint);
+			// System.out.println("Actor: " + a + " " + actorPoint);
 
 			if (actorPoint.equals(click)) {
 				// System.out.println("Target set to " + a);

@@ -18,7 +18,7 @@ public class CardHero {
 
 	static GameInitializer gi;
 	
-	private static final int WIDTH = 1225;
+	private static final int WIDTH = 1220;
 	private static final int HEIGHT = 700;
 
 	/**

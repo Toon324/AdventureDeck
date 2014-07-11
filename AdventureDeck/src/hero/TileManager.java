@@ -164,8 +164,21 @@ public class TileManager {
 
 	}
 
-	public void paint(Graphics g) {
-		g.drawImage(background, 0, 0, board.length * TILE_SIZE, board[0].length * TILE_SIZE,
-				null);
+	public BufferedImage getMapImage() {
+		return background;
+	}
+	
+	/**
+	 * @return
+	 */
+	public int getWidth() {
+		return board.length * TILE_SIZE;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getHeight() {
+		return board[0].length * TILE_SIZE;
 	}
 }

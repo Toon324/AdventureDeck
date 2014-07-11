@@ -55,7 +55,7 @@ public class Player extends NPC {
 		apPool = 1;
 		maxHealth = 50;
 		health = 50;
-		gold = 0;
+		gold = 500;
 		xTiles = 4;
 		yTiles = 4;
 		size = new Point2D.Float(30, 50);
@@ -254,15 +254,32 @@ public class Player extends NPC {
 
 			
 			if (! (this instanceof AI)) {
-			g.drawImage(apGuage[getAP()], 1000, 450, 1100, 550, 0, 0,
+			g.drawImage(apGuage[getAP()], 0, 450, 100, 550, 0, 0,
 					apGuage[getAP()].getWidth(), apGuage[getAP()].getHeight(),
 					null);
 			
-			g.drawString("AP", 1040, 505);
+			g.drawString("AP", 40, 505);
 			
-			g.drawImage(coin, 1125, 500, 1175, 550, 0, 0, coin.getWidth(), coin.getHeight(), null);
+			g.drawImage(coin, 25, 375, 75, 425, 0, 0, coin.getWidth(), coin.getHeight(), null);
 			
-			g.drawString(getGold() + "", 1140, 490);
+			g.drawString(getGold() + "", 40, 365);
+			
+			g.drawString("HP: " + getHealth(), 5, 200);
+			g.drawRect(10, 210, 80, 10);
+			g.fillRect(10, 210, (int) (80 * ((double)getHealth() / maxHealth)), 10);
+			
+			g.setColor(Color.black);
+			
+			g.drawString("ATK: " + bonusSwordDamage, 5, 250);
+			g.drawRect(10, 260, 80, 10);
+			g.fillRect(10, 260, (int) (80 * ((double)bonusSwordDamage / MAX_SWORD_DAMAGE)) , 10);
+			
+			g.setColor(Color.blue);
+			g.drawString("WIS: " + bonusBowDamage, 5, 300);
+			g.drawRect(10, 310, 80, 10);
+			g.fillRect(10, 310, (int) (80 * ((double)bonusBowDamage / MAX_BOW_DAMAGE)), 10);
+			
+			
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
