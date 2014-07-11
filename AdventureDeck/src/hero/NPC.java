@@ -40,14 +40,16 @@ public class NPC extends AnimatedImageActor {
 
 	@Override
 	public void move(int ms) {
-		for (int x=0; x< effectDraws.entrySet().toArray().length; x++) {
-			Entry<String, Integer> entry = (Entry<String, Integer>) effectDraws.entrySet().toArray()[x];
+		for (int x = 0; x < effectDraws.entrySet().toArray().length; x++) {
+			Entry<String, Integer> entry = (Entry<String, Integer>) effectDraws
+					.entrySet().toArray()[x];
 			if (entry.getValue().intValue() > 0)
-				effectDraws.put(entry.getKey(), entry.getValue().intValue() - ms);
+				effectDraws.put(entry.getKey(), entry.getValue().intValue()
+						- ms);
 			else
 				effectDraws.remove(entry.getKey());
 		}
-		
+
 		if (effectDraws.size() == 0 && shouldDie)
 			death = true;
 	}
@@ -67,12 +69,18 @@ public class NPC extends AnimatedImageActor {
 			g.setColor(Color.red);
 			g.fillRect((int) center.x - 5, (int) center.y - 10,
 					(int) (health * 1.2), 3);
-			
+
 			for (Entry<String, Integer> entry : effectDraws.entrySet()) {
-				g.drawString(entry.getKey(),(int) center.x + 10,(int) center.y - 10);
+				g.drawString(entry.getKey(), (int) center.x + 10,
+						(int) center.y - 10);
 			}
-			
-			
+
+//			if (effectDraws.entrySet().size() > 0) {
+//				g.setColor(new Color(237, 16, 12, 140));
+//				g.fillRect((int) (center.x), (int) (center.y),
+//						image.getWidth(), image.getHeight());
+//			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Could not draw animatedImage " + toString()
@@ -102,10 +110,10 @@ public class NPC extends AnimatedImageActor {
 		statuses.put(string, i);
 
 	}
-	
-	
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see petri.api.Actor#dealDamage(int)
 	 */
 	@Override
@@ -116,7 +124,9 @@ public class NPC extends AnimatedImageActor {
 			shouldDie = true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see petri.api.Actor#setDeath(boolean)
 	 */
 	@Override
@@ -134,7 +144,7 @@ public class NPC extends AnimatedImageActor {
 				if (entry.getValue().intValue() == 1)
 					statuses.remove(s);
 				else
-					statuses.put(s, entry.getValue().intValue() -1);
+					statuses.put(s, entry.getValue().intValue() - 1);
 				break;
 			}
 		}

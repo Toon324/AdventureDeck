@@ -244,16 +244,7 @@ public class Player extends NPC {
 	@Override
 	public void draw(Graphics g) {
 		try {
-			g.drawImage(image.getImage(), (int) (center.x), (int) (center.y),
-					(int) (center.x) + (int) (size.x), (int) (center.y)
-							+ (int) (size.y), xTile * image.getWidth(), yTile
-							* image.getHeight(),
-					(xTile + 1) * image.getWidth(),
-					(yTile + 1) * image.getHeight(), null);
-
-			g.setColor(Color.red);
-			g.fillRect((int) center.x - 5, (int) center.y - 10,
-					(int) (health * 1.2), 3);
+			super.draw(g);
 
 			
 			if (! (this instanceof AI)) {
@@ -289,10 +280,6 @@ public class Player extends NPC {
 			System.out.println("Could not draw animatedImage " + toString()
 					+ " due to a null image.");
 		}
-	}
-
-	@Override
-	public void move(int ms) {
 	}
 
 	/**

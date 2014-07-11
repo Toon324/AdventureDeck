@@ -13,11 +13,11 @@ public class CardHandler {
 	LocalGame game;
 	Player player;
 	NPC currentTarget;
-	
+
 	public CardHandler(Player p) {
 		player = p;
 	}
-	
+
 	public void giveLocalGame(LocalGame lg) {
 		game = lg;
 	}
@@ -61,7 +61,9 @@ public class CardHandler {
 			String cmd = effects.get(num);
 			// System.out.println("CMD: " + cmd);
 			num++;
-			String arg = effects.get(num);
+			String arg = "";
+			if (num < effects.size())
+				arg = effects.get(num);
 
 			// System.out.println("ARG: " + arg);
 
@@ -102,18 +104,19 @@ public class CardHandler {
 			case "TARGETDAMAGE": {
 				if (currentTarget == null)
 					return;
-				
+
 				int amt = Integer.valueOf(arg);
 				if (c.getRange()[0].length == 3)
 					amt += player.bonusSwordDamage;
 				else
 					amt += player.bonusBowDamage;
-				
+
 				System.out.println("Damage done: " + amt);
-				
-				int tilesBetween = (int) (currentTarget.getCenter().distance(player.getCenter()) / game.TILE_SIZE);
-				System.out.println("tiles between: " + tilesBetween);
-				if (tilesBetween <= (c.getRange().length -1) / 2) {
+
+				int tilesBetween = (int) (currentTarget.getCenter().distance(
+						player.getCenter()) / game.TILE_SIZE);
+				// System.out.println("tiles between: " + tilesBetween);
+				if (tilesBetween <= (c.getRange().length - 1) / 2) {
 					currentTarget.dealDamage(amt);
 					if (currentTarget.getHealth() <= 0)
 						player.addGold(currentTarget.getGoldValue());
@@ -121,6 +124,11 @@ public class CardHandler {
 				break;
 			}
 			case "TARGETSTATUS": {
+				int tilesBetween = (int) (currentTarget.getCenter().distance(
+						player.getCenter()) / game.TILE_SIZE);
+				// System.out.println("tiles between: " + tilesBetween);
+				if (tilesBetween > (c.getRange().length - 1) / 2)
+					break;
 				switch (arg) {
 				case "burn":
 					num++;
@@ -186,7 +194,7 @@ public class CardHandler {
 		else
 			player.setDir(7);
 	}
-	
+
 	public void setCurrentTarget(NPC n) {
 		currentTarget = n;
 	}
