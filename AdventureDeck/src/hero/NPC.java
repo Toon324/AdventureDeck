@@ -22,6 +22,8 @@ public class NPC extends AnimatedImageActor {
 
 	private int goldValue;
 	TreeMap<String, Integer> statuses = new TreeMap<String, Integer>();
+	TreeMap<String, Integer> effectDraws = new TreeMap<String, Integer>();
+	private boolean shouldDie = false;
 
 	public NPC(GameEngine e, GameImage i) {
 		super(e, i);
@@ -38,6 +40,16 @@ public class NPC extends AnimatedImageActor {
 
 	@Override
 	public void move(int ms) {
+		for (int x=0; x< effectDraws.entrySet().toArray().length; x++) {
+			Entry<String, Integer> entry = (Entry<String, Integer>) effectDraws.entrySet().toArray()[x];
+			if (entry.getValue().intValue() > 0)
+				effectDraws.put(entry.getKey(), entry.getValue().intValue() - ms);
+			else
+				effectDraws.remove(entry.getKey());
+		}
+		
+		if (effectDraws.size() == 0 && shouldDie)
+			death = true;
 	}
 
 	@Override
@@ -55,6 +67,12 @@ public class NPC extends AnimatedImageActor {
 			g.setColor(Color.red);
 			g.fillRect((int) center.x - 5, (int) center.y - 10,
 					(int) (health * 1.2), 3);
+			
+			for (Entry<String, Integer> entry : effectDraws.entrySet()) {
+				g.drawString(entry.getKey(),(int) center.x + 10,(int) center.y - 10);
+			}
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Could not draw animatedImage " + toString()
@@ -83,6 +101,27 @@ public class NPC extends AnimatedImageActor {
 	public void inflictStatus(String string, int i) {
 		statuses.put(string, i);
 
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see petri.api.Actor#dealDamage(int)
+	 */
+	@Override
+	public void dealDamage(int damage) {
+		effectDraws.put("-" + damage, 1300);
+		health -= damage;
+		if (health <= 0)
+			shouldDie = true;
+	}
+
+	/* (non-Javadoc)
+	 * @see petri.api.Actor#setDeath(boolean)
+	 */
+	@Override
+	public void setDeath(boolean d) {
+		shouldDie = true;
 	}
 
 	public void handleStatuses() {
