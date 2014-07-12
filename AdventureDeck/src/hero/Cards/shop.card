@@ -4,7 +4,6 @@
 	cost	0
 	desc	Visit the shop
 	range	[1]
-	canChain	0
 }	
 
 EFFECT {

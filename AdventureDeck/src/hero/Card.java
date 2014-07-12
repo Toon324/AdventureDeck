@@ -43,7 +43,6 @@ public class Card {
 	private final int SPACING = 20;
 
 	private int cost;
-	private boolean canChain; // Currently unused and likely to be removed
 	private int[][] range;
 	private LinkedList<String> effects;
 
@@ -59,16 +58,15 @@ public class Card {
 		type = CardType.BASIC;
 
 		effects = new LinkedList<String>();
-		
+
 		InputStream is = getClass().getResourceAsStream("Cards/" + n + ".card");
-		
+
 		try {
 			loadInfo(is);
 		} catch (FileNotFoundException e3) {
 			// TODO Auto-generated catch block
 			e3.printStackTrace();
 		}
-	
 
 		try {
 			// Fetch the image
@@ -99,8 +97,8 @@ public class Card {
 	 *             context of use)
 	 */
 	private void loadInfo(InputStream is) throws FileNotFoundException {
-		//GameEngine.log("Loading info of " + is.getName());
-		
+		// GameEngine.log("Loading info of " + is.getName());
+
 		if (is == null)
 			return;
 
@@ -115,6 +113,9 @@ public class Card {
 				scanned = scanned.replace("}", "");
 
 			scanned = scanned.trim();
+			
+			if (scanned.equals(""))
+				continue;
 
 			//GameEngine.log(section + " : " + scanned);
 
@@ -135,15 +136,7 @@ public class Card {
 							cost = Integer.parseInt(scan.next().trim());
 						else if (scanned.equals("range"))
 							range = readRange(scan.next());
-						else if (scanned.equals("canChain")) {
-							String chain = scan.next();
-							int i = Integer.valueOf(chain.substring(0,
-									chain.indexOf("}")).trim());
-							if (i == 0)
-								canChain = false;
-							else
-								canChain = true;
-						}
+
 					} else
 						effects.add(scanned); // Effects can be as long as they
 												// want (up to max size) thus
@@ -204,7 +197,7 @@ public class Card {
 		row.useDelimiter("]");
 
 		while (row.hasNext()) {
-			String line = row.next().replace("[", "").trim(); // Remove any
+			String line = row.next().replace("[", "").replace("}", "").trim(); // Remove any
 																// unnecessary
 																// characters
 
@@ -285,7 +278,7 @@ public class Card {
 		g.setColor(Color.BLACK);
 		g.drawString(name, x + 2, y + 10);
 		g.setFont(g.getFont().deriveFont(20.0f));
-		g.drawString("" + getCost(), x+ WIDTH - 15, y + 8);
+		g.drawString("" + getCost(), x + WIDTH - 15, y + 8);
 
 		// Reset to original color
 		g.setColor(org);
@@ -339,10 +332,6 @@ public class Card {
 
 	public void setCardType(CardType t) {
 		type = t;
-	}
-
-	public boolean canChain() {
-		return canChain;
 	}
 
 	public String toString() {

@@ -26,10 +26,10 @@ import petri.api.GameImage;
  */
 public class Player extends NPC {
 
-	private final int MAX_AP = 8, MAX_SWORD_DAMAGE = 15, MAX_BOW_DAMAGE = 10;
+	private final int MAX_AP = 8, MAX_ATK = 15, MAX_WIS = 10;
 
-	int bonusSwordDamage = 0;
-	int bonusBowDamage = 0;
+	int atk = 5;
+	int wis = 0;
 
 	private int gold, actionPoints, apPool;
 
@@ -264,14 +264,14 @@ public class Player extends NPC {
 			
 			g.setColor(Color.black);
 			
-			g.drawString("ATK: " + bonusSwordDamage, 5, 250);
+			g.drawString("ATK: " + atk, 5, 250);
 			g.drawRect(10, 260, 80, 10);
-			g.fillRect(10, 260, (int) (80 * ((double)bonusSwordDamage / MAX_SWORD_DAMAGE)) , 10);
+			g.fillRect(10, 260, (int) (80 * ((double)atk / MAX_ATK)) , 10);
 			
 			g.setColor(Color.blue);
-			g.drawString("WIS: " + bonusBowDamage, 5, 300);
+			g.drawString("WIS: " + wis, 5, 300);
 			g.drawRect(10, 310, 80, 10);
-			g.fillRect(10, 310, (int) (80 * ((double)bonusBowDamage / MAX_BOW_DAMAGE)), 10);
+			g.fillRect(10, 310, (int) (80 * ((double)wis / MAX_WIS)), 10);
 			
 			
 			}
@@ -484,17 +484,17 @@ public class Player extends NPC {
 
 	}
 
-	public void buffSword(int amt) {
-		bonusSwordDamage += amt;
+	public void buffAtk(int amt) {
+		atk += amt;
 
-		if (bonusSwordDamage > MAX_SWORD_DAMAGE)
-			bonusSwordDamage = MAX_SWORD_DAMAGE;
+		if (atk > MAX_ATK)
+			atk = MAX_ATK;
 	}
 
-	public void buffBow(int amt) {
-		bonusBowDamage += amt;
+	public void buffWis(int amt) {
+		wis += amt;
 
-		if (bonusBowDamage > MAX_BOW_DAMAGE)
-			bonusBowDamage = MAX_BOW_DAMAGE;
+		if (wis > MAX_WIS)
+			wis = MAX_WIS;
 	}
 }

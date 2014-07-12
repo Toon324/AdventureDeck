@@ -1,12 +1,11 @@
 ﻿INFO {
 	name	Cloth Pants
 	type	ITEM
-	cost	5
-	desc	Grants 30 extra health.
+	cost	3
+	desc	Grants 20 extra health.
 	range	[1]
-	canChain	0
 }	
 
 EFFECT {
-	
+	BUFFHEALTH	20
 }

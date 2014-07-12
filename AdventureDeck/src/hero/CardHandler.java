@@ -106,15 +106,23 @@ public class CardHandler {
 					return;
 
 				int amt = Integer.valueOf(arg);
-				if (c.getRange()[0].length == 3)
-					amt += player.bonusSwordDamage;
-				else
-					amt += player.bonusBowDamage;
+				
+				num++;
+				
+				String type = "PHYSICAL";
+				
+				if (num < effects.size())
+					type = effects.get(num);
+				
+				if (type.equals("PHYSICAL"))
+					amt += player.atk;
+				else if (type.equals("MAGIC"))
+					amt += player.wis;
 
-				System.out.println("Damage done: " + amt);
+				System.out.println("Damage done: " + type + " " + amt);
 
 				int tilesBetween = (int) (currentTarget.getCenter().distance(
-						player.getCenter()) / game.TILE_SIZE);
+						player.getCenter()) / LocalGame.TILE_SIZE);
 				// System.out.println("tiles between: " + tilesBetween);
 				if (tilesBetween <= (c.getRange().length - 1) / 2) {
 					currentTarget.dealDamage(amt);
@@ -125,7 +133,7 @@ public class CardHandler {
 			}
 			case "TARGETSTATUS": {
 				int tilesBetween = (int) (currentTarget.getCenter().distance(
-						player.getCenter()) / game.TILE_SIZE);
+						player.getCenter()) / LocalGame.TILE_SIZE);
 				// System.out.println("tiles between: " + tilesBetween);
 				if (tilesBetween > (c.getRange().length - 1) / 2)
 					break;
@@ -152,14 +160,14 @@ public class CardHandler {
 				player.addHealth(amt);
 				break;
 			}
-			case "BUFFSWORDDAMAGE": {
+			case "BUFFATTACK": {
 				int amt = Integer.valueOf(arg);
-				player.buffSword(amt);
+				player.buffAtk(amt);
 				break;
 			}
-			case "BUFFBOWDAMAGE": {
+			case "BUFFMAGIC": {
 				int amt = Integer.valueOf(arg);
-				player.buffBow(amt);
+				player.buffWis(amt);
 				break;
 			}
 			}

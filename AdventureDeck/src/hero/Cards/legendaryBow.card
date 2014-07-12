@@ -2,11 +2,11 @@
 	name	Legendary Bow
 	type	ITEM
 	cost	10
-	desc	Bow attacks do 10 more damage.
+	desc	Attack +5 Magic +5
 	range	[1]
-	canChain	0
 }	
 
 EFFECT {
-	BUFFBOWDAMAGE	10
+	BUFFATTACK	5
+	BUFFMAGIC	5
 }

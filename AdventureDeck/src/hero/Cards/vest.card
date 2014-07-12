@@ -1,12 +1,11 @@
 ﻿INFO {
 	name	Cloth Vest
 	type	ITEM
-	cost	3
-	desc	Player gains 20 health.
+	cost	4
+	desc	Grants 30 extra health
 	range	[1]
-	canChain	0
 }	
 
 EFFECT {
-	BUFFHEALTH	20
+	BUFFHEALTH	30
 }

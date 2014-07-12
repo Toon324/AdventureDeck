@@ -153,7 +153,6 @@ public class LocalGame extends GameMode {
 				board.getHeight(), null);
 
 		if (showRange) {
-			g.setColor(new Color(214, 28, 74, 200)); // Semi transparent red
 
 			for (int outterY = 0; outterY < range.length; outterY++) {
 				for (int innerX = 0; innerX < range[outterY].length; innerX++) {
@@ -161,12 +160,6 @@ public class LocalGame extends GameMode {
 						int yTile = outterY - range.length / 2;
 						int xTile = innerX - range[outterY].length / 2;
 
-//						g.fillRect((int) player.getCenter().x + xTile
-//								* TileManager.TILE_SIZE,
-//								(int) player.getCenter().y
-//										+ TileManager.TILE_SIZE + yTile
-//										* TileManager.TILE_SIZE,
-//								TileManager.TILE_SIZE, TileManager.TILE_SIZE);
 						g.drawImage(crosshairs,(int) player.getCenter().x + xTile
 								* TileManager.TILE_SIZE,
 								(int) player.getCenter().y
@@ -178,11 +171,6 @@ public class LocalGame extends GameMode {
 			}
 		}
 
-		g.setColor(Color.orange);
-
-		g.setFont(g.getFont().deriveFont(18.0F));
-		g.drawString("Turn: " + turnCnt, 30, 90);
-
 		g.setColor(Color.LIGHT_GRAY);
 
 		// Card tray
@@ -191,6 +179,11 @@ public class LocalGame extends GameMode {
 
 		// Info tray
 		g.fillRect(0, 0, CARD_TRAY_SIZE, engine.getEnvironmentSize().y);
+		
+		g.setColor(Color.black);
+
+		g.setFont(g.getFont().deriveFont(25.0F));
+		g.drawString("Turn: " + turnCnt, 5, 90);
 
 		engine.getActors().drawActors(g);
 

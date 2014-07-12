@@ -2,11 +2,10 @@
 	name	Slash
 	type	BASIC
 	cost	1
-	desc	A powerful sword slash. Does 5 damage.
+	desc	Short ranged physical attack
 	range	[1, 1, 1] [1, 0, 1] [1, 1, 1]
-	canChain	0
 }	
 
 EFFECT {
-	TARGETDAMAGE	5
+	TARGETDAMAGE	0	PHYSICAL
 }

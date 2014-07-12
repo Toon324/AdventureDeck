@@ -2,11 +2,10 @@
 	name	Lightning
 	type	SPELL
 	cost	3
-	desc	Deals 7 damage
+	desc	Deals 7 magical damage
 	range	[0, 0, 1, 0, 1, 0, 0] [1, 0, 0, 1, 0, 0, 1] [0, 1, 0, 0, 0, 1, 0] [1, 0, 1, 0, 1, 0, 1] [0, 1, 0, 0, 0, 1, 0] [1, 0, 0, 1, 0, 0, 1] [0, 0, 1, 0, 1, 0, 0]
-	canChain	0
 }	
 
 EFFECT {
-	TARGETDAMAGE	7
+	TARGETDAMAGE	7	MAGIC	
 }

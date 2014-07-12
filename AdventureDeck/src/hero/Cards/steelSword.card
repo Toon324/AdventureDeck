@@ -2,11 +2,10 @@
 	name	Steel Sword
 	type	ITEM
 	cost	6
-	desc	Sword attacks do 3 more damage.
+	desc	Attack +3
 	range	[1]
-	canChain	0
 }	
 
 EFFECT {
-	BUFFSWORDDAMAGE	3
+	BUFFATTACK	3
 }
