@@ -136,8 +136,6 @@ public class NPC extends AnimatedImageActor {
 			da.setCenter(getCenter().x - size.x, getCenter().y - (size.y / 2));
 		}
 		
-		
-		
 		engine.getActors().add(da);
 	}
 

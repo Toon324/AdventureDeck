@@ -49,6 +49,10 @@ public class Player extends NPC {
 
 	protected CardHandler cardHandler;
 
+	private Card toRemove;
+
+	private int toRemoveIndex;
+
 	Player(GameEngine e, GameImage i) {
 		super(e, i);
 		actionPoints = 1;
@@ -205,6 +209,23 @@ public class Player extends NPC {
 		drawCard(CardType.BASIC);
 		drawCard(CardType.SPELL);
 		drawCard(CardType.ITEM);
+	}
+	
+	public void confirmRemoveCard() {
+		removeCard(toRemove);
+	}
+	
+	public void cancelRemoveCard() {
+		if (toRemove.getCardType() == CardType.BASIC)
+			basicHand[toRemoveIndex] = toRemove;
+		else if (toRemove.getCardType() == CardType.ITEM)
+			itemHand[toRemoveIndex] = toRemove;
+		else
+			spellHand[toRemoveIndex] = toRemove;
+		
+		actionPoints += toRemove.getCost();
+		
+		toRemove = null;
 	}
 
 	public int getDir() {
@@ -411,7 +432,8 @@ public class Player extends NPC {
 			if (hand[x] != null)
 				if (hand[x].checkClick(start, engine, x + offset, e.getPoint())) {
 
-					Card toRemove = hand[x];
+					toRemove = hand[x];
+					toRemoveIndex = x;
 
 					if (getAP() < toRemove.getCost()) {
 						GameEngine.log("Not enough AP.");
@@ -419,18 +441,25 @@ public class Player extends NPC {
 					} else
 						useAP(toRemove.getCost());
 
-					if (hand[x].getCardType() != CardType.UI)
-						hand[x] = null;
-
-					// System.out.println("Handling " + toRemove);
-
-					if (toRemove.type == CardType.BASIC)
-						basicDeck.add(toRemove);
-					else if (toRemove.type == CardType.SPELL)
-						spellDeck.add(toRemove);
-
 					cardHandler.handleCard(toRemove);
 				}
+	}
+	
+	public void removeCard(Card c) {
+		if (c == null || c.getCardType() == CardType.UI)
+			return;
+
+		if (toRemove.type == CardType.BASIC) {
+			basicDeck.add(toRemove);
+			basicHand[toRemoveIndex] = null;
+		}
+		else if (toRemove.type == CardType.SPELL) {
+			spellDeck.add(toRemove);
+			spellHand[toRemoveIndex] = null;
+		}
+		else
+			itemHand[toRemoveIndex] = null;
+
 	}
 
 	/**

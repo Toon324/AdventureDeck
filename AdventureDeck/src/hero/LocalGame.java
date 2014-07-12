@@ -263,11 +263,15 @@ public class LocalGame extends GameMode {
 						player.getCardHandler().handleChoice(choiceCard, tileX,
 								tileY);
 						showRange = false;
+						player.confirmRemoveCard();
 						return;
 					}
 				}
 			}
 		}
+		// No valid choice made, cancel card
+		showRange = false;
+		player.cancelRemoveCard();
 	}
 
 	/**
