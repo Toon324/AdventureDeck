@@ -229,7 +229,7 @@ public class AI extends Player {
 		double smallestDistance = -1;
 
 		for (Actor a : engine.getActors().getArrayList()) {
-			if (!a.equals(this)) {
+			if (!a.equals(this) && a instanceof NPC) {
 				NPC n = (NPC) a;
 				double distance = n.getCenter().distance(getCenter());
 				

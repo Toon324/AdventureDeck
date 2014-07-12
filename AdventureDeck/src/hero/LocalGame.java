@@ -32,6 +32,7 @@ public class LocalGame extends GameMode {
 	final int ENEMY_DAMAGE = 12;
 
 	private GameImage playerImage = null, enemyImage = null, aiImage = null;
+	static GameImage slashImage = null;
 
 	public Player player;
 	private AI ai;
@@ -80,6 +81,10 @@ public class LocalGame extends GameMode {
 					"enemy.png"));
 			aiImage = new AnimatedImage(loadAI, 4, 4);
 
+			BufferedImage loadSlash = ImageIO.read(getClass()
+					.getResourceAsStream("slash.png"));
+			slashImage = new AnimatedImage(loadSlash, 5, 1);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			GameEngine.log("LocalGame exception: " + e.getMessage());
@@ -90,13 +95,13 @@ public class LocalGame extends GameMode {
 		player.getCardHandler().giveLocalGame(this);
 
 		Enemy e1 = new Enemy(eng, enemyImage);
-		//e1.setCenter(300, 300);
+		// e1.setCenter(300, 300);
 
 		Enemy e2 = new Enemy(eng, enemyImage);
-		//e2.setCenter(600, 200);
+		// e2.setCenter(600, 200);
 
 		Enemy e3 = new Enemy(eng, enemyImage);
-		//e3.setCenter(200, 400);
+		// e3.setCenter(200, 400);
 
 		ai = new AI(eng, aiImage);
 		ai.getCardHandler().giveLocalGame(this);
@@ -216,8 +221,10 @@ public class LocalGame extends GameMode {
 		((ShopMenu) engine.getGameMode("ShopMenu")).stockOptions();
 
 		// Handle any statuses they may have (burn, poison, etc)
-		for (Actor a : engine.getActors().getArrayList())
-			((NPC) a).handleStatuses();
+		for (Actor a : engine.getActors().getArrayList()) {
+			if (a instanceof NPC)
+				((NPC) a).handleStatuses();
+		}
 	}
 
 	/**

@@ -124,6 +124,10 @@ public class NPC extends AnimatedImageActor {
 		health -= damage;
 		if (health <= 0)
 			shouldDie = true;
+		
+		DamageActor da = new DamageActor(engine, LocalGame.slashImage);
+		da.setCenter(getCenter().x -size.x, getCenter().y - (size.y /2 ));
+		engine.getActors().add(da);
 	}
 
 	public void handleStatuses() {
