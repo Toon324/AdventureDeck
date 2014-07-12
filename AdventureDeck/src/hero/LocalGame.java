@@ -33,6 +33,8 @@ public class LocalGame extends GameMode {
 
 	private GameImage playerImage = null, enemyImage = null, aiImage = null;
 	static GameImage slashImage = null;
+	
+	BufferedImage crosshairs;
 
 	public Player player;
 	private AI ai;
@@ -80,6 +82,8 @@ public class LocalGame extends GameMode {
 			BufferedImage loadAI = ImageIO.read(getClass().getResourceAsStream(
 					"enemy.png"));
 			aiImage = new AnimatedImage(loadAI, 4, 4);
+			
+			crosshairs = ImageIO.read(getClass().getResourceAsStream("crosshair2.png"));
 
 			BufferedImage loadSlash = ImageIO.read(getClass()
 					.getResourceAsStream("slash.png"));
@@ -157,12 +161,18 @@ public class LocalGame extends GameMode {
 						int yTile = outterY - range.length / 2;
 						int xTile = innerX - range[outterY].length / 2;
 
-						g.fillRect((int) player.getCenter().x + xTile
+//						g.fillRect((int) player.getCenter().x + xTile
+//								* TileManager.TILE_SIZE,
+//								(int) player.getCenter().y
+//										+ TileManager.TILE_SIZE + yTile
+//										* TileManager.TILE_SIZE,
+//								TileManager.TILE_SIZE, TileManager.TILE_SIZE);
+						g.drawImage(crosshairs,(int) player.getCenter().x + xTile
 								* TileManager.TILE_SIZE,
 								(int) player.getCenter().y
 										+ TileManager.TILE_SIZE + yTile
 										* TileManager.TILE_SIZE,
-								TileManager.TILE_SIZE, TileManager.TILE_SIZE);
+								TileManager.TILE_SIZE, TileManager.TILE_SIZE, null);
 					}
 				}
 			}
