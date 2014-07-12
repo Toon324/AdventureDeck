@@ -31,8 +31,8 @@ public class LocalGame extends GameMode {
 
 	final int ENEMY_DAMAGE = 12;
 
-	private GameImage playerImage = null, enemyImage = null, aiImage = null;
-	static GameImage slashImage = null, fireImage = null;
+	private GameImage playerImage = null, aiImage = null, enemyCamp = null;
+	public static GameImage slashImage = null, fireImage = null, enemyImage = null;
 
 	BufferedImage crosshairs;
 
@@ -93,6 +93,8 @@ public class LocalGame extends GameMode {
 			BufferedImage loadFire = ImageIO.read(getClass()
 					.getResourceAsStream("fire.png"));
 			fireImage = new AnimatedImage(loadFire, 5, 1);
+			
+			enemyCamp = new GameImage(ImageIO.read(getClass().getResourceAsStream("ruin.png")));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -103,14 +105,10 @@ public class LocalGame extends GameMode {
 
 		player.getCardHandler().giveLocalGame(this);
 
-		Enemy e1 = new Enemy(eng, enemyImage);
-		// e1.setCenter(300, 300);
+		EnemyCamp c1 = new EnemyCamp(eng, enemyCamp);
 
-		Enemy e2 = new Enemy(eng, enemyImage);
-		// e2.setCenter(600, 200);
+		EnemyCamp c2 = new EnemyCamp(eng, enemyCamp);
 
-		Enemy e3 = new Enemy(eng, enemyImage);
-		// e3.setCenter(200, 400);
 
 		ai = new AI(eng, aiImage);
 		ai.getCardHandler().giveLocalGame(this);
@@ -118,9 +116,8 @@ public class LocalGame extends GameMode {
 		ai.setCenter(500, 150);
 
 		engine.getActors().add(player);
-		engine.getActors().add(e1);
-		engine.getActors().add(e2);
-		engine.getActors().add(e3);
+		engine.getActors().add(c1);
+		engine.getActors().add(c2);
 		engine.getActors().add(ai);
 
 		System.out.println("Begin generation: "
@@ -220,10 +217,6 @@ public class LocalGame extends GameMode {
 	public void endTurn() {
 		turnCnt++;
 
-		player.endTurn(); // Player gains max AP, resets to full AP, and heals
-							// slightly
-
-		ai.endTurn();
 
 		// Add more items to the shop if it's not already full
 
@@ -232,7 +225,7 @@ public class LocalGame extends GameMode {
 		// Handle any statuses they may have (burn, poison, etc)
 		for (Actor a : engine.getActors().getArrayList()) {
 			if (a instanceof NPC)
-				((NPC) a).handleStatuses();
+				((NPC) a).endTurn();
 		}
 	}
 

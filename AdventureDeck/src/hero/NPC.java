@@ -20,7 +20,7 @@ import petri.api.GameImage;
  */
 public class NPC extends AnimatedImageActor {
 
-	private int goldValue;
+	protected int goldValue;
 	TreeMap<String, Integer> statuses = new TreeMap<String, Integer>();
 	TreeMap<String, Integer> effectDraws = new TreeMap<String, Integer>();
 	private boolean shouldDie = false;
@@ -102,6 +102,10 @@ public class NPC extends AnimatedImageActor {
 	 */
 	public int getGoldValue() {
 		return goldValue;
+	}
+	
+	public void endTurn() {
+		handleStatuses();
 	}
 
 	/**

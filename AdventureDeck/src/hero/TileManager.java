@@ -38,7 +38,7 @@ public class TileManager {
 	}
 
 	public TileManager(int x, int y) {
-		System.out.println("Board of size " + x + " " + y + " created.");
+		//System.out.println("Board of size " + x + " " + y + " created.");
 		board = new Tile[x][y];
 		generateBoard();
 	}

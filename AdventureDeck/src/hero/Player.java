@@ -155,7 +155,7 @@ public class Player extends NPC {
 	public void moveSpace(int spaces) {
 		Point2D.Float c = getCenter();
 
-		System.out.println("Center: " + getCenter());
+		//System.out.println("Center: " + getCenter());
 
 		xTile++;
 		if (xTile >= xTiles)
