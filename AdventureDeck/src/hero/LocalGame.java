@@ -32,8 +32,8 @@ public class LocalGame extends GameMode {
 	final int ENEMY_DAMAGE = 12;
 
 	private GameImage playerImage = null, enemyImage = null, aiImage = null;
-	static GameImage slashImage = null;
-	
+	static GameImage slashImage = null, fireImage = null;
+
 	BufferedImage crosshairs;
 
 	public Player player;
@@ -82,12 +82,17 @@ public class LocalGame extends GameMode {
 			BufferedImage loadAI = ImageIO.read(getClass().getResourceAsStream(
 					"enemy.png"));
 			aiImage = new AnimatedImage(loadAI, 4, 4);
-			
-			crosshairs = ImageIO.read(getClass().getResourceAsStream("crosshair2.png"));
+
+			crosshairs = ImageIO.read(getClass().getResourceAsStream(
+					"crosshair2.png"));
 
 			BufferedImage loadSlash = ImageIO.read(getClass()
 					.getResourceAsStream("slash.png"));
 			slashImage = new AnimatedImage(loadSlash, 5, 1);
+
+			BufferedImage loadFire = ImageIO.read(getClass()
+					.getResourceAsStream("fire.png"));
+			fireImage = new AnimatedImage(loadFire, 5, 1);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -160,12 +165,13 @@ public class LocalGame extends GameMode {
 						int yTile = outterY - range.length / 2;
 						int xTile = innerX - range[outterY].length / 2;
 
-						g.drawImage(crosshairs,(int) player.getCenter().x + xTile
-								* TileManager.TILE_SIZE,
+						g.drawImage(crosshairs, (int) player.getCenter().x
+								+ xTile * TileManager.TILE_SIZE,
 								(int) player.getCenter().y
 										+ TileManager.TILE_SIZE + yTile
 										* TileManager.TILE_SIZE,
-								TileManager.TILE_SIZE, TileManager.TILE_SIZE, null);
+								TileManager.TILE_SIZE, TileManager.TILE_SIZE,
+								null);
 					}
 				}
 			}
@@ -179,7 +185,7 @@ public class LocalGame extends GameMode {
 
 		// Info tray
 		g.fillRect(0, 0, CARD_TRAY_SIZE, engine.getEnvironmentSize().y);
-		
+
 		g.setColor(Color.black);
 
 		g.setFont(g.getFont().deriveFont(25.0F));

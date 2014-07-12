@@ -1,6 +1,7 @@
 Game has been initialized.
 Found 8 processors to use
 AnimatedImage error: Can not generate outline for image. Reason: Coordinate out of bounds!
+AnimatedImage error: Can not generate outline for image. Reason: Coordinate out of bounds!
 Could not read endTurn
 Could not read endTurn
 Closing writer

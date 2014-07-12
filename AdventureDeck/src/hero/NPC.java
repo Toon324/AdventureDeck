@@ -77,11 +77,11 @@ public class NPC extends AnimatedImageActor {
 						(int) center.y - 10);
 			}
 
-//			if (effectDraws.entrySet().size() > 0) {
-//				g.setColor(new Color(237, 16, 12, 140));
-//				g.fillRect((int) (center.x), (int) (center.y),
-//						image.getWidth(), image.getHeight());
-//			}
+			// if (effectDraws.entrySet().size() > 0) {
+			// g.setColor(new Color(237, 16, 12, 140));
+			// g.fillRect((int) (center.x), (int) (center.y),
+			// image.getWidth(), image.getHeight());
+			// }
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -124,9 +124,20 @@ public class NPC extends AnimatedImageActor {
 		health -= damage;
 		if (health <= 0)
 			shouldDie = true;
+
+		DamageActor da;
+		if (damage == 2) {
+			da = new DamageActor(engine, LocalGame.fireImage);
+			da.setSize(40, 40);
+			da.setCenter(getCenter().x, getCenter().y);
+		}
+		else {
+			da = new DamageActor(engine, LocalGame.slashImage);
+			da.setCenter(getCenter().x - size.x, getCenter().y - (size.y / 2));
+		}
 		
-		DamageActor da = new DamageActor(engine, LocalGame.slashImage);
-		da.setCenter(getCenter().x -size.x, getCenter().y - (size.y /2 ));
+		
+		
 		engine.getActors().add(da);
 	}
 

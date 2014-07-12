@@ -119,7 +119,7 @@ public class CardHandler {
 				else if (type.equals("MAGIC"))
 					amt += player.wis;
 
-				System.out.println("Damage done: " + type + " " + amt);
+				//System.out.println("Damage done: " + type + " " + amt);
 
 				int tilesBetween = (int) (currentTarget.getCenter().distance(
 						player.getCenter()) / LocalGame.TILE_SIZE);
